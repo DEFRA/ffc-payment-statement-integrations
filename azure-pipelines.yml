@@ -1,19 +1,21 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
+# Simple Azure pipeline to deploy a Logic App (Consumption) with source in GitHub
 
 trigger:
-- main
+  - feature/consumption-deploy
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: 'windows-latest'
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+  - task: AzureResourceManagerTemplateDeployment@3
+    inputs:
+      deploymentScope: "Resource Group"
+      azureResourceManagerConnection: "AZD-EST-SND1"
+      subscriptionId: "d49bcc71-d9a8-400b-9385-0015251d90c5"
+      action: "Create Or Update Resource Group"
+      resourceGroupName: "SNDESTLOGICAPPS-RG"
+      location: "UK South"
+      templateLocation: "URL of the file"
+      csmFileLink: "https://raw.githubusercontent.com/DEFRA/ffc-payment-statement-integrations/main/src/template.json"
+      deploymentMode: "Incremental"
+      deploymentName: "logic-app-1"
