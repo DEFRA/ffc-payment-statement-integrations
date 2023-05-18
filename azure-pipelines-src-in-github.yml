@@ -4,18 +4,18 @@ trigger:
 - azure-pipelines-src-in-github
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: 'windows-latest'
 
 steps:
-  - task: CopyFiles@2
-    displayName: 'Copy files to: $(build.artifactstagingdirectory)/Templates'
+  - task: AzureResourceManagerTemplateDeployment@3
     inputs:
-      SourceFolder: src
-      Contents: '*.json'
-      TargetFolder: '$(build.artifactstagingdirectory)/Templates'
-
-  - task: ArchiveFiles@2
-    displayName: 'Archive $(Build.SourcesDirectory)'
-    inputs:
-      rootFolderOrFile: '$(Build.SourcesDirectory)'
-      includeRootFolder: false
+      deploymentScope: "Resource Group"
+      azureResourceManagerConnection: "AZD-EST-SND1"
+      subscriptionId: "d49bcc71-d9a8-400b-9385-0015251d90c5"
+      action: "Create Or Update Resource Group"
+      resourceGroupName: "SNDESTLOGICAPPS-RG"
+      location: "UK South"
+      templateLocation: "Linked artifact"
+      csmFile: "src/template.json"
+      deploymentMode: "Incremental"
+      deploymentName: "logic-app-1"
