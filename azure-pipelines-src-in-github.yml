@@ -3,6 +3,7 @@
 # Triggers on PR completion/merge to main
 trigger:
 - main
+pr: none
 
 pool:
   vmImage: 'windows-latest'
