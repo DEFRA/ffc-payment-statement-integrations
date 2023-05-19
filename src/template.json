@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "workflows_ESTLOGAPP01_name": {
-            "defaultValue": "ESTLOGAPPTEST02",
+            "defaultValue": "ESTLOGAPPTEST03",
             "type": "String"
         }
     },
