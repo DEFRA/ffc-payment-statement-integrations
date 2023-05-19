@@ -1,8 +1,7 @@
 # Simple Azure pipeline to deploy a Logic App (Consumption) with source in GitHub
 
 # Trigger currently disabled
-trigger:
-  - none
+trigger: none
 
 pool:
   vmImage: 'windows-latest'
