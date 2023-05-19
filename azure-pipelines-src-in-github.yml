@@ -1,7 +1,8 @@
 # Simple Azure pipeline to read source from GitHub
 
+# Triggers on PR completion/merge to main
 trigger:
-- azure-pipelines-src-in-github
+- main
 
 pool:
   vmImage: 'windows-latest'
