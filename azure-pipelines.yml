@@ -1,7 +1,8 @@
 # Simple Azure pipeline to deploy a Logic App (Consumption) with source in GitHub
 
+# Triggers when PR is completed/merged to main
 trigger:
-  - feature/consumption-deploy
+  - main
 
 pool:
   vmImage: 'windows-latest'
