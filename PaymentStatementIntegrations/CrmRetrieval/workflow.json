@@ -1,0 +1,155 @@
+{
+    "definition": {
+        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+        "actions": {
+            "Check_Auth_Result": {
+                "type": "If",
+                "expression": {
+                    "and": [
+                        {
+                            "equals": [
+                                "@triggerOutputs()?['headers']?['x-api-key']",
+                                "@parameters('AuthService-WebHook-APIKey')"
+                            ]
+                        }
+                    ]
+                },
+                "actions": {
+                    "Get_PDF_Contents": {
+                        "type": "Http",
+                        "description": "Track some properties in this action",
+                        "inputs": {
+                            "uri": "@{parameters('PdfServiceUrl')}/pdf/@{triggerBody()?['customerId']}",
+                            "method": "GET",
+                            "headers": {
+                                "x-api-key": "ApiKey @{parameters('AuthService-APIKey')}"
+                            }
+                        },
+                        "operationOptions": "DisableAsyncPattern, SuppressWorkflowHeaders",
+                        "trackedProperties": {
+                            "recordType": "customer",
+                            "recordId": "@{triggerBody()?['customerId']}",
+                            "correlationId": "@{triggerBody()?['correlationId']}"
+                        }
+                    },
+                    "Check_PDF_Result": {
+                        "type": "If",
+                        "expression": {
+                            "and": [
+                                {
+                                    "equals": [
+                                        "@outputs('Get_PDF_Contents')['statusCode']",
+                                        200
+                                    ]
+                                }
+                            ]
+                        },
+                        "actions": {
+                            "Return_PDF": {
+                                "type": "Response",
+                                "kind": "Http",
+                                "inputs": {
+                                    "statusCode": 200,
+                                    "headers": {
+                                        "Content-Type": "application/pdf",
+                                        "Content-disposition": "inline"
+                                    },
+                                    "body": "@body('Get_PDF_Contents')"
+                                }
+                            }
+                        },
+                        "else": {
+                            "actions": {
+                                "Failed_PDF_Response": {
+                                    "type": "Response",
+                                    "kind": "http",
+                                    "inputs": {
+                                        "statusCode": "@outputs('Get_PDF_Contents')['statusCode']",
+                                        "body": "Unable to get PDF content: @{body('Get_PDF_Contents')}"
+                                    }
+                                }
+                            }
+                        },
+                        "runAfter": {
+                            "Get_PDF_Contents": [
+                                "Succeeded",
+                                "TIMEDOUT",
+                                "SKIPPED",
+                                "FAILED"
+                            ]
+                        }
+                    }
+                },
+                "else": {
+                    "actions": {
+                        "Unauthorized_Response": {
+                            "type": "Response",
+                            "kind": "http",
+                            "inputs": {
+                                "statusCode": 401,
+                                "body": "Invalid/No authorization header passed"
+                            }
+                        }
+                    }
+                },
+                "runAfter": {
+                    "Validate_Auth_Token": [
+                        "SUCCEEDED"
+                    ]
+                }
+            },
+            "Validate_Auth_Token": {
+                "type": "Http",
+                "inputs": {
+                    "uri": "@{parameters('AuthTokenValidationUrl')}/validate",
+                    "method": "POST",
+                  "headers": {
+                    "x-api-key": "ApiKey @{parameters('AuthService-APIKey')}"
+                  }
+                },
+                "runAfter": {}
+            }
+        },
+        "contentVersion": "1.0.0.0",
+        "outputs": {},
+        "triggers": {
+            "HTTP_POST": {
+                "type": "Request",
+                "kind": "Http",
+                "inputs": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "correlationId": {
+                                "type": "string"
+                            },
+                            "customerId": {
+                                "type": "integer"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "resourceId": {
+                                "type": "string"
+                            },
+                            "resourceURI": {
+                                "type": "string"
+                            },
+                            "sourceSystem": {
+                                "type": "string"
+                            },
+                            "timestamp": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "method": "POST"
+                }
+            }
+        }
+    },
+    "kind": "Stateful"
+}

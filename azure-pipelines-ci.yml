@@ -1,0 +1,47 @@
+# Simple Azure pipeline to deploy a Logic App (Consumption) with source in GitHub
+
+# Trigger on PR creation targetting main (or subsequent commits to PR)
+pr: main
+
+pool:
+  vmImage: 'windows-latest'
+
+steps:
+  - bash: |
+      sudo npm install -g azurite
+      sudo mkdir azurite
+      sudo azurite --silent --location azurite --debug azurite\debug.log &
+      displayName: 'Install and Run Azurite'
+
+  - bash: |
+      dotnet test --logger "trx;LogFileName=test_results.trx" PaymentStatementIntegrations.Tests/PaymentStatementIntegrations.Tests.csproj
+  
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFormat: 'JUnit'
+      testResultsFiles: '**/test_results.trx'
+      failTaskOnFailedTests: true
+
+  - task: CopyFiles@2
+    displayName: 'Create project folder'
+    inputs:
+      SourceFolder: '$(System.DefaultWorkingDirectory)/PaymentStatementIntegrations'
+      Contents: |
+        **
+      TargetFolder: 'project_output'
+
+  - task: ArchiveFiles@2
+    displayName: 'Create project zip'
+    inputs:
+      rootFolderOrFile: '$(System.DefaultWorkingDirectory)/project_output'
+      includeRootFolder: false
+      archiveType: 'zip'
+      archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+      replaceExistingArchive: true
+
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish project zip artifact'
+    inputs:
+      targetPath: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+      artifact: 'logicapp-artifact'
+      publishLocation: 'pipeline'
