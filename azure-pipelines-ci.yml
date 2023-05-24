@@ -16,6 +16,10 @@ steps:
     inputs:
       versionSpec: '16.*'
 
+  - task: FuncToolsInstaller@0
+    inputs:
+      version: 'latest'
+
   - bash: |
       npm install -g azurite
       mkdir azurite
