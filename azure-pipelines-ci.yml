@@ -16,15 +16,12 @@ steps:
     inputs:
       versionSpec: '16.*'
 
-  - task: PowerShell@2
+  - bash: |
+      sudo npm install -g azurite
+      sudo mkdir azurite
+      sudo azurite --silent --location azurite --debug azurite\debug.log &
     displayName: 'Install and launch Azurite'
-    inputs:
-      targetType: 'inline'
-      script: |
-        npm install -g azurite 
-        mkdir c:/azurite
-        Start-Job -ScriptBlock { azurite --silent --location c:\azurite --debug c:\azurite\debug.log  }
-  
+
   - task: DotNetCoreCLI@2
     inputs:
       command: test
