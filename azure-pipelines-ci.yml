@@ -24,17 +24,17 @@ steps:
       $NewPathInRegistry = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
       Write-Host $NewPathInRegistry
 
-  - bash: |
-      docker-compose -f docker-compose-azurite.yml up -d
+ # - bash: |
+ #     docker-compose -f docker-compose-azurite.yml up -d
 
   - pwsh: |
       Write-Host "##vso[task.prependpath]C:\hostedtoolcache\windows\func\4.0.5095\x64"
 
-#  - bash: |
-#      npm install -g azurite
-#      mkdir azurite
-#      azurite --silent --location azurite --debug azurite\debug.log &
-#    displayName: 'Install and launch Azurite'
+  - bash: |
+      npm install -g azurite
+      mkdir azurite
+      azurite --silent --location azurite --debug azurite\debug.log &
+    displayName: 'Install and launch Azurite'
 
   - task: DotNetCoreCLI@2
     inputs:
