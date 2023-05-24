@@ -1,0 +1,21 @@
+﻿{
+  "logging": {
+    "writeFunctionRuntineStartupLogs": true
+  },
+
+  "workflow": {
+    "externalApiUrlsToMock": [
+      "https://external-auth-service.testing.net",
+      "https://external-pdf-service.testing.net"
+    ],
+    "builtInConnectorsToMock": [
+      "executeQuery",
+      "sendMessage",
+      "uploadBlob",
+      "deleteBlob",
+      "putMessage",
+      "insertRow"
+    ],
+    "autoConfigureWithStatelessRunHistory": true
+  }
+}
