@@ -11,14 +11,20 @@ pool:
   vmImage: 'windows-latest'
 
 steps:
+  - task: NodeTool@0
+    displayName: 'Use Node.js'
+    inputs:
+      versionSpec: '16.*'
+
   - task: PowerShell@2
+    displayName: 'Install and launch Azurite'
     inputs:
       targetType: 'inline'
       script: |
-        npm install -g azurite
-        mkdir azurite
-        azurite --silent --location azurite --debug azurite\debug.log &
-
+        npm install -g azurite 
+        mkdir c:/azurite
+        Start-Job -ScriptBlock { azurite --silent --location c:\azurite --debug c:\azurite\debug.log  }
+  
   - task: PowerShell@2
     inputs:
       targetType: 'inline'
