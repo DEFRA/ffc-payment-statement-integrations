@@ -16,6 +16,10 @@ steps:
     inputs:
       versionSpec: '16.*'
 
+  - task: FuncToolsInstaller@0
+    inputs:
+      version: 'latest'
+
   - pwsh: |
       $NewPathInRegistry = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
       Write-Host $NewPathInRegistry
