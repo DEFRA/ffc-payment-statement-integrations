@@ -25,7 +25,10 @@ steps:
       Write-Host $NewPathInRegistry
 
   - bash: |
-      docker-compose up -f docker-compose-azurite.yml
+      docker-compose -f docker-compose-azurite.yml up -d
+
+  - pwsh: |
+      Write-Host "##vso[task.prependpath]C:\hostedtoolcache\windows\func\4.0.5095\x64"
 
 #  - bash: |
 #      npm install -g azurite
