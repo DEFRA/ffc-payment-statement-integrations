@@ -2,9 +2,10 @@
 
 # Trigger on PR creation targetting main (or subsequent commits to PR)
 trigger:
-  main
+  - main
 
-pr: main
+pr:
+  - main
 
 pool:
   vmImage: 'windows-latest'
