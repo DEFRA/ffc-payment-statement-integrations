@@ -16,11 +16,18 @@ steps:
     inputs:
       versionSpec: '16.*'
 
+  - pwsh: |
+      $NewPathInRegistry = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
+      Write-Host $NewPathInRegistry
+
   - bash: |
-      npm install -g azurite
-      mkdir azurite
-      azurite --silent --location azurite --debug azurite\debug.log &
-    displayName: 'Install and launch Azurite'
+      docker-compose up -f docker-compose-azurite.yml
+
+#  - bash: |
+#      npm install -g azurite
+#      mkdir azurite
+#      azurite --silent --location azurite --debug azurite\debug.log &
+#    displayName: 'Install and launch Azurite'
 
   - task: DotNetCoreCLI@2
     inputs:
