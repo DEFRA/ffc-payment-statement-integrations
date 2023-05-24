@@ -16,20 +16,17 @@ steps:
     inputs:
       versionSpec: '16.*'
 
-  - task: PowerShell@2
+  - bash: |
+      npm install -g azurite
+      mkdir azurite
+      azurite --silent --location azurite --debug azurite\debug.log &
     displayName: 'Install and launch Azurite'
+
+  - task: DotNetCoreCLI@2
     inputs:
-      targetType: 'inline'
-      script: |
-        npm install -g azurite 
-        mkdir c:/azurite
-        Start-Job -ScriptBlock { azurite --silent --location c:\azurite --debug c:\azurite\debug.log  }
-  
-  - task: PowerShell@2
-    inputs:
-      targetType: 'inline'
-      script: |
-        dotnet test --logger "trx;LogFileName=test_results.trx" PaymentStatementIntegrations.Tests/PaymentStatementIntegrations.Tests.csproj
+      command: test
+      projects: 'PaymentStatementIntegrations.Tests/PaymentStatementIntegrations.Tests.csproj'
+      arguments: '--logger "trx;LogFileName=test_results.trx"'
   
   - task: PublishTestResults@2
     inputs:
