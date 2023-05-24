@@ -1,6 +1,6 @@
-# Simple Azure pipeline to deploy a Logic App (Consumption) with source in GitHub
+# Simple Azure pipeline to read source from GitHub
 
-# Trigger currently disabled
+# Currently disabled
 trigger: none
 
 pool:
@@ -15,7 +15,7 @@ steps:
       action: "Create Or Update Resource Group"
       resourceGroupName: "SNDESTLOGICAPPS-RG"
       location: "UK South"
-      templateLocation: "URL of the file"
-      csmFileLink: "https://raw.githubusercontent.com/DEFRA/ffc-payment-statement-integrations/main/src/template.json"
+      templateLocation: "Linked artifact"
+      csmFile: "src/template.json"
       deploymentMode: "Incremental"
       deploymentName: "logic-app-1"
