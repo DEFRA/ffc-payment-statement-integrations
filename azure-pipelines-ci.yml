@@ -11,33 +11,25 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-  - task: NodeTool@0
-    displayName: 'Use Node.js'
-    inputs:
-      versionSpec: '16.*'
+#  - task: NodeTool@0
+#    displayName: 'Use Node.js'
+#    inputs:
+#      versionSpec: '16.*'
 
   - task: FuncToolsInstaller@0
     inputs:
       version: 'latest'
 
+  - bash: |
+      docker compose -f docker-compose-azurite.yml up -d
+
 #  - bash: |
-#      docker compose -f docker-compose-azurite.yml up -d
-
-  - bash: |
-      npm install -g azurite
-      mkdir azurite
-      azurite --silent --location azurite --debug azurite\debug.log &
-    displayName: 'Install and launch Azurite'
-
-  - bash: |
-      cp /opt/hostedtoolcache/func/4.0.5095/x64/func /opt/hostedtoolcache/func/4.0.5095/x64/func.exe
-      chmod 755 /opt/hostedtoolcache/func/4.0.5095/x64/func.exe
-      /opt/hostedtoolcache/func/4.0.5095/x64/func.exe --version
-    displayName: 'Setup func.exe for Linux'
+#      npm install -g azurite
+#      mkdir azurite
+#      azurite --silent --location azurite --debug azurite\debug.log &
+#    displayName: 'Install and launch Azurite'
 
   - task: DotNetCoreCLI@2
-    env:
-      PATH: /opt/hostedtoolcache/func/4.0.5095/x64:$(PATH)
     inputs:
       command: test
       projects: 'PaymentStatementIntegrations.Tests/PaymentStatementIntegrations.Tests.csproj'
