@@ -20,17 +20,18 @@ steps:
     inputs:
       version: 'latest'
 
-#  - bash: |
-#      docker-compose -f docker-compose-azurite.yml up -d
-
   - bash: |
-      npm install -g azurite
-      mkdir azurite
-      azurite --silent --location azurite --debug azurite\debug.log &
-    displayName: 'Install and launch Azurite'
+      docker-compose -f docker-compose-azurite.yml up -d
+
+#  - bash: |
+#      npm install -g azurite
+#      mkdir azurite
+#      azurite --silent --location azurite --debug azurite\debug.log &
+#    displayName: 'Install and launch Azurite'
 
   - bash: |
       ln -s /opt/hostedtoolcache/func/4.0.5095/x64/func func.exe
+      chmod 755 func.exe
       func.exe --version
 
   - task: DotNetCoreCLI@2
