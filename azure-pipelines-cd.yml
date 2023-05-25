@@ -14,6 +14,31 @@ steps:
       appName: 'ESTLOGICAPP-PIPELINE'
       resourceGroupName: 'SNDESTLOGICAPPS-RG'
 
+      # Add the app settings for the connections 
+    
+      appSettings: |
+        [
+          {
+            "name": "serviceBus_connectionString",
+            "value": "test",
+            "slotSetting": false
+            },
+            {
+            "name": "azureFunctionOperation_functionAppKey",
+            "value": "test",
+            "slotSetting": false
+            },
+            {
+            "name": "azureFunctionOperation_functionResourceURI",
+            "value": "test",
+            "slotSetting": false
+            },
+            {
+            "name": "azureFunctionOperation_functionTriggerURI",
+            "value": "test",
+            "slotSetting": false
+            }
+        ]
   - task: AzureFunctionApp@1
     displayName: 'Deploy logic app workflows'
     inputs:

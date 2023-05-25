@@ -1,11 +1,12 @@
 # Simple Azure pipeline to deploy a Logic App (Consumption) with source in GitHub
 
 # Trigger on PR creation targetting main (or subsequent commits to PR)
-trigger:
-  - main
-
-pr:
-  - main
+trigger: none
+#trigger:
+#  - main
+#
+#pr:
+#  - main
 
 pool:
   vmImage: 'ubuntu-latest'
