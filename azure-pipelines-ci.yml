@@ -11,12 +11,6 @@ pool:
   vmImage: 'windows-2022'
 
 steps:
-  - task: UseDotNet@2
-    displayName: Use .NET 6.0
-    inputs:
-      packageType: 'sdk'
-      version: '6.0.x'
-
   - task: NodeTool@0
     displayName: 'Use Node.js'
     inputs:
@@ -34,7 +28,8 @@ steps:
  #     docker-compose -f docker-compose-azurite.yml up -d
 
   - pwsh: |
-      Write-Host "##vso[task.prependpath]C:\hostedtoolcache\windows\func\4.0.5095\x64"
+      echo '##vso[task.setvariable variable=path]C:\hostedtoolcache\windows\func\4.0.5095\x64;$(PATH)'
+  #Write-Host "##vso[task.prependpath]C:\hostedtoolcache\windows\func\4.0.5095\x64"
 
   - pwsh: |
       $NewPathInRegistry = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
