@@ -15,7 +15,7 @@ steps:
   - task: AzureCLI@2
     displayName: Azure CLI
     inputs:
-      azureSubscription: '$(azureSubscription)''
+      azureSubscription: '$(azureSubscription)'
       scriptType: ps
       scriptLocation: inlineScript
       inlineScript: |
