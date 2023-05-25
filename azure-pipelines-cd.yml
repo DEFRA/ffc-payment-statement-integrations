@@ -12,8 +12,16 @@ variables:
   resourceGroupName: 'SNDESTLOGICAPPS-RG'
 
 steps:
-  - bash: |
-      az resource list --resource-group SNDESTLOGICAPPS-RG
+  - task: AzureCLI@2
+    displayName: Azure CLI
+    inputs:
+      azureSubscription: '$(azureSubscription)''
+      scriptType: ps
+      scriptLocation: inlineScript
+      inlineScript: |
+        az --version
+        az account show
+        az resource list --resource-group SNDESTLOGICAPPS-RG
 
   - task: AzureAppServiceSettings@1
     displayName: Azure App Service Settings
