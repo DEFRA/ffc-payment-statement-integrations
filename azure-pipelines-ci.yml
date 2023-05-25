@@ -30,7 +30,8 @@ steps:
 #    displayName: 'Install and launch Azurite'
 
   - bash: |
-      ln -s /opt/hostedtoolcache/func/4.0.5095/x64/func func.exe
+      pwd
+      cp /opt/hostedtoolcache/func/4.0.5095/x64/func func.exe
       chmod 755 func.exe
       func.exe --version
 
