@@ -29,10 +29,10 @@ steps:
 #    displayName: Set Path
 #Write-Host "##vso[task.prependpath]C:\hostedtoolcache\windows\func\4.0.5095\x64"
 
-  - pwsh: |
-      echo 'Current path = $(PATH)'
-      dir C:\hostedtoolcache\windows\func\4.0.5095\x64
-      func.exe --version
+#  - pwsh: |
+#      echo 'Current path = $(PATH)'
+#      dir C:\hostedtoolcache\windows\func\4.0.5095\x64
+#      func.exe --version
 
   - bash: |
       npm install -g azurite
@@ -42,7 +42,7 @@ steps:
 
   - task: DotNetCoreCLI@2
     env:
-      PATH: 'C:\hostedtoolcache\windows\func\4.0.5095\x64;$(PATH)'
+      PATH: C:\hostedtoolcache\windows\func\4.0.5095\x64;
     inputs:
       command: test
       projects: 'PaymentStatementIntegrations.Tests/PaymentStatementIntegrations.Tests.csproj'
