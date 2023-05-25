@@ -7,6 +7,13 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
+  - task: AzureAppServiceSettings@1
+    displayName: Azure App Service Settings
+    inputs:
+      azureSubscription: 'AZD-EST-SND1'
+      appName: 'ESTLOGICAPP-PIPELINE'
+      resourceGroupName: 'SNDESTLOGICAPPS-RG'
+
   - task: AzureFunctionApp@1
     displayName: 'Deploy logic app workflows'
     inputs:
