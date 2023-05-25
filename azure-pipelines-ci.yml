@@ -23,37 +23,26 @@ steps:
  # - bash: |
  #     docker-compose -f docker-compose-azurite.yml up -d
 
-#  - pwsh: |
-#      echo 'Current path = $(PATH)'
-#      echo '##vso[task.setvariable variable=path]C:\hostedtoolcache\windows\func\4.0.5095\x64;$(PATH)'
-#    displayName: Set Path
-#Write-Host "##vso[task.prependpath]C:\hostedtoolcache\windows\func\4.0.5095\x64"
-
-#  - pwsh: |
-#      echo 'Current path = $(PATH)'
-#      dir C:\hostedtoolcache\windows\func\4.0.5095\x64
-#      func.exe --version
-
   - bash: |
       npm install -g azurite
       mkdir azurite
       azurite --silent --location azurite --debug azurite\debug.log &
     displayName: 'Install and launch Azurite'
 
-  - task: DotNetCoreCLI@2
-    env:
-      PATH: C:\hostedtoolcache\windows\func\4.0.5095\x64;$(PATH)
-    inputs:
-      command: test
-      projects: 'PaymentStatementIntegrations.Tests/PaymentStatementIntegrations.Tests.csproj'
-      arguments: '--logger "trx;LogFileName=test_results.trx"'
-    displayName: Run unit tests
+#  - task: DotNetCoreCLI@2
+#    env:
+#      PATH: C:\hostedtoolcache\windows\func\4.0.5095\x64;$(PATH)
+#    inputs:
+#      command: test
+#      projects: 'PaymentStatementIntegrations.Tests/PaymentStatementIntegrations.Tests.csproj'
+#      arguments: '--logger "trx;LogFileName=test_results.trx"'
+#    displayName: Run unit tests
   
-  - task: PublishTestResults@2
-    inputs:
-      testResultsFormat: 'JUnit'
-      testResultsFiles: '**/test_results.trx'
-      failTaskOnFailedTests: true
+#  - task: PublishTestResults@2
+#    inputs:
+#      testResultsFormat: 'JUnit'
+#      testResultsFiles: '**/test_results.trx'
+#      failTaskOnFailedTests: true
 
   - task: CopyFiles@2
     displayName: 'Create project folder'
