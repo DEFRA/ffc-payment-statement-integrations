@@ -7,12 +7,14 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-  - task: AzureFunctionApp@1
+  - task: AzureFunctionApp@2
     displayName: 'Deploy logic app workflows'
     inputs:
        azureSubscription: 'AZD-EST-SND1'
        appType: 'functionApp' ## Default: functionApp 
        appName: 'ESTLOGICAPPSTANDARD01'
+       resourceGroupName: 'SNDESTLOGICAPPS-RG'
+       deployToSlotOrASE: true
        package: 'logicapp-artifact.zip'
        deploymentMethod: 'zipDeploy'
 
