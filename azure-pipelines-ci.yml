@@ -34,7 +34,7 @@ steps:
       cp /opt/hostedtoolcache/func/4.0.5095/x64/func /opt/hostedtoolcache/func/4.0.5095/x64/func.exe
       chmod 755 /opt/hostedtoolcache/func/4.0.5095/x64/func.exe
       ls -al /opt/hostedtoolcache/func/4.0.5095/x64
-      func.exe --version
+      /opt/hostedtoolcache/func/4.0.5095/x64/func.exe --version
 
   - task: DotNetCoreCLI@2
     inputs:
