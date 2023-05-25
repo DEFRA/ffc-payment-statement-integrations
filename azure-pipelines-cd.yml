@@ -11,7 +11,7 @@ steps:
     displayName: 'Deploy logic app workflows'
     inputs:
        azureSubscription: 'AZD-EST-SND1'
-       appType: 'functionAppLinux' ## Default: functionApp 
+       appType: 'functionApp' ## Default: functionApp 
        appName: 'ESTLOGICAPPSTANDARD01'
        package: 'logicapp-artifact.zip'
        deploymentMethod: 'zipDeploy'
