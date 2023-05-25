@@ -36,7 +36,8 @@ steps:
     displayName: 'Install and launch Azurite'
 
   - task: DotNetCoreCLI@2
-    env: PATH = "C:\hostedtoolcache\windows\func\4.0.5095\x64;$(PATH)"
+    env:
+      PATH = "C:\hostedtoolcache\windows\func\4.0.5095\x64;$(PATH)"
     inputs:
       command: test
       projects: 'PaymentStatementIntegrations.Tests/PaymentStatementIntegrations.Tests.csproj'
