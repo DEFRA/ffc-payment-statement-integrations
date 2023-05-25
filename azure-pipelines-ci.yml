@@ -21,7 +21,7 @@ steps:
       version: 'latest'
 
   - bash: |
-      docker-compose -f docker-compose-azurite.yml up -d
+      docker compose -f docker-compose-azurite.yml up -d
 
 #  - bash: |
 #      npm install -g azurite
