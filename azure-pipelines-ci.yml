@@ -29,6 +29,10 @@ steps:
     displayName: Set Path
   #Write-Host "##vso[task.prependpath]C:\hostedtoolcache\windows\func\4.0.5095\x64"
 
+  - pwsh: |
+      echo 'New path = $(PATH)'
+    displayName: Check Path
+
   - bash: |
       npm install -g azurite
       mkdir azurite
