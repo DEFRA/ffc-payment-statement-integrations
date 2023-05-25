@@ -4,17 +4,53 @@
 trigger: none
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'windows-latest'
+
+variables:
+  azureSubscription: 'AZD-EST-SND1'
+  logicAppName: 'LOGICAPPSTDDEPLOY01'
+  resourceGroupName: 'SNDESTLOGICAPPS-RG'
 
 steps:
+  - bash: |
+      az resource list --resource-group SNDESTLOGICAPPS-RG
+
+  - task: AzureAppServiceSettings@1
+    displayName: Azure App Service Settings
+    inputs:
+      azureSubscription: '$(azureSubscription)'
+      appName: '$(logicAppName)'
+      resourceGroupName: '$(resourceGroupName)'
+      # Add the app settings for the connections 
+      appSettings: |
+        [
+          {
+            "name": "serviceBus_connectionString",
+            "value": "test",
+            "slotSetting": false
+            },
+            {
+            "name": "azureFunctionOperation_functionAppKey",
+            "value": "test",
+            "slotSetting": false
+            },
+            {
+            "name": "azureFunctionOperation_functionResourceURI",
+            "value": "test",
+            "slotSetting": false
+            },
+            {
+            "name": "azureFunctionOperation_functionTriggerURI",
+            "value": "test",
+            "slotSetting": false
+            }
+        ]
   - task: AzureFunctionApp@2
     displayName: 'Deploy logic app workflows'
     inputs:
-       azureSubscription: 'AZD-EST-SND1'
-       appType: 'functionApp' ## Default: functionApp 
-       appName: 'ESTLOGICAPPSTANDARD01'
-       resourceGroupName: 'SNDESTLOGICAPPS-RG'
-       deployToSlotOrASE: true
+       azureSubscription: '$(azureSubscription)'
+       appType: 'functionApp'
+       appName: '$(logicAppName)'
        package: 'logicapp-artifact.zip'
        deploymentMethod: 'zipDeploy'
 
@@ -27,6 +63,6 @@ steps:
 #      resourceGroupName: "SNDESTLOGICAPPS-RG"
 #      location: "UK South"
 #      templateLocation: "Linked artifact"
-#      csmFile: "src/template.json"
+#      csmFile: "**/workflow.json"
 #      deploymentMode: "Incremental"
 #      deploymentName: "logic-app-1"
