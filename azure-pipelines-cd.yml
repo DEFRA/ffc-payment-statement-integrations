@@ -4,18 +4,27 @@
 trigger: none
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: 'ubuntu-latest'
 
 steps:
-  - task: AzureResourceManagerTemplateDeployment@3
+  - task: AzureFunctionApp@1
+    displayName: 'Deploy logic app workflows'
     inputs:
-      deploymentScope: "Resource Group"
-      azureResourceManagerConnection: "AZD-EST-SND1"
-      subscriptionId: "d49bcc71-d9a8-400b-9385-0015251d90c5"
-      action: "Create Or Update Resource Group"
-      resourceGroupName: "SNDESTLOGICAPPS-RG"
-      location: "UK South"
-      templateLocation: "Linked artifact"
-      csmFile: "src/template.json"
-      deploymentMode: "Incremental"
-      deploymentName: "logic-app-1"
+       azureSubscription: 'AZD-EST-SND1'
+       appType: 'functionAppLinux' ## Default: functionApp 
+       appName: 'ESTLOGICAPP-PIPELINE'
+       package: 'logicapp-artifact.zip'
+       deploymentMethod: 'zipDeploy'
+
+#  - task: AzureResourceManagerTemplateDeployment@3
+#    inputs:
+#      deploymentScope: "Resource Group"
+#      azureResourceManagerConnection: "AZD-EST-SND1"
+#      subscriptionId: "d49bcc71-d9a8-400b-9385-0015251d90c5"
+#      action: "Create Or Update Resource Group"
+#      resourceGroupName: "SNDESTLOGICAPPS-RG"
+#      location: "UK South"
+#      templateLocation: "Linked artifact"
+#      csmFile: "src/template.json"
+#      deploymentMode: "Incremental"
+#      deploymentName: "logic-app-1"
