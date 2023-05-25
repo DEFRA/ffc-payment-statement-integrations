@@ -39,11 +39,9 @@ steps:
       azurite --silent --location azurite --debug azurite\debug.log &
     displayName: 'Install and launch Azurite'
 
-  - task: DotNetCoreCLI@2
-    inputs:
-      command: test
-      projects: 'PaymentStatementIntegrations.Tests/PaymentStatementIntegrations.Tests.csproj'
-      arguments: '--logger "trx;LogFileName=test_results.trx"'
+  - pwsh: |
+      echo 'New path2 = $(PATH)'
+      dotnet test --logger "trx;LogFileName=test_results.trx" PaymentStatementIntegrations.Tests/PaymentStatementIntegrations.Tests.csproj
     displayName: Run unit tests
   
   - task: PublishTestResults@2
