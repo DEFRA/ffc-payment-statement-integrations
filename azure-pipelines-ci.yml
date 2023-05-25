@@ -30,13 +30,14 @@ steps:
     displayName: 'Install and launch Azurite'
 
   - bash: |
-      pwd
       cp /opt/hostedtoolcache/func/4.0.5095/x64/func /opt/hostedtoolcache/func/4.0.5095/x64/func.exe
       chmod 755 /opt/hostedtoolcache/func/4.0.5095/x64/func.exe
-      ls -al /opt/hostedtoolcache/func/4.0.5095/x64
       /opt/hostedtoolcache/func/4.0.5095/x64/func.exe --version
+    displayName: 'Setup func.exe for Linux'
 
   - task: DotNetCoreCLI@2
+    env:
+      PATH: /opt/hostedtoolcache/func/4.0.5095/x64:$(PATH)
     inputs:
       command: test
       projects: 'PaymentStatementIntegrations.Tests/PaymentStatementIntegrations.Tests.csproj'
