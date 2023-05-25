@@ -20,20 +20,14 @@ steps:
     inputs:
       version: 'latest'
 
-  - pwsh: |
-      $NewPathInRegistry = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
-      Write-Host $NewPathInRegistry
-
  # - bash: |
  #     docker-compose -f docker-compose-azurite.yml up -d
 
   - pwsh: |
+      echo 'Current path = $(PATH)'
       echo '##vso[task.setvariable variable=path]C:\hostedtoolcache\windows\func\4.0.5095\x64;$(PATH)'
+    displayName: Set Path
   #Write-Host "##vso[task.prependpath]C:\hostedtoolcache\windows\func\4.0.5095\x64"
-
-  - pwsh: |
-      $NewPathInRegistry = (Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).path
-      Write-Host $NewPathInRegistry
 
   - bash: |
       npm install -g azurite
@@ -46,6 +40,7 @@ steps:
       command: test
       projects: 'PaymentStatementIntegrations.Tests/PaymentStatementIntegrations.Tests.csproj'
       arguments: '--logger "trx;LogFileName=test_results.trx"'
+    displayName: Run unit tests
   
   - task: PublishTestResults@2
     inputs:
