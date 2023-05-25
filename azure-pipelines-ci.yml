@@ -20,14 +20,14 @@ steps:
     inputs:
       version: 'latest'
 
-  - bash: |
-      docker compose -f docker-compose-azurite.yml up -d
-
 #  - bash: |
-#      npm install -g azurite
-#      mkdir azurite
-#      azurite --silent --location azurite --debug azurite\debug.log &
-#    displayName: 'Install and launch Azurite'
+#      docker compose -f docker-compose-azurite.yml up -d
+
+  - bash: |
+      npm install -g azurite
+      mkdir azurite
+      azurite --silent --location azurite --debug azurite\debug.log &
+    displayName: 'Install and launch Azurite'
 
   - bash: |
       pwd
