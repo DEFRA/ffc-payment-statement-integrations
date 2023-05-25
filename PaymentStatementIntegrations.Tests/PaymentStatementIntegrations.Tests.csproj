@@ -14,7 +14,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="LogicAppUnit" Version="1.5.0" />
     <PackageReference Include="MSTest.TestFramework" Version="3.0.2" />
     <PackageReference Include="MSTest.TestAdapter" Version="3.0.2" />
   </ItemGroup>
@@ -32,5 +31,8 @@
 <ItemGroup>
   <Folder Include="CrmInsertTest\" />
   <Folder Include="CrmRetrievalTest\" />
+</ItemGroup>
+<ItemGroup>
+  <ProjectReference Include="..\LogicAppUnit\LogicAppUnit.csproj" />
 </ItemGroup>
 </Project>
