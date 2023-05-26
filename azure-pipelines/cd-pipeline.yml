@@ -70,8 +70,7 @@ stages:
                 ]
 
           - bash: |
-              ls -l .
-              ls -l cipipeline
+              ls -l /home/vsts/work/1/cipipeline
 
           - task: AzureFunctionApp@1
             displayName: 'Deploy logic app workflows'
