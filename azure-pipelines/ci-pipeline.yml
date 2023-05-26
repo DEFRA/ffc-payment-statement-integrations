@@ -34,13 +34,15 @@ steps:
     inputs:
       command: test
       projects: 'PaymentStatementIntegrations.Tests/PaymentStatementIntegrations.Tests.csproj'
-      arguments: '--logger "trx;LogFileName=test_results.trx"'
+      PublishTestResults: false
+      arguments: '--logger trx --results-directory "$(Agent.TempDirectory)"'
     displayName: Run unit tests
   
   - task: PublishTestResults@2
     inputs:
-      testResultsFormat: 'JUnit'
-      testResultsFiles: '**/test_results.trx'
+      testResultsFormat: 'VSUnit'
+      testResultsFiles: '*.trx'
+      searchFolder: '$(Agent.TempDirectory)'
       failTaskOnFailedTests: true
 
   - task: CopyFiles@2
