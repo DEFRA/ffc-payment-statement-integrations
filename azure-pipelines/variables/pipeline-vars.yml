@@ -22,3 +22,5 @@ variables:
 
   # Project artifacts
   logicAppCIArtifactName: 'logicapp-artifact'
+
+  ciPipelineName: 'payment-statement-integrations-ci'
