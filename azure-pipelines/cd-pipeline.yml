@@ -70,6 +70,9 @@ stages:
                 ]
 
           - bash: |
+              echo 'Listing1 ********'
+              ls -l /home/vsts/work/1
+              echo 'Listing2 ********'
               ls -l /home/vsts/work/1/cipipeline
 
           - task: AzureFunctionApp@1
