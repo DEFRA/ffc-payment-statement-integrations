@@ -13,7 +13,6 @@ variables:
 resources:
   pipelines:
   - pipeline: cipipeline
-    # TODO: Update with the name of your CI pipeline
     source: 'payment-statement-integrations-ci'
     trigger:
       branches:
@@ -69,6 +68,10 @@ stages:
                     }
                     
                 ]
+
+          - bash: |
+              ls -l .
+              ls -l cipipeline
 
           - task: AzureFunctionApp@1
             displayName: 'Deploy logic app workflows'
