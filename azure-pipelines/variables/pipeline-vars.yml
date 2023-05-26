@@ -4,8 +4,7 @@ variables:
 
   projectName: 'logicappsample'
   suffix: 'dev'
-  azureSubscription: 'AZD-EST-SND1'
-
+  
   # Resource Group
   resourceGroupLocation: 'UK South'
   resourceGroupName: 'SNDESTLOGICAPPS-RG'
@@ -23,5 +22,3 @@ variables:
 
   # Project artifacts
   logicAppCIArtifactName: 'logicapp-artifact'
-
-  ciPipelineName: 'payment-statement-integrations-ci'
