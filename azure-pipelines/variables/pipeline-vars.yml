@@ -4,6 +4,7 @@ variables:
 
   projectName: 'logicappsample'
   suffix: 'dev'
+  azureSubscription: 'AZD-EST-SND1'
 
   # Resource Group
   resourceGroupLocation: 'UK South'
