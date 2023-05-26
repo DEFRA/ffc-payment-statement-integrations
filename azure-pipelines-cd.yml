@@ -8,7 +8,7 @@ pool:
 
 variables:
   azureSubscription: 'AZD-EST-SND1'
-  logicAppName: 'LOGICAPPSTDDEPLOY01'
+  logicAppName: 'ESTLOGICAPPSTANDARD01'
   resourceGroupName: 'SNDESTLOGICAPPS-RG'
 
 steps:

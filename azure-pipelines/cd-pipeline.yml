@@ -10,9 +10,9 @@ variables:
 
 resources:
   pipelines:
-  - pipeline: cipipeline
+  - pipeline: payment-statement-integrations-ci
     # TODO: Update with the name of your CI pipeline
-    source: 'DEFRA.ffc-payment-statement-integrations'
+    source: 'payment-statement-integrations-ci'
     trigger:
       branches:
       - main
