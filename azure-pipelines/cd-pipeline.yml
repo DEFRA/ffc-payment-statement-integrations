@@ -74,6 +74,8 @@ stages:
               ls -l /home/vsts/work/1
               echo 'Listing2 ********'
               ls -l /home/vsts/work/1/cipipeline
+              echo 'Listing3 ********'
+              ls -l /home/vsts/work/1/cipipeline/logicapp-artifact
 
           - task: AzureFunctionApp@1
             displayName: 'Deploy logic app workflows'

@@ -21,4 +21,4 @@ variables:
   blobConnectionName: 'azureblob'
 
   # Project artifacts
-  logicAppCIArtifactName: 'logicapp_artifact'
+  logicAppCIArtifactName: 'logicapp-artifact'
