@@ -7,12 +7,14 @@ variables:
   value: dev
 - name: azureSubscription
   value: AZD-EST-SND1
+- name: ciPipelineName
+  value: payment-statement-integrations-ci
 
 resources:
   pipelines:
-  - pipeline: payment-statement-integrations-ci
+  - pipeline: cipipeline
     # TODO: Update with the name of your CI pipeline
-    source: 'payment-statement-integrations-ci'
+    source: '$(ciPipelineName)'
     trigger:
       branches:
       - main
@@ -75,5 +77,5 @@ stages:
               azureSubscription: '$(azureSubscription)'
               appType: 'functionApp'
               appName: '$(logicAppName)'
-              package: '$(Pipeline.Workspace)/cipipeline/$(logicAppCIArtifactName)/$(resources.pipeline.cipipeline.runID).zip'
+              package: '$(Pipeline.Workspace)/$(ciPipelineName)/$(logicAppCIArtifactName)/$(resources.pipeline.cipipeline.runID).zip'
               deploymentMethod: 'zipDeploy'
