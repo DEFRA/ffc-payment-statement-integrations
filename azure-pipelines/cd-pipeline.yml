@@ -5,13 +5,11 @@ pr: none
 variables:
 - name: devEnvironment
   value: dev
-- name: azureSubscription
-  value: AZD-EST-SND1
 
 resources:
   pipelines:
   - pipeline: cipipeline
-    source: $(ciPipelineName)
+    source: payment-statement-integrations-ci
     trigger:
       branches:
       - main
