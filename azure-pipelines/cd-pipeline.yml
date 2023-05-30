@@ -3,12 +3,12 @@ trigger: none
 pr: none
 
 variables:
-- name: devEnvironment
-  value: dev
 - name: azureSubscription
   value: AZD-EST-SND1
-- name: ciPipelineName
-  value: payment-statement-integrations-ci
+- name: logicAppName
+  value: LOGICAPPSTANDARD02
+- name: logicAppCIArtifactName
+  value: logicapp-artifact
 
 resources:
   pipelines:
@@ -28,7 +28,7 @@ stages:
     displayName: Deploy Logic App
     pool:
       vmImage: ubuntu-latest
-    environment: $(devEnvironment)
+    environment: dev
     variables:
       deploymentMode: 'Incremental'
     strategy:
@@ -39,42 +39,38 @@ stages:
             displayName: Azure App Service Settings
             inputs:
               azureSubscription: '$(azureSubscription)'
-              appName: '$(logicAppName)'
+              appName: '$(logicAppName)-dev'
               resourceGroupName: '$(resourceGroupName)'
-              
-              # Add the app settings for the connections 
-            
+              # App settings for the connections 
               appSettings: |
                 [
                   {
-                    "name": "serviceBus_connectionString",
-                    "value": "test",
+                    "name": "serviceBusConnectionString",
+                    "value": "$(serviceBusConnectionString-dev)",
                     "slotSetting": false
                     },
                     {
-                    "name": "azureFunctionOperation_functionAppKey",
-                    "value": "test",
+                    "name": "commonDataServiceWrite",
+                    "value": "$(commonDataServiceWrite-dev)",
                     "slotSetting": false
                     },
                     {
-                    "name": "azureFunctionOperation_functionResourceURI",
-                    "value": "test",
+                    "name": "PdfServiceUrl",
+                    "value": "$(PdfServiceUrl-dev)",
                     "slotSetting": false
                     },
                     {
-                    "name": "azureFunctionOperation_functionTriggerURI",
+                    "name": "AuthTokenValidationUrl",
                     "value": "test",
                     "slotSetting": false
                     }
-                    
                 ]
 
           - task: AzureFunctionApp@1
             displayName: 'Deploy logic app workflows'
             inputs:
-              # TODO: Fill in with the name of your Azure service connection
               azureSubscription: '$(azureSubscription)'
               appType: 'functionApp'
-              appName: '$(logicAppName)'
+              appName: '$(logicAppName)-dev'
               package: '$(Pipeline.Workspace)/cipipeline/$(logicAppCIArtifactName)/$(resources.pipeline.cipipeline.runID).zip'
               deploymentMethod: 'zipDeploy'

@@ -7,6 +7,8 @@ variables:
   value: deploy_artifacts
 - name: devEnvironment
   value: dev
+- name: testEnvironment
+  value: test
 
 stages:
 - stage: Builds
@@ -19,7 +21,7 @@ stages:
     - task: CopyFiles@2
       displayName: 'Copy ARM templates'
       inputs:
-        sourceFolder: 'deploy'
+        sourceFolder: 'azure-pipelines/templates'
         targetFolder: '$(Build.ArtifactStagingDirectory)'
     - publish: '$(Build.ArtifactStagingDirectory)'
       artifact: $(artifactName)
@@ -32,5 +34,14 @@ stages:
   - template: templates/template-iac-logicapp.yml
     parameters:
       environment: $(devEnvironment)
-      # TODO: Fill in with the name of your Azure service connection
       serviceConnection: 'AZD-EST-SND1'
+
+- stage: TEST
+  displayName: 'TEST Deployment'
+  variables:
+  - template: variables/pipeline-vars.yml
+  jobs:
+  - template: templates/template-iac-logicapp.yml
+    parameters:
+      environment: $(testEnvironment)
+      serviceConnection: 'AZD-EST-SND1'      
