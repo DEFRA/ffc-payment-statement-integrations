@@ -6,6 +6,10 @@ parameters:
 - name: serviceConnection
   type: string
 
+variables:
+- name: storageNameLower
+  value: $[lower(storageName)]
+
 jobs:
 - deployment: deploy_logicapp_resources
   displayName: Deploy Logic App Resources
@@ -30,10 +34,7 @@ jobs:
             echo 'projectName:$(projectName)'
             echo 'logicAppName:$(logicAppName)'
             echo 'appServicePlanName:$(appServicePlanName)'
-            echo 'storageName:$(storageName)'
-            LOWER_STORAGE_NAME=`echo '$storageName' | tr '[:upper:]' '[:lower:]'`
-            echo 'LowerStorage:$LOWER_STORAGE_NAME'
-            echo "##vso[task.setvariable variable=storageNameLower]$LOWER_STORAGE_NAME"
+            echo 'storageName:$(storageNameLower)'
 
         - task: AzureResourceGroupDeployment@2
           displayName: 'Deploy Logic App'
