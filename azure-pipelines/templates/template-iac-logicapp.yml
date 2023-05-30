@@ -1,9 +1,5 @@
 # IaC Logic App resources deployment template
 
-variables:
-- name: storageNameLower
-  value: $[lower(storageName)]
-
 parameters:
 - name: environment
   type: string
@@ -18,6 +14,7 @@ jobs:
   environment: ${{ parameters.environment }}
   variables:
     deploymentMode: 'Incremental'
+    storageNameLower: $[lower(storageName)]
   strategy:
     runOnce:
       deploy:
