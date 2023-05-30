@@ -16,7 +16,7 @@ jobs:
   environment: ${{ parameters.environment }}
   variables:
     deploymentMode: 'Incremental'
-    storageNameLower: $[lower(parameters.storageName)]
+    storageNameLower: ${{ lower(parameters.storageName) }}
   strategy:
     runOnce:
       deploy:
