@@ -1,14 +1,14 @@
 # IaC Logic App resources deployment template
 
+variables:
+- name: storageNameLower
+  value: $[lower(storageName)]
+
 parameters:
 - name: environment
   type: string
 - name: serviceConnection
   type: string
-
-variables:
-- name: storageNameLower
-  value: $[lower(storageName)]
 
 jobs:
 - deployment: deploy_logicapp_resources
