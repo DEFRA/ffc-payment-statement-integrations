@@ -37,7 +37,7 @@ jobs:
           inputs:
             azureSubscription: ${{ parameters.serviceConnection }}
             resourceGroupName: $(resourceGroupName)
-            location: '$(resourceGroupLocation)'
+            location: $(resourceGroupLocation)
             csmFile: '$(Pipeline.Workspace)/$(artifactName)/logicapp-template.json'
             overrideParameters:
               -location '$(resourceGroupLocation)'
