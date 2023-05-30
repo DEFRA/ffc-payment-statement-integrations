@@ -35,7 +35,6 @@ stages:
     parameters:
       environment: $(devEnvironment)
       serviceConnection: 'AZD-EST-SND1'
-      storageName: $(storageName)
 
 - stage: TEST
   displayName: 'TEST Deployment'
@@ -46,4 +45,3 @@ stages:
     parameters:
       environment: $(testEnvironment)
       serviceConnection: 'AZD-EST-SND1'
-      storageName: $(storageName)
