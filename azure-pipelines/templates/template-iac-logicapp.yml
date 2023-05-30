@@ -31,6 +31,9 @@ jobs:
             echo 'logicAppName:$(logicAppName)'
             echo 'appServicePlanName:$(appServicePlanName)'
             echo 'storageName:$(storageName)'
+            LOWER_STORAGE_NAME=`echo '$storageName' | tr '[:upper:]' '[:lower:]'`
+            echo 'LowerStorage:$LOWER_STORAGE_NAME'
+            echo "##vso[task.setvariable variable=storageNameLower]$LOWER_STORAGE_NAME"
 
         - task: AzureResourceGroupDeployment@2
           displayName: 'Deploy Logic App'
@@ -45,7 +48,7 @@ jobs:
               -projectName $(projectName)
               -logicAppName $(logicAppName)
               -appServicePlanName $(appServicePlanName)
-              -storageName ${{ lower(storageName) }}
+              -storageName $(storageNameLower)
             deploymentMode: $(deploymentMode)
             deploymentOutputs: 'LogicAppArmOutputs'
 
