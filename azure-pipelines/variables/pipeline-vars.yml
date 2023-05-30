@@ -10,5 +10,5 @@ variables:
   appServicePlanName: 'ASP-$(projectName)-2aab'
 
   logicAppName: 'LA-$(projectName)-02'
-  storageName: 'sa-$(projectName)'
+  storageName: 'sa-${lower(projectName)}'
 
