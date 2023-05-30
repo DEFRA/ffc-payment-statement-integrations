@@ -5,6 +5,8 @@ parameters:
   type: string
 - name: serviceConnection
   type: string
+- name: storageName
+  type: string
 
 jobs:
 - deployment: deploy_logicapp_resources
@@ -14,7 +16,7 @@ jobs:
   environment: ${{ parameters.environment }}
   variables:
     deploymentMode: 'Incremental'
-    storageNameLower: $[lower(storageName)]
+    storageNameLower: $[lower(parameters.storageName)]
   strategy:
     runOnce:
       deploy:

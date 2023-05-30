@@ -35,6 +35,7 @@ stages:
     parameters:
       environment: $(devEnvironment)
       serviceConnection: 'AZD-EST-SND1'
+      storageName: $(storageName)
 
 - stage: TEST
   displayName: 'TEST Deployment'
@@ -44,4 +45,5 @@ stages:
   - template: templates/template-iac-logicapp.yml
     parameters:
       environment: $(testEnvironment)
-      serviceConnection: 'AZD-EST-SND1'      
+      serviceConnection: 'AZD-EST-SND1'
+      storageName: $(storageName)
