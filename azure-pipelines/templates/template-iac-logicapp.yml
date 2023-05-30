@@ -14,7 +14,6 @@ jobs:
   environment: ${{ parameters.environment }}
   variables:
     deploymentMode: 'Incremental'
-    storageNameLower: ${{ lower(storageName) }}
   strategy:
     runOnce:
       deploy:
@@ -23,15 +22,10 @@ jobs:
           artifact: $(artifactName)
 
         - bash: |
-            echo 'serviceConnection:${{ parameters.serviceConnection }}'
-            echo 'resourceGroupName:$(resourceGroupName)'
-            echo 'resourceGroupLocation:$(resourceGroupLocation)'
-            echo 'artifactName:$(artifactName)'
-            echo 'environment:${{ parameters.environment }}'
-            echo 'projectName:$(projectName)'
-            echo 'logicAppName:$(logicAppName)'
-            echo 'appServicePlanName:$(appServicePlanName)'
-            echo 'storageNameLower:$(storageNameLower)'
+            echo 'storageName:$(storageName)'
+            echo '$stageName' | tr '[:upper:]' '[:lower:]'
+            echo "##vso[task.setvariable variable=stageNameLower;]`echo '$stageName' | tr '[:upper:]' '[:lower:]'`"
+          displayName: 'Convert Stage Name to lowercase'
 
         - task: AzureResourceGroupDeployment@2
           displayName: 'Deploy Logic App'
