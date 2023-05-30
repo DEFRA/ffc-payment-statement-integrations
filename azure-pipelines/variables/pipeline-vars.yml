@@ -11,5 +11,5 @@ variables:
 
   logicAppName: 'LA-$(projectName)-02'
   
-  storageName: 'sa-$[ lower(projectName) ]'
+  storageName: sa-$[ lower(projectName) ]
 
