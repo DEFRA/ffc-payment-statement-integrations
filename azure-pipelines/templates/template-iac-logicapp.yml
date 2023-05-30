@@ -22,13 +22,8 @@ jobs:
           artifact: $(artifactName)
 
         - bash: |
-            echo 'storageName:$(storageName)'
-            echo '$(storageName)' | tr '[:upper:]' '[:lower:]'
             echo "##vso[task.setvariable variable=storageNameLower;]`echo '$(storageName)' | tr '[:upper:]' '[:lower:]'`"
           displayName: 'Convert Stage Name to lowercase'
-
-        - bash: |
-            echo 'storageNameLower:$(storageNameLower)'
 
         - task: AzureResourceGroupDeployment@2
           displayName: 'Deploy Logic App'
