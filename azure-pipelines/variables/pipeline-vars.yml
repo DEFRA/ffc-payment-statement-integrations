@@ -11,6 +11,6 @@ variables:
 
   logicAppName: 'LA-$(projectName)-02'
   
-  # No spaces or hyphens allowed. Get converted to lowercase in the pipeline
-  storageName: 'sa$(projectName)'
+  # No spaces or hyphens allowed. Gets converted to lowercase in the pipeline
+  storageName: 'sa$(projectName)EST'
 
