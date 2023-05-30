@@ -21,6 +21,17 @@ jobs:
         - download: current
           artifact: $(artifactName)
 
+        - bash: |
+            echo 'serviceConnection:${{ parameters.serviceConnection }}'
+            echo 'resourceGroupName:$(resourceGroupName)'
+            echo 'resourceGroupLocation:$(resourceGroupLocation)'
+            echo 'artifactName:$(artifactName)'
+            echo 'environment:${{ parameters.environment }}'
+            echo 'projectName:$(projectName)'
+            echo 'logicAppName:$(logicAppName)'
+            echo 'appServicePlanName:$(appServicePlanName)'
+            echo 'storageName:$(storageName)'
+
         - task: AzureResourceGroupDeployment@2
           displayName: 'Deploy Logic App'
           inputs:
