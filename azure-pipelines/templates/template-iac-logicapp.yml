@@ -14,6 +14,7 @@ jobs:
   environment: ${{ parameters.environment }}
   variables:
     deploymentMode: 'Incremental'
+    storageNameLower: ${{ lower(storageName) }}
   strategy:
     runOnce:
       deploy:
@@ -30,12 +31,10 @@ jobs:
             echo 'projectName:$(projectName)'
             echo 'logicAppName:$(logicAppName)'
             echo 'appServicePlanName:$(appServicePlanName)'
-            echo 'storageName:$(storageName)'
+            echo 'storageName:$(storageNameLower)'
 
         - task: AzureResourceGroupDeployment@2
           displayName: 'Deploy Logic App'
-          variables:
-            storageNameLower: ${{ lower(storageName) }}
           inputs:
             azureSubscription: ${{ parameters.serviceConnection }}
             resourceGroupName: $(resourceGroupName)
