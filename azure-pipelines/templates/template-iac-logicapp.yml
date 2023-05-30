@@ -23,8 +23,8 @@ jobs:
 
         - bash: |
             echo 'storageName:$(storageName)'
-            echo '$(stageName)' | tr '[:upper:]' '[:lower:]'
-            echo "##vso[task.setvariable variable=stageNameLower;]`echo '$(stageName)' | tr '[:upper:]' '[:lower:]'`"
+            echo '$(storageName)' | tr '[:upper:]' '[:lower:]'
+            echo "##vso[task.setvariable variable=storageNameLower;]`echo '$(storageName)' | tr '[:upper:]' '[:lower:]'`"
           displayName: 'Convert Stage Name to lowercase'
 
         - bash: |
