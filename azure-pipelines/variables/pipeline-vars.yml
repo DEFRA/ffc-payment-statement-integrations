@@ -2,9 +2,13 @@
 
 variables:
 
-  # Resource Group
+  projectName: 'LOGICAPPSTANDARD'
+
   resourceGroupLocation: 'UK South'
   resourceGroupName: 'SNDESTLOGICAPPS-RG'
 
-  appServicePlanName: 'ASP-SNDESTLOGICAPPSRG-8ce5'
+  appServicePlanName: 'ASP-$(projectName)-2aab'
+
+  logicAppName: 'LA-$(projectName)-02'
+  storageName: 'sa-$(projectName)'
 
