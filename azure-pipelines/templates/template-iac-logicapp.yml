@@ -14,7 +14,6 @@ jobs:
   environment: ${{ parameters.environment }}
   variables:
     deploymentMode: 'Incremental'
-    storageNameLower: ${{ lower(storageName) }}
   strategy:
     runOnce:
       deploy:
@@ -31,7 +30,7 @@ jobs:
             echo 'projectName:$(projectName)'
             echo 'logicAppName:$(logicAppName)'
             echo 'appServicePlanName:$(appServicePlanName)'
-            echo 'storageName:$(storageNameLower)'
+            echo 'storageName:$(storageName)'
 
         - task: AzureResourceGroupDeployment@2
           displayName: 'Deploy Logic App'
@@ -46,7 +45,7 @@ jobs:
               -projectName $(projectName)
               -logicAppName $(logicAppName)
               -appServicePlanName $(appServicePlanName)
-              -storageName $(storageNameLower)'
+              -storageName ${{ lower(storageName) }}
             deploymentMode: $(deploymentMode)
             deploymentOutputs: 'LogicAppArmOutputs'
 
