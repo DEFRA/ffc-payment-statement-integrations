@@ -40,7 +40,7 @@ jobs:
             location: $(resourceGroupLocation)
             csmFile: '$(Pipeline.Workspace)/$(artifactName)/logicapp-template.json'
             overrideParameters:
-              -location '$(resourceGroupLocation)'
+              -location $(resourceGroupLocation)
               -environmentName ${{ parameters.environment }}
               -projectName $(projectName)
               -logicAppName $(logicAppName)
