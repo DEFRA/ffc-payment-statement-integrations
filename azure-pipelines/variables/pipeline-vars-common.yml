@@ -1,0 +1,8 @@
+# IaC variables
+
+variables:
+
+  # Use lowercase, with no hyphens or spaces
+  projectName: 'logicappstandard'
+
+  artifactName: 'deploy_artifacts'

@@ -3,8 +3,6 @@
 parameters:
 - name: environment
   type: string
-- name: serviceConnection
-  type: string
 
 jobs:
 - deployment: deploy_logicapp_resources
@@ -21,18 +19,10 @@ jobs:
         - download: current
           artifact: $(artifactName)
 
-        - bash: |
-            echo 'location:$(resourceGroupLocation)'
-            echo 'environmentName:${{ parameters.environment }}'
-            echo 'projectName:$(projectName)'
-            echo 'logicAppName:$(logicAppName)'
-            echo 'appServicePlanName:$(appServicePlanName)'
-            echo 'storageName:$(storageName)'
-
         - task: AzureResourceGroupDeployment@2
           displayName: 'Deploy Logic App'
           inputs:
-            azureSubscription: ${{ parameters.serviceConnection }}
+            azureSubscription: $(serviceConnection)
             resourceGroupName: $(resourceGroupName)
             location: $(resourceGroupLocation)
             csmFile: '$(Pipeline.Workspace)/$(artifactName)/logicapp-template.json'
@@ -50,14 +40,14 @@ jobs:
 #          displayName: 'ARM Outputs'
 #          inputs:
 #            ConnectedServiceNameSelector: 'ConnectedServiceNameARM'
-#            ConnectedServiceNameARM: ${{ parameters.serviceConnection }}
+#            ConnectedServiceNameARM: $(serviceConnection)
 #            resourceGroupName: $(resourceGroupName)
 #            whenLastDeploymentIsFailed: 'fail'
 
 #        - task: AzureResourceGroupDeployment@2
 #          displayName: 'Deploy Connectors'
 #          inputs:
-#            azureSubscription: ${{ parameters.serviceConnection }}
+#            azureSubscription: $(serviceConnection)
 #            resourceGroupName: $(resourceGroupName)
 #            location: $(resourceGroupLocation)
 #            csmFile: '$(Pipeline.Workspace)/$(artifactName)/connectors-template.json'
@@ -72,13 +62,13 @@ jobs:
 #          displayName: 'ARM Outputs Connections'
 #          inputs:
 #            ConnectedServiceNameSelector: 'ConnectedServiceNameARM'
-#            ConnectedServiceNameARM: ${{ parameters.serviceConnection }}
+#            ConnectedServiceNameARM: $(serviceConnection)
 #            resourceGroupName: $(resourceGroupName)
 #            whenLastDeploymentIsFailed: 'fail'
 
 #        - task: AzureCLI@2
 #          inputs:
-#            azureSubscription: ${{ parameters.serviceConnection }}
+#            azureSubscription: $(serviceConnection)
 #            scriptType: 'bash'
 #            scriptLocation: 'inlineScript'
 #            inlineScript: |

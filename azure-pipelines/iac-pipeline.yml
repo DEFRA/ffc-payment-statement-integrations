@@ -3,15 +3,10 @@ trigger: none
 pr: none
 
 variables:
-- name: artifactName
-  value: deploy_artifacts
-- name: devEnvironment
-  value: dev
-- name: testEnvironment
-  value: test
+- template: variables/pipeline-vars-common.yml
 
 stages:
-- stage: Builds
+- stage: Build
   displayName: 'Publish IaC Artifacts'
   jobs:
   - job: Build
@@ -29,19 +24,17 @@ stages:
 - stage: DEV
   displayName: 'DEV Deployment'
   variables:
-  - template: variables/pipeline-vars.yml
+  - template: variables/pipeline-vars-dev.yml
   jobs:
   - template: templates/template-iac-logicapp.yml
     parameters:
-      environment: $(devEnvironment)
-      serviceConnection: 'AZD-EST-SND1'
+      environment: 'dev'
 
 - stage: TEST
   displayName: 'TEST Deployment'
   variables:
-  - template: variables/pipeline-vars.yml
+  - template: variables/pipeline-vars-test.yml
   jobs:
   - template: templates/template-iac-logicapp.yml
     parameters:
-      environment: $(testEnvironment)
-      serviceConnection: 'AZD-EST-SND1'
+      environment: 'test'
