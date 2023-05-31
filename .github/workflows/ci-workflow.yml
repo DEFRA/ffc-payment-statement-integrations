@@ -8,8 +8,12 @@ on:
 #   branches:
 #     - main
 
+env:
+  tests-project-name: 'PaymentStatementIntegrations.Tests/PaymentStatementIntegrations.Tests.csproj'
+  project-folder: 'PaymentStatementIntegrations'
+
 jobs:
-  validate-and-deploy:
+  build-and-test:
    runs-on: ubuntu-latest
    
    steps:
@@ -18,3 +22,52 @@ jobs:
     - name: Check out files
       uses: actions/checkout@v3
 
+    - name: Setup .NET Core SDK
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '6.0.x'
+
+    - name: Install dependencies
+      run: dotnet restore ${{ env.tests-project-name }}
+
+    - name: Build Tests
+      run: dotnet build ${{ env.tests-project-name }} --no-restore
+
+    - name: set up node
+      uses: actions/setup-node@v1
+      with:
+          node-version: '14.x'
+
+    - name: Install and run azurite
+      run: |
+        npm install -g azurite
+        mkdir azurite
+        azurite --silent --location azurite --debug azurite\debug.log &
+
+    - name: Install Azure Function Core Tools
+      run: |
+        npm i -g azure-functions-core-tools@4 --unsafe-perm true
+
+    - name: Run Tests
+      run: dotnet test ${{ env.tests-project-name }} --no-restore --logger "trx;LogFileName=test-results.trx"
+
+    - name: Test Report
+      uses: dorny/test-reporter@v1
+      if: always()
+      with:
+        name: Test Results
+        path: "**/test-results.trx"                            
+        reporter: dotnet-trx
+        fail-on-error: true      
+
+    - name: Zip Files
+      uses: vimtor/action-zip@v1
+      with:
+        dest: ${{ github.run_id }}.zip
+        files: ./${{ env.project-folder}}
+
+    - name: Publish artifact
+      uses: actions/upload-artifact@master
+      with:
+        name: build-artifact
+        path: ${{ github.run_id }}.zip
