@@ -29,7 +29,7 @@ stages:
   - template: templates/template-iac-logicapp.yml
     parameters:
       environment: 'dev'
-      serviceConnection: ${{ variables.serviceConnection }}
+      serviceConnection: 'AZD-EST-SND1'
 
 - stage: TEST
   displayName: 'TEST Deployment'
@@ -39,4 +39,5 @@ stages:
   - template: templates/template-iac-logicapp.yml
     parameters:
       environment: 'test'
-      serviceConnection: ${{ variables.serviceConnection }}
+      serviceConnection: 'AZD-EST-SND1'
+#      ${{ variables.serviceConnection }}
