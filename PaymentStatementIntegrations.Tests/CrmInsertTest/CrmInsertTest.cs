@@ -75,14 +75,19 @@ namespace PaymentStatementIntegrations.Tests.CrmInsertTest
 
         private static StringContent GetServiceBusMessage()
         {
-            return ContentHelper.CreateJsonStringContent(new
-            {
-                sbi = 12345678,
-                frn = 123456789,
-                apiLink = "https://myStatementRetrievalApiEndpoint/statement-receiver/statement/v1/FFC_PaymentStatement_SFI_2022_1234567890_2022090615023001.pdf",
-                documentType = "Payment statement",
-                scheme = "SFI"
-            });
+            return ContentHelper.CreateJsonStringContent(
+                "{" +
+                    "\"body\": [{ " +
+                        "\"contentData\": { " +
+                            "\"sbi\": 12345678, " +
+                            "\"frn\": 123456789, " +
+                            "\"apiLink\": \"https://myStatementRetrievalApiEndpoint/statement-receiver/statement/v1/FFC_PaymentStatement_SFI_2022_1234567890_2022090615023001.pdf\", " +
+                            "\"documentType\": \"Payment statement\", " + 
+                            "\"scheme\": \"SFI\" " +
+                        "}" +
+                    "}]" +
+                "}"
+            );
         }
     }
 }
