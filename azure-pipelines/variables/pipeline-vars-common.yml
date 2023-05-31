@@ -3,6 +3,6 @@
 variables:
 
   # Use lowercase, with no hyphens or spaces
-  projectName: 'logicappstandard'
+  projectName: 'logicappstd'
 
   artifactName: 'deploy_artifacts'
