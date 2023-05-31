@@ -28,8 +28,8 @@ stages:
   jobs:
   - template: templates/template-iac-logicapp.yml
     parameters:
-      environment: 'dev'
-      serviceConnection: 'AZD-EST-SND1'
+      environment: ${{ variables.envShortName }}
+      serviceConnection: ${{ variables.serviceConnection }}
 
 - stage: TEST
   displayName: 'TEST Deployment'
@@ -38,6 +38,5 @@ stages:
   jobs:
   - template: templates/template-iac-logicapp.yml
     parameters:
-      environment: 'test'
-      serviceConnection: 'AZD-EST-SND1'
-#      ${{ variables.serviceConnection }}
+      environment: ${{ variables.envShortName }}
+      serviceConnection: ${{ variables.serviceConnection }}
