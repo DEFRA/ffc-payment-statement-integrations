@@ -31,13 +31,13 @@ stages:
       environment: 'dev'
       serviceConnection: 'AZD-EST-SND1'
 
-#- stage: TEST
-#  displayName: 'TEST Deployment'
-#  variables:
-#  - template: variables/pipeline-vars-test.yml
-#  jobs:
-#  - template: templates/template-iac-logicapp.yml
-#    parameters:
-#      environment: 'test'
-#      serviceConnection: 'AZD-EST-SND1'
+- stage: TEST
+  displayName: 'TEST Deployment'
+  variables:
+  - template: variables/pipeline-vars-test.yml
+  jobs:
+  - template: templates/template-iac-logicapp.yml
+    parameters:
+      environment: 'test'
+      serviceConnection: 'AZD-EST-SND1'
 #      ${{ variables.serviceConnection }}
