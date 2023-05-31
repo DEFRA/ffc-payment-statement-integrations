@@ -1,3 +1,7 @@
+# Azure pipeline to deploy a Logic App's (Standard) structure to one or more environments
+# This pipeline deploys the structure (including service plan, storage account and connections).
+# The Logic App workflows are deployed separately using the cd-pipeline.yml pipeline.
+
 trigger: none
 
 pr: none

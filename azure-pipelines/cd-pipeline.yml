@@ -1,14 +1,11 @@
+# Azure pipeline to deploy a Logic App (Standard) to one or more environments
+# This pipeline deploys the workflows which sit under the Logic App structure.
+# The Logic App structure (including service plan, storage account and connections)
+# is deployed separately using the iac-pipeline.yml pipeline.
+
 trigger: none
 
 pr: none
-
-variables:
-- name: azureSubscription
-  value: AZD-EST-SND1
-- name: logicAppName
-  value: LOGICAPPSTANDARD02
-- name: logicAppCIArtifactName
-  value: logicapp-artifact
 
 resources:
   pipelines:
@@ -22,7 +19,7 @@ stages:
 - stage: DEV
   displayName: 'DEV Deployment'
   variables:
-  - template: variables/pipeline-vars.yml
+  - template: variables/pipeline-vars-dev.yml
   jobs:
   - deployment: deploy_logicapp_resources
     displayName: Deploy Logic App
@@ -38,8 +35,8 @@ stages:
           - task: AzureAppServiceSettings@1
             displayName: Azure App Service Settings
             inputs:
-              azureSubscription: '$(azureSubscription)'
-              appName: '$(logicAppName)-dev'
+              azureSubscription: '$(serviceConnection)'
+              appName: '$(logicAppName)'
               resourceGroupName: '$(resourceGroupName)'
               # App settings for the connections 
               appSettings: |
@@ -69,8 +66,8 @@ stages:
           - task: AzureFunctionApp@1
             displayName: 'Deploy logic app workflows'
             inputs:
-              azureSubscription: '$(azureSubscription)'
+              azureSubscription: '$(serviceConnection)'
               appType: 'functionApp'
-              appName: '$(logicAppName)-dev'
+              appName: '$(logicAppName)'
               package: '$(Pipeline.Workspace)/cipipeline/$(logicAppCIArtifactName)/$(resources.pipeline.cipipeline.runID).zip'
               deploymentMethod: 'zipDeploy'
