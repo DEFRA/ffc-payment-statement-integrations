@@ -22,7 +22,7 @@ jobs:
         - task: AzureResourceGroupDeployment@2
           displayName: 'Deploy Logic App'
           inputs:
-            azureSubscription: ${{ serviceConnection }}
+            azureSubscription: ${{ variables.serviceConnection }}
             resourceGroupName: $(resourceGroupName)
             location: $(resourceGroupLocation)
             csmFile: '$(Pipeline.Workspace)/$(artifactName)/logicapp-template.json'
