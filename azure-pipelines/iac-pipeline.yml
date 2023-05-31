@@ -1,15 +1,16 @@
+# Azure pipeline to deploy a Logic App's (Standard) structure to one or more environments
+# This pipeline deploys the structure (including service plan, storage account and connections).
+# The Logic App workflows are deployed separately using the cd-pipeline.yml pipeline.
+
 trigger: none
 
 pr: none
 
 variables:
-- name: artifactName
-  value: deploy_artifacts
-- name: devEnvironment
-  value: dev
+- template: variables/pipeline-vars-common.yml
 
 stages:
-- stage: Builds
+- stage: Build
   displayName: 'Publish IaC Artifacts'
   jobs:
   - job: Build
@@ -19,7 +20,7 @@ stages:
     - task: CopyFiles@2
       displayName: 'Copy ARM templates'
       inputs:
-        sourceFolder: 'deploy'
+        sourceFolder: 'azure-pipelines/templates'
         targetFolder: '$(Build.ArtifactStagingDirectory)'
     - publish: '$(Build.ArtifactStagingDirectory)'
       artifact: $(artifactName)
@@ -27,10 +28,19 @@ stages:
 - stage: DEV
   displayName: 'DEV Deployment'
   variables:
-  - template: variables/pipeline-vars.yml
+  - template: variables/pipeline-vars-dev.yml
   jobs:
   - template: templates/template-iac-logicapp.yml
     parameters:
-      environment: $(devEnvironment)
-      # TODO: Fill in with the name of your Azure service connection
-      serviceConnection: 'AZD-EST-SND1'
+      environment: ${{ variables.envShortName }}
+      serviceConnection: ${{ variables.serviceConnection }}
+
+- stage: TEST
+  displayName: 'TEST Deployment'
+  variables:
+  - template: variables/pipeline-vars-test.yml
+  jobs:
+  - template: templates/template-iac-logicapp.yml
+    parameters:
+      environment: ${{ variables.envShortName }}
+      serviceConnection: ${{ variables.serviceConnection }}

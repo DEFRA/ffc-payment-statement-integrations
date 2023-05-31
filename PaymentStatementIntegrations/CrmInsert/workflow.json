@@ -2,51 +2,43 @@
     "definition": {
         "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
         "actions": {
-            "Ok_Response": {
-                "type": "Response",
-                "kind": "Http",
-                "inputs": {
-                    "statusCode": 200,
-                    "body": "Success"
+            "For_each": {
+                "actions": {
+                    "Add_a_row_to_CRM": {
+                        "inputs": {
+                            "body": {
+                                "isdocument": false,
+                                "notetext": "Demo Description @{item()['contentData']['apiLink']}",
+                                "subject": "Demo Title"
+                            },
+                            "headers": {
+                                "organization": "https://Prohibited.crm4.dynamics.com",
+                                "prefer": "return=representation,odata.include-annotations=*"
+                            },
+                            "host": {
+                                "connection": {
+                                    "referenceName": "commondataservicewrite"
+                                }
+                            },
+                            "method": "post",
+                            "path": "/api/data/v9.1/@{encodeURIComponent(encodeURIComponent('annotations'))}"
+                        },
+                        "type": "ApiConnection"
+                    }
                 },
-                "runAfter": {
-                    "Add_a_row_to_CRM": [
-                        "SUCCEEDED"
-                    ]
-                }
-            },
-            "Add_a_row_to_CRM": {
-                "type": "ApiConnection",
-                "inputs": {
-                    "host": {
-                        "connection": {
-                            "referenceName": "commondataservice"
-                        }
-                    },
-                    "method": "post",
-                    "body": {
-                        "subject": "Demo Title",
-                        "notetext": "Demo description: @{triggerBody()}",
-                        "isdocument": false
-                    },
-                    "headers": {
-                        "prefer": "return=representation,odata.include-annotations=*",
-                        "organization": "https://Prohibited.crm4.dynamics.com"
-                    },
-                    "path": "/api/data/v9.1/@{encodeURIComponent(encodeURIComponent('annotations'))}"
-                },
-                "runAfter": {}
+                "foreach": "@triggerOutputs()?['body']",
+                "runAfter": {},
+                "type": "foreach"
             }
         },
         "contentVersion": "1.0.0.0",
         "outputs": {},
         "triggers": {
             "When_messages_are_available_in_a_queue": {
-                "type": "ServiceProvider",
                 "inputs": {
                     "parameters": {
-                        "queueName": "DemoQueue",
-                        "isSessionsEnabled": false
+                        "isSessionsEnabled": false,
+                        "queueName": "paymentgeneratorqueue"
                     },
                     "serviceProviderConfiguration": {
                         "connectionName": "serviceBus",
@@ -54,9 +46,9 @@
                         "serviceProviderId": "/serviceProviders/serviceBus"
                     }
                 },
-                "splitOn": "@triggerOutputs()?['body']"
+                "type": "ServiceProvider"
             }
         }
     },
-    "kind": "Stateless"
+    "kind": "Stateful"
 }
