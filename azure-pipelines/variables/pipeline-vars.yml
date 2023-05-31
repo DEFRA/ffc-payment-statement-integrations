@@ -5,7 +5,7 @@ variables:
   projectName: 'LOGICAPPSTANDARD'
 
   resourceGroupLocation: 'uksouth'
-  resourceGroupName: 'SNDESTLOGICAPPS-RG'
+  resourceGroupName: 'ESTLOGICAPPS-RG2'
 
   appServicePlanName: 'ASP-$(projectName)-2aab'
 
