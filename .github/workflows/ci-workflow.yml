@@ -9,7 +9,8 @@ on:
 #     - main
 
 env:
-  project-name: 'PaymentStatementIntegrations.Tests/PaymentStatementIntegrations.Tests.csproj'
+  tests-project-name: 'PaymentStatementIntegrations.Tests/PaymentStatementIntegrations.Tests.csproj'
+  project-folder: 'PaymentStatementIntegrations'
 
 jobs:
   build-and-test:
@@ -27,10 +28,10 @@ jobs:
         dotnet-version: '6.0.x'
 
     - name: Install dependencies
-      run: dotnet restore ${{ env.project-name }}
+      run: dotnet restore ${{ env.tests-project-name }}
 
     - name: Build Tests
-      run: dotnet build ${{ env.project-name }} --no-restore
+      run: dotnet build ${{ env.tests-project-name }} --no-restore
 
     - name: set up node
       uses: actions/setup-node@v1
@@ -48,7 +49,7 @@ jobs:
         npm i -g azure-functions-core-tools@4 --unsafe-perm true
 
     - name: Run Tests
-      run: dotnet test ${{ env.project-name }} --no-restore --logger "trx;LogFileName=test-results.trx"
+      run: dotnet test ${{ env.tests-project-name }} --no-restore --logger "trx;LogFileName=test-results.trx"
 
     - name: Test Report
       uses: dorny/test-reporter@v1
@@ -58,3 +59,14 @@ jobs:
         path: "**/test-results.trx"                            
         reporter: dotnet-trx
         fail-on-error: true      
+
+    - name: Zip Files
+      uses: vimtor/action-zip@v1
+      with:
+        dest: ${{ github.run_id }}.zip
+        files: ./${{ env.project-folder}}
+
+    - uses: actions/upload-artifact@master
+      with:
+        name: build-artifact
+        path: ${{ github.run_id }}.zip
