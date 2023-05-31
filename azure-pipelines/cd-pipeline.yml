@@ -29,7 +29,7 @@ stages:
       environment: ${{ variables.envShortName }}
       serviceConnection: ${{ variables.serviceConnection }}
       runId: $(resources.pipeline.cipipeline.runID)
-      settingsFile: './settings-dev.json' 
+      settingsFile: 'settings-dev.json' 
 
 - stage: TEST
   displayName: 'TEST Deployment'
@@ -41,4 +41,4 @@ stages:
       environment: ${{ variables.envShortName }}
       serviceConnection: ${{ variables.serviceConnection }}
       runId: $(resources.pipeline.cipipeline.runID)
-      settingsFile: './settings-test.json' 
+      settingsFile: 'settings-test.json' 
