@@ -1,0 +1,22 @@
+[
+  {
+    "name": "serviceBusConnectionString",
+    "value": "@Microsoft.KeyVault(VaultName=SNDESTGENERALKV;SecretName=ServiceBusConnStringDev)",
+    "slotSetting": false
+    },
+    {
+    "name": "commonDataServiceWrite",
+    "value": "@Microsoft.KeyVault(VaultName=SNDESTGENERALKV;SecretName=CommonDataServiceConnStringDev)",
+    "slotSetting": false
+    },
+    {
+    "name": "PdfServiceUrl",
+    "value": "pdfserviceurl-dev",
+    "slotSetting": false
+    },
+    {
+    "name": "AuthTokenValidationUrl",
+    "value": "authtokenurl-dev",
+    "slotSetting": false
+    }
+]

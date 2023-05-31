@@ -29,6 +29,7 @@ stages:
       environment: ${{ variables.envShortName }}
       serviceConnection: ${{ variables.serviceConnection }}
       runId: $(resources.pipeline.cipipeline.runID)
+      settingsFile: '../PaymentStatementIntegrations/settings-dev.json' 
 
 - stage: TEST
   displayName: 'TEST Deployment'
@@ -40,3 +41,4 @@ stages:
       environment: ${{ variables.envShortName }}
       serviceConnection: ${{ variables.serviceConnection }}
       runId: $(resources.pipeline.cipipeline.runID)
+      settingsFile: '../PaymentStatementIntegrations/settings-test.json' 

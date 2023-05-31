@@ -34,9 +34,9 @@ jobs:
       run: dotnet build ${{ env.tests-project-name }} --no-restore
 
     - name: set up node
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v3
       with:
-          node-version: '14.x'
+          node-version: '16.x'
 
     - name: Install and run azurite
       run: |
