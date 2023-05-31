@@ -2,7 +2,7 @@
 
 variables:
 
-  # Use lowercase
+  # Use lowercase, with no hyphens or spaces
   projectName: 'logicappstandard'
 
   resourceGroupLocation: 'uksouth'
