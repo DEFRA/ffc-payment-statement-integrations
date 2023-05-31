@@ -3,50 +3,82 @@
         "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
         "actions": {
             "For_each": {
+                "type": "foreach",
+                "foreach": "@variables('ConvertToArray')",
                 "actions": {
                     "Add_a_row_to_CRM": {
+                        "type": "ApiConnection",
                         "inputs": {
-                            "body": {
-                                "isdocument": false,
-                                "notetext": "Demo Description @{item()['contentData']['apiLink']}",
-                                "subject": "Demo Title"
-                            },
-                            "headers": {
-                                "organization": "https://Prohibited.crm4.dynamics.com",
-                                "prefer": "return=representation,odata.include-annotations=*"
-                            },
                             "host": {
                                 "connection": {
                                     "referenceName": "commondataservicewrite"
                                 }
                             },
                             "method": "post",
+                            "body": {
+                                "subject": "Demo Title",
+                                "notetext": "Demo Description @{item()['contentData']['apiLink']}",
+                                "isdocument": false
+                            },
+                            "headers": {
+                                "prefer": "return=representation,odata.include-annotations=*",
+                                "organization": "https://Prohibited.crm4.dynamics.com"
+                            },
                             "path": "/api/data/v9.1/@{encodeURIComponent(encodeURIComponent('annotations'))}"
-                        },
-                        "type": "ApiConnection"
+                        }
                     }
                 },
-                "foreach": "@triggerOutputs()?['body']",
-                "runAfter": {},
-                "type": "foreach"
+                "runAfter": {
+                    "Initialize_variable": [
+                        "SUCCEEDED"
+                    ]
+                }
+            },
+            "Compose": {
+                "type": "Compose",
+                "inputs": "@triggerBody()?['body']",
+                "runAfter": {}
+            },
+            "Initialize_variable": {
+                "type": "InitializeVariable",
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "ConvertToArray",
+                            "type": "array",
+                            "value": "@outputs('Compose')"
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Compose": [
+                        "SUCCEEDED"
+                    ]
+                }
+            },
+            "Response": {
+                "type": "Response",
+                "kind": "Http",
+                "inputs": {
+                    "statusCode": 200,
+                    "body": "Success"
+                },
+                "runAfter": {
+                    "For_each": [
+                        "SUCCEEDED"
+                    ]
+                }
             }
         },
         "contentVersion": "1.0.0.0",
         "outputs": {},
         "triggers": {
             "When_messages_are_available_in_a_queue": {
+                "type": "ServiceProvider",
                 "inputs": {
-                    "parameters": {
-                        "isSessionsEnabled": false,
-                        "queueName": "paymentgeneratorqueue"
-                    },
-                    "serviceProviderConfiguration": {
-                        "connectionName": "serviceBus",
-                        "operationId": "receiveQueueMessages",
-                        "serviceProviderId": "/serviceProviders/serviceBus"
-                    }
-                },
-                "type": "ServiceProvider"
+                    "queueName": "paymentgeneratorqueue",
+                    "isSessionsEnabled": false
+                }
             }
         }
     },

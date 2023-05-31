@@ -12,7 +12,7 @@ env:
   project-name: 'PaymentStatementIntegrations.Tests/PaymentStatementIntegrations.Tests.csproj'
 
 jobs:
-  validate-and-deploy:
+  build-and-test:
    runs-on: ubuntu-latest
    
    steps:
