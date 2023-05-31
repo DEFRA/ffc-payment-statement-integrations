@@ -3,6 +3,8 @@
 parameters:
 - name: environment
   type: string
+- name: serviceConnection
+  type: string
 
 jobs:
 - deployment: deploy_logicapp_resources
@@ -22,7 +24,7 @@ jobs:
         - task: AzureResourceGroupDeployment@2
           displayName: 'Deploy Logic App'
           inputs:
-            azureSubscription: ${{ variables.serviceConnection }}
+            azureSubscription: ${{ parameters.serviceConnection }}
             resourceGroupName: $(resourceGroupName)
             location: $(resourceGroupLocation)
             csmFile: '$(Pipeline.Workspace)/$(artifactName)/logicapp-template.json'
@@ -40,14 +42,14 @@ jobs:
 #          displayName: 'ARM Outputs'
 #          inputs:
 #            ConnectedServiceNameSelector: 'ConnectedServiceNameARM'
-#            ConnectedServiceNameARM: $(serviceConnection)
+#            ConnectedServiceNameARM: ${{ parameters.serviceConnection }}
 #            resourceGroupName: $(resourceGroupName)
 #            whenLastDeploymentIsFailed: 'fail'
 
 #        - task: AzureResourceGroupDeployment@2
 #          displayName: 'Deploy Connectors'
 #          inputs:
-#            azureSubscription: $(serviceConnection)
+#            azureSubscription: ${{ parameters.serviceConnection }}
 #            resourceGroupName: $(resourceGroupName)
 #            location: $(resourceGroupLocation)
 #            csmFile: '$(Pipeline.Workspace)/$(artifactName)/connectors-template.json'
@@ -62,13 +64,13 @@ jobs:
 #          displayName: 'ARM Outputs Connections'
 #          inputs:
 #            ConnectedServiceNameSelector: 'ConnectedServiceNameARM'
-#            ConnectedServiceNameARM: $(serviceConnection)
+#            ConnectedServiceNameARM: ${{ parameters.serviceConnection }}
 #            resourceGroupName: $(resourceGroupName)
 #            whenLastDeploymentIsFailed: 'fail'
 
 #        - task: AzureCLI@2
 #          inputs:
-#            azureSubscription: $(serviceConnection)
+#            azureSubscription: ${{ parameters.serviceConnection }}
 #            scriptType: 'bash'
 #            scriptLocation: 'inlineScript'
 #            inlineScript: |
