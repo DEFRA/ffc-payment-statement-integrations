@@ -23,6 +23,7 @@ stages:
   jobs:
   - template: templates/template-cd-logicapp.yml
     parameters:
-      environment: ${{ variables.envShortName }}
+      environment: dev
       serviceConnection: ${{ variables.serviceConnection }}
       runId: $(resources.pipeline.cipipeline.runID)
+#${{ variables.envShortName }}
