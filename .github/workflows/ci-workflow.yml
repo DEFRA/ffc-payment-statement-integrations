@@ -66,7 +66,8 @@ jobs:
         dest: ${{ github.run_id }}.zip
         files: ./${{ env.project-folder}}
 
-    - uses: actions/upload-artifact@master
+    - name: Publish artifact
+      uses: actions/upload-artifact@master
       with:
         name: build-artifact
         path: ${{ github.run_id }}.zip
