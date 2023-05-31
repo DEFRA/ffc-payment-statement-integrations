@@ -29,3 +29,14 @@ stages:
       environment: ${{ variables.envShortName }}
       serviceConnection: ${{ variables.serviceConnection }}
       runId: $(resources.pipeline.cipipeline.runID)
+
+- stage: TEST
+  displayName: 'TEST Deployment'
+  variables:
+  - template: variables/pipeline-vars-test.yml
+  jobs:
+  - template: templates/template-cd-logicapp.yml
+    parameters:
+      environment: ${{ variables.envShortName }}
+      serviceConnection: ${{ variables.serviceConnection }}
+      runId: $(resources.pipeline.cipipeline.runID)
