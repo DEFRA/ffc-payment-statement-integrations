@@ -13,7 +13,7 @@ jobs:
     displayName: Deploy Logic App
     pool:
       vmImage: ubuntu-latest
-    environment: $(envShortName)
+    environment: ${{ parameters.environment }}
     variables:
       deploymentMode: 'Incremental'
     strategy:
