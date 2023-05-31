@@ -1,0 +1,18 @@
+# IaC variables
+
+variables:
+
+  envShortName: 'test'
+
+  logicAppName: 'la-$(projectName)-$(envShortName)'
+ 
+  resourceGroupLocation: 'uksouth'
+  resourceGroupName: 'ESTLOGICAPPS-RG2-$(envShortName)'
+
+  serviceConnection: 'AZD-EST-SND1'
+
+  appServicePlanName: 'asp-$(projectName)-$(envShortName)'
+
+   # MUST BE LOWERCASE. No spaces or hyphens allowed
+  storageName: 'sa$(projectName)$(envShortName)'
+

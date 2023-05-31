@@ -1,0 +1,61 @@
+# Logic App workflows deployment template
+
+parameters:
+- name: environment
+  type: string
+- name: serviceConnection
+  type: string
+- name: runId
+  type: string
+
+jobs:
+  - deployment: deploy_logicapp_resources
+    displayName: Deploy Logic App
+    pool:
+      vmImage: ubuntu-latest
+    environment: ${{ parameters.environment }}
+    variables:
+      deploymentMode: 'Incremental'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureAppServiceSettings@1
+            displayName: Azure App Service Settings
+            inputs:
+              azureSubscription: ${{ parameters.serviceConnection}}
+              appName: $(logicAppName)
+              resourceGroupName: $(resourceGroupName)
+              # App settings for the connections 
+              appSettings: |
+                [
+                  {
+                    "name": "serviceBusConnectionString",
+                    "value": "$(serviceBusConnectionString-dev)",
+                    "slotSetting": false
+                    },
+                    {
+                    "name": "commonDataServiceWrite",
+                    "value": "$(commonDataServiceWrite-dev)",
+                    "slotSetting": false
+                    },
+                    {
+                    "name": "PdfServiceUrl",
+                    "value": "$(PdfServiceUrl-dev)",
+                    "slotSetting": false
+                    },
+                    {
+                    "name": "AuthTokenValidationUrl",
+                    "value": "test",
+                    "slotSetting": false
+                    }
+                ]
+
+          - task: AzureFunctionApp@1
+            displayName: 'Deploy logic app workflows'
+            inputs:
+              azureSubscription: ${{ parameters.serviceConnection }}
+              appType: 'functionApp'
+              appName: $(logicAppName)
+              package: '$(Pipeline.Workspace)/cipipeline/logicapp-artifact/${{ parameters.runID }}.zip'
+              deploymentMethod: 'zipDeploy'

@@ -1,14 +1,14 @@
+# Azure pipeline to deploy a Logic App (Standard) to one or more environments
+# This pipeline deploys the workflows which sit under the Logic App structure.
+# The Logic App structure (including service plan, storage account and connections)
+# is deployed separately using the iac-pipeline.yml pipeline.
+
 trigger: none
 
 pr: none
 
 variables:
-- name: devEnvironment
-  value: dev
-- name: azureSubscription
-  value: AZD-EST-SND1
-- name: ciPipelineName
-  value: payment-statement-integrations-ci
+- template: variables/pipeline-vars-common.yml
 
 resources:
   pipelines:
@@ -22,59 +22,21 @@ stages:
 - stage: DEV
   displayName: 'DEV Deployment'
   variables:
-  - template: variables/pipeline-vars.yml
+  - template: variables/pipeline-vars-dev.yml
   jobs:
-  - deployment: deploy_logicapp_resources
-    displayName: Deploy Logic App
-    pool:
-      vmImage: ubuntu-latest
-    environment: $(devEnvironment)
-    variables:
-      deploymentMode: 'Incremental'
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - task: AzureAppServiceSettings@1
-            displayName: Azure App Service Settings
-            inputs:
-              azureSubscription: '$(azureSubscription)'
-              appName: '$(logicAppName)'
-              resourceGroupName: '$(resourceGroupName)'
-              
-              # Add the app settings for the connections 
-            
-              appSettings: |
-                [
-                  {
-                    "name": "serviceBus_connectionString",
-                    "value": "test",
-                    "slotSetting": false
-                    },
-                    {
-                    "name": "azureFunctionOperation_functionAppKey",
-                    "value": "test",
-                    "slotSetting": false
-                    },
-                    {
-                    "name": "azureFunctionOperation_functionResourceURI",
-                    "value": "test",
-                    "slotSetting": false
-                    },
-                    {
-                    "name": "azureFunctionOperation_functionTriggerURI",
-                    "value": "test",
-                    "slotSetting": false
-                    }
-                    
-                ]
+  - template: templates/template-cd-logicapp.yml
+    parameters:
+      environment: ${{ variables.envShortName }}
+      serviceConnection: ${{ variables.serviceConnection }}
+      runId: $(resources.pipeline.cipipeline.runID)
 
-          - task: AzureFunctionApp@1
-            displayName: 'Deploy logic app workflows'
-            inputs:
-              # TODO: Fill in with the name of your Azure service connection
-              azureSubscription: '$(azureSubscription)'
-              appType: 'functionApp'
-              appName: '$(logicAppName)'
-              package: '$(Pipeline.Workspace)/cipipeline/$(logicAppCIArtifactName)/$(resources.pipeline.cipipeline.runID).zip'
-              deploymentMethod: 'zipDeploy'
+- stage: TEST
+  displayName: 'TEST Deployment'
+  variables:
+  - template: variables/pipeline-vars-test.yml
+  jobs:
+  - template: templates/template-cd-logicapp.yml
+    parameters:
+      environment: ${{ variables.envShortName }}
+      serviceConnection: ${{ variables.serviceConnection }}
+      runId: $(resources.pipeline.cipipeline.runID)

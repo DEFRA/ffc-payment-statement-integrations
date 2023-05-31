@@ -1,0 +1,20 @@
+# GitHub Actions workflow to build and test a Logic App (Standard)
+
+name: Build and test Logic App
+
+#On merge of PR into main - assuming main is a protected branch
+on:
+ push:
+#   branches:
+#     - main
+
+jobs:
+  validate-and-deploy:
+   runs-on: ubuntu-latest
+   
+   steps:
+
+    #Check out files
+    - name: Check out files
+      uses: actions/checkout@v3
+

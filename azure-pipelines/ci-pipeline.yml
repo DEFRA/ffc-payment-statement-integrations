@@ -1,4 +1,4 @@
-# Simple Azure pipeline to deploy a Logic App (Consumption) with source in GitHub
+# Azure pipeline to build and test a Logic App (Standard) with source in GitHub
 
 # Trigger on PR creation targetting main (or subsequent commits to PR)
 trigger: none
@@ -20,9 +20,6 @@ steps:
   - task: FuncToolsInstaller@0
     inputs:
       version: 'latest'
-
-#  - bash: |
-#      docker compose -f docker-compose-azurite.yml up -d
 
   - bash: |
       npm install -g azurite
