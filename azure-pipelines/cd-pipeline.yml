@@ -25,4 +25,6 @@ stages:
     parameters:
       environment: ${{ variables.envShortName }}
       serviceConnection: ${{ variables.serviceConnection }}
+      logicAppName: ${{ variables.logicAppName }}
+      resourceGroupName: ${{ variables.resourceGroupName }}
       runId: $(resources.pipeline.cipipeline.runID)
