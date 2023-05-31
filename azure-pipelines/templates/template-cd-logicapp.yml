@@ -5,10 +5,6 @@ parameters:
   type: string
 - name: serviceConnection
   type: string
-- name: logicAppName
-  type: string
-- name: resourceGroupName
-  type: string
 - name: runId
   type: string
 
@@ -28,8 +24,8 @@ jobs:
             displayName: Azure App Service Settings
             inputs:
               azureSubscription: ${{ parameters.serviceConnection}}
-              appName: ${{ parameters.logicAppName }}
-              resourceGroupName: ${{ parameters.resourceGroupName }}
+              appName: $(logicAppName)
+              resourceGroupName: $(resourceGroupName)
               # App settings for the connections 
               appSettings: |
                 [
@@ -60,6 +56,6 @@ jobs:
             inputs:
               azureSubscription: ${{ parameters.serviceConnection }}
               appType: 'functionApp'
-              appName: ${{ parameters.logicAppName }}
+              appName: $(logicAppName)
               package: '$(Pipeline.Workspace)/cipipeline/logicapp-artifact/${{ parameters.runID }}.zip'
               deploymentMethod: 'zipDeploy'
