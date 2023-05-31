@@ -2,15 +2,16 @@
 
 variables:
 
-  projectName: 'LOGICAPPSTANDARD'
+  # Use lowercase
+  projectName: 'logicappstandard'
 
   resourceGroupLocation: 'uksouth'
   resourceGroupName: 'ESTLOGICAPPS-RG2'
 
-  appServicePlanName: 'ASP-$(projectName)-2aab'
+  appServicePlanName: 'asp-$(projectName)-2aab'
 
-  logicAppName: 'LA-$(projectName)-02'
+  logicAppName: 'la-$(projectName)-02'
   
   # MUST BE LOWERCASE. No spaces or hyphens allowed
-  storageName: 'salogicappstandardest'
+  storageName: 'sa$(projectName)est'
 
