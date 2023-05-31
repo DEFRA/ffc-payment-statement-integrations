@@ -43,6 +43,10 @@ jobs:
         mkdir azurite
         azurite --silent --location azurite --debug azurite\debug.log &
 
+    - name: Install Azure Function Core Tools
+      run: |
+        npm i -g azure-functions-core-tools@4 --unsafe-perm true
+
     - name: Run Tests
       run: dotnet test ${{ env.project-name }} --no-restore --logger "trx;LogFileName=test-results.trx"
 
