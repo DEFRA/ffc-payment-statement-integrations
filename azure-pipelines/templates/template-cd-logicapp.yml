@@ -23,6 +23,9 @@ jobs:
         deploy:
           steps:
           - bash: |
+              ls al
+
+          - bash: |
               echo "##vso[task.setvariable variable=settingsJson]$(cat ${{ parameters.settingsFile }})"
             displayName: Read settings
 
