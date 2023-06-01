@@ -27,6 +27,13 @@ steps:
       azurite --silent --location azurite --debug azurite\debug.log &
     displayName: 'Install and launch Azurite'
 
+  # local.settings.json is updated when editing locally in the GUI designer. In case connection secrets get saved to it,
+  # a copy (local.settings.unit-tests.json) is pushed to GitHub but not local.settings.json
+  # Here, that copy is renamed to be used in the unit testing
+  - bash: |
+      mv $(System.DefaultWorkingDirectory)/PaymentStatementIntegrations/local.settings.unit-tests.json $(System.DefaultWorkingDirectory)/PaymentStatementIntegrations/local.settings.json
+    displayName: 'Use local.settings'
+
   - task: DotNetCoreCLI@2
     inputs:
       command: test
