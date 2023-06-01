@@ -39,7 +39,7 @@ jobs:
               resourceGroupName: $(resourceGroupName)
               appSettings: $(settingsJson)
 
-          - task: AzureFunctionApp@1
+          - task: AzureFunctionApp@2
             displayName: 'Deploy logic app workflows'
             inputs:
               azureSubscription: ${{ parameters.serviceConnection }}

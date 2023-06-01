@@ -13,7 +13,6 @@
     "Outlook-ConnectionKey": "any-outlook-connection-key",
     "Outlook-SubjectPrefix": "INFORMATION",
     "Outlook-ManagedConnectionRuntimeUrl": "https://tbc.com",
-    "Salesforce-ConnectionKey": "any-salesforce-connection-key",
     "CommonDataService-ConnectionKey": "any-commondata-connection-key",
     "AuthService-APIKey": "valid-auth-apikey",
     "AuthService-WebHook-APIKey": "valid-auth-webhook-apikey",
@@ -21,6 +20,6 @@
     "Sql_ConnectionString": "any-sql-connection-string",
     "ServiceBus_ConnectionString": "any-servicebus-connection-string",
     "PdfServiceUrl": "https://external-pdf-service.testing.net/api/v1",
-    "CommonDataService-ManagedConnectionRuntimeUrl": "https://eca9b9c6c62075fe.03.common.logic-uksouth.azure-apihub.net/apim/commondataservice/3105f59d600c4a89a54890005b089513/"
+    "CommonDataService-ManagedConnectionRuntimeUrl": "https://commondataservice.com"
   }
 }
