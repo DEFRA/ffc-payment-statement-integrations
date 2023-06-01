@@ -32,7 +32,7 @@ jobs:
             displayName: Read settings
 
           - bash: |
-              echo "settings:$(settingsJson)"
+              echo 'settings:$(settingsJson)'
             displayName: Confirm settings
 
           - task: AzureAppServiceSettings@1
