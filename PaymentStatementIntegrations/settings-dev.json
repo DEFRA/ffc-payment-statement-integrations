@@ -11,7 +11,7 @@
     },
     {
     "name": "PdfServiceUrl",
-    "value": "pdfserviceurl-dev",
+    "value": "https://ffc-pay-statement-receiver.ffc.snd.azure.defra.cloud/v1",
     "slotSetting": false
     },
     {
