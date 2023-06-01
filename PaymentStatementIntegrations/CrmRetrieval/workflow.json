@@ -19,7 +19,7 @@
                         "type": "Http",
                         "description": "Track some properties in this action",
                         "inputs": {
-                            "uri": "@{parameters('PdfServiceUrl')}/pdf/@{triggerBody()?['customerId']}",
+                            "uri": "@{parameters('PdfServiceUrl')}/statements/statement/@{triggerBody()?['customerId']}",
                             "method": "GET",
                             "headers": {
                                 "x-api-key": "ApiKey @{parameters('AuthService-APIKey')}"

@@ -69,7 +69,7 @@ namespace PaymentStatementIntegrations.Tests.CrmRetrievalTest
                 testRunner.AddApiMocks = (request) =>
                 {
                     HttpResponseMessage mockedResponse = new HttpResponseMessage();
-                    if (request.RequestUri?.AbsolutePath == "/api/v1/pdf/54617" && request.Method == HttpMethod.Get)
+                    if (request.RequestUri?.AbsolutePath == "/api/v1/statements/statement/54617" && request.Method == HttpMethod.Get)
                     {
                         mockedResponse.RequestMessage = request;
                         mockedResponse.StatusCode = HttpStatusCode.InternalServerError;
@@ -114,7 +114,7 @@ namespace PaymentStatementIntegrations.Tests.CrmRetrievalTest
                 testRunner.AddApiMocks = (request) =>
                 {
                     HttpResponseMessage mockedResponse = new HttpResponseMessage();
-                    if (request.RequestUri?.AbsolutePath == "/api/v1/pdf/54617" && request.Method == HttpMethod.Get)
+                    if (request.RequestUri?.AbsolutePath == "/api/v1/statements/statement/54617" && request.Method == HttpMethod.Get)
                     {
                         mockedResponse.RequestMessage = request;
                         mockedResponse.StatusCode = HttpStatusCode.OK;
@@ -155,7 +155,7 @@ namespace PaymentStatementIntegrations.Tests.CrmRetrievalTest
                 Assert.AreEqual("ApiKey valid-auth-apikey", authServerRequest.Headers["x-api-key"].First());
 
                 // Check request to PDF Server
-                var pdfServerRequest = testRunner.MockRequests.First(r => r.RequestUri.AbsolutePath == "/api/v1/pdf/54617");
+                var pdfServerRequest = testRunner.MockRequests.First(r => r.RequestUri.AbsolutePath == "/api/v1/statements/statement/54617");
                 Assert.AreEqual(HttpMethod.Get, pdfServerRequest.Method);
                 Assert.AreEqual("ApiKey valid-auth-apikey", pdfServerRequest.Headers["x-api-key"].First());
 
