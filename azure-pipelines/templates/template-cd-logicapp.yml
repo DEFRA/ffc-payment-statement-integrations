@@ -24,7 +24,7 @@ jobs:
         deploy:
           steps:
           - bash: |
-              unzip -q '${{ variables.artifactPath}}/${{ parameters.runID }}.zip'
+              unzip '${{ variables.artifactPath}}/${{ parameters.runID }}.zip'
               ls -al ${{ variables.artifactPath }}
             displayName: Unzip artifact
 
