@@ -46,19 +46,19 @@ jobs:
 #            resourceGroupName: $(resourceGroupName)
 #            whenLastDeploymentIsFailed: 'fail'
 
-#        - task: AzureResourceGroupDeployment@2
-#          displayName: 'Deploy Connectors'
-#          inputs:
-#            azureSubscription: ${{ parameters.serviceConnection }}
-#            resourceGroupName: $(resourceGroupName)
-#            location: $(resourceGroupLocation)
-#            csmFile: '$(Pipeline.Workspace)/$(artifactName)/connectors-template.json'
-#            overrideParameters: '
-#              -location $(resourceGroupLocation)
-#              -connections_azureblob_name $(blobConnectionName)
-#              -logicAppSystemAssignedIdentityTenantId $(logicAppSystemAssignedIdentityTenantId)
-#              -logicAppSystemAssignedIdentityObjectId $(logicAppSystemAssignedIdentityObjectId)'
-#            deploymentMode: $(deploymentMode)
+        - task: AzureResourceGroupDeployment@2
+          displayName: 'Deploy Connectors'
+          inputs:
+            azureSubscription: ${{ parameters.serviceConnection }}
+            resourceGroupName: $(resourceGroupName)
+            location: $(resourceGroupLocation)
+            csmFile: '$(Pipeline.Workspace)/$(artifactName)/connectors-template.json'
+            overrideParameters:
+              -location $(resourceGroupLocation)
+              -connections_azureblob_name $(blobConnectionName)
+              -logicAppSystemAssignedIdentityTenantId $(logicAppSystemAssignedIdentityTenantId)
+              -logicAppSystemAssignedIdentityObjectId $(logicAppSystemAssignedIdentityObjectId)'
+            deploymentMode: $(deploymentMode)
 
 #        - task: ARM Outputs@6
 #          displayName: 'ARM Outputs Connections'

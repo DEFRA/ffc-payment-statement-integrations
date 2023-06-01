@@ -1,12 +1,12 @@
 [
   {
     "name": "serviceBusConnectionString",
-    "value": "@Microsoft.KeyVault(VaultName=SNDESTGENERALKV;SecretName=ServiceBusConnStringTest)",
+    "value": "@Microsoft.KeyVault(VaultName=SNDESTLOGICAPPKV1;SecretName=ServiceBusConnStringTest)",
     "slotSetting": false
     },
     {
     "name": "commonDataServiceWrite",
-    "value": "@Microsoft.KeyVault(VaultName=SNDESTGENERALKV;SecretName=CommonDataServiceConnStringTest)",
+    "value": "@Microsoft.KeyVault(VaultName=SNDESTLOGICAPPKV1;SecretName=CommonDataServiceConnStringTest)",
     "slotSetting": false
     },
     {
