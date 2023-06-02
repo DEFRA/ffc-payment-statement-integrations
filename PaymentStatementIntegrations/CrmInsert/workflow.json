@@ -64,11 +64,17 @@
             "When_messages_are_available_in_a_topic": {
                 "type": "ServiceProvider",
                 "inputs": {
-                    "topicName": "ffc-pay-statement-crm-snd",
-                    "subscriptionName": "crm",
-                    "isSessionsEnabled": false
+                    "parameters": {
+                        "topicName": "ffc-pay-statement-crm-snd",
+                        "subscriptionName": "crm",
+                        "isSessionsEnabled": false
+                    },
+                    "serviceProviderConfiguration": {
+                        "connectionName": "ffcServiceBus",
+                        "operationId": "receiveTopicMessages",
+                        "serviceProviderId": "/serviceProviders/serviceBus"
+                    }
                 },
-                "trackedProperties": {},
                 "splitOn": "@triggerOutputs()?['body']"
             }
         }
