@@ -2,83 +2,74 @@
     "definition": {
         "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
         "actions": {
-            "For_each": {
-                "type": "foreach",
-                "foreach": "@variables('ConvertToArray')",
-                "actions": {
-                    "Add_a_row_to_CRM": {
-                        "type": "ApiConnection",
-                        "inputs": {
-                            "host": {
-                                "connection": {
-                                    "referenceName": "commondataservicewrite"
-                                }
+            "Add_a_row_to_CRM": {
+                "type": "ApiConnection",
+                "inputs": {
+                    "host": {
+                        "connection": {
+                            "referenceName": "commondataservicewrite"
+                        }
+                    },
+                    "method": "post",
+                    "body": {
+                        "subject": "Demo Title",
+                        "notetext": "Demo Description @{body('Parse_JSON')?['apiLink']}",
+                        "isdocument": false
+                    },
+                    "headers": {
+                        "prefer": "return=representation,odata.include-annotations=*",
+                        "organization": "https://Prohibited.crm4.dynamics.com"
+                    },
+                    "path": "/api/data/v9.1/@{encodeURIComponent(encodeURIComponent('annotations'))}"
+                },
+                "runAfter": {
+                    "Parse_JSON": [
+                        "SUCCEEDED"
+                    ]
+                },
+                "trackedProperties": {}
+            },
+            "Parse_JSON": {
+                "type": "ParseJson",
+                "inputs": {
+                    "content": "@triggerBody()?['contentData']",
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "sbi": {
+                                "type": "integer"
                             },
-                            "method": "post",
-                            "body": {
-                                "subject": "Demo Title",
-                                "notetext": "Demo Description @{item()['contentData']['apiLink']}",
-                                "isdocument": false
+                            "frn": {
+                                "type": "integer"
                             },
-                            "headers": {
-                                "prefer": "return=representation,odata.include-annotations=*",
-                                "organization": "https://Prohibited.crm4.dynamics.com"
+                            "apiLink": {
+                                "type": "string"
                             },
-                            "path": "/api/data/v9.1/@{encodeURIComponent(encodeURIComponent('annotations'))}"
+                            "documentType": {
+                                "type": "string"
+                            },
+                            "scheme": {
+                                "type": "string"
+                            }
                         }
                     }
                 },
-                "runAfter": {
-                    "Initialize_variable": [
-                        "SUCCEEDED"
-                    ]
-                }
-            },
-            "Compose": {
-                "type": "Compose",
-                "inputs": "@triggerBody()?['body']",
-                "runAfter": {}
-            },
-            "Initialize_variable": {
-                "type": "InitializeVariable",
-                "inputs": {
-                    "variables": [
-                        {
-                            "name": "ConvertToArray",
-                            "type": "array",
-                            "value": "@outputs('Compose')"
-                        }
-                    ]
-                },
-                "runAfter": {
-                    "Compose": [
-                        "SUCCEEDED"
-                    ]
-                }
-            },
-            "Response": {
-                "type": "Response",
-                "kind": "Http",
-                "inputs": {
-                    "statusCode": 200,
-                    "body": "Success"
-                },
-                "runAfter": {
-                    "For_each": [
-                        "SUCCEEDED"
-                    ]
-                }
+                "runAfter": {},
+                "trackedProperties": {}
             }
         },
         "contentVersion": "1.0.0.0",
         "outputs": {},
         "triggers": {
-            "When_messages_are_available_in_a_queue": {
+            "When_messages_are_available_in_a_topic": {
                 "type": "ServiceProvider",
                 "inputs": {
-                    "queueName": "paymentgeneratorqueue",
+                    "topicName": "ffc-pay-statement-crm-snd",
+                    "subscriptionName": "crm",
                     "isSessionsEnabled": false
-                }
+                },
+                "trackedProperties": {},
+                "splitOn": "@triggerOutputs()?['body']"
             }
         }
     },

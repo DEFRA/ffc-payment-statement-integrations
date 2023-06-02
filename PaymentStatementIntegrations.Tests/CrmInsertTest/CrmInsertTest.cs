@@ -61,7 +61,7 @@ namespace PaymentStatementIntegrations.Tests.CrmInsertTest
 
                 // Check workflow response
                 testRunner.ExceptionWrapper(() => Assert.AreEqual(HttpStatusCode.OK, workflowResponse.StatusCode));
-                Assert.AreEqual("Success", workflowResponse.Content.ReadAsStringAsync().Result);
+                Assert.AreEqual(HttpStatusCode.OK, workflowResponse.StatusCode);
 
                 // Check action result
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Add_a_row_to_CRM"));
@@ -75,19 +75,30 @@ namespace PaymentStatementIntegrations.Tests.CrmInsertTest
 
         private static StringContent GetServiceBusMessage()
         {
-            return ContentHelper.CreateJsonStringContent(
-                "{" +
-                    "\"body\": [{ " +
-                        "\"contentData\": { " +
-                            "\"sbi\": 12345678, " +
-                            "\"frn\": 123456789, " +
-                            "\"apiLink\": \"https://myStatementRetrievalApiEndpoint/statement-receiver/statement/v1/FFC_PaymentStatement_SFI_2022_1234567890_2022090615023001.pdf\", " +
-                            "\"documentType\": \"Payment statement\", " + 
-                            "\"scheme\": \"SFI\" " +
-                        "}" +
-                    "}]" +
-                "}"
-            );
+            return ContentHelper.CreateJsonStringContent(new
+            {
+                // The JSON must match the data structure used by the Service Bus trigger, this includes 'contentData' to represent the message content
+                contentData = new
+                {
+                    sbi = 12345678,
+                    frn = 123456789,
+                    apiLink = "https://myStatementRetrievalApiEndpoint/statement-receiver/statement/v1/FFC_PaymentStatement_SFI_2022_1234567890_2022090615023001.pdf",
+                    documentType = "Payment statement",
+                    scheme = "SFI",
+                },
+                contentType = "application/json",
+                messageId = "ff421d65-5be6-4084-b748-af490100c9a5",
+                label = "customer.54624",
+                scheduledEnqueueTimeUtc = "1/1/0001 12:00:00 AM",
+                sessionId = "54624",
+                timeToLive = "06:00:00",
+                deliveryCount = 1,
+                enqueuedSequenceNumber = 6825,
+                enqueuedTimeUtc = "2022-11-10T15:34:57.727Z",
+                lockedUntilUtc = "9999-12-31T23:59:59.9999999Z",
+                lockToken = "056bb9fa-9b8f-4d93-874b-7e78e71a588d",
+                sequenceNumber = 980
+            });
         }
     }
 }

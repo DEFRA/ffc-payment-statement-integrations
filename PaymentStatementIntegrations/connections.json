@@ -35,6 +35,16 @@
         "id": "/serviceProviders/azurequeues"
       },
       "displayName": "storageQueueConnection"
+    },
+    "ffcServiceBus": {
+      "parameterValues": {
+        "connectionString": "@appsetting('ffcServiceBus_ConnectionString')"
+      },
+      "parameterSetName": "connectionString",
+      "serviceProvider": {
+        "id": "/serviceProviders/serviceBus"
+      },
+      "displayName": "ffcServiceBus"
     }
   },
   "managedApiConnections": {
