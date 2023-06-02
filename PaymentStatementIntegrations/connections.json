@@ -2,7 +2,7 @@
   "serviceProviderConnections": {
     "serviceBus": {
       "parameterValues": {
-        "connectionString": "@appsetting('ServiceBus_ConnectionString')"
+        "connectionString": "@appsetting('ServiceBus-ConnectionString')"
       },
       "serviceProvider": {
         "id": "/serviceProviders/serviceBus"
@@ -11,7 +11,7 @@
     },
     "sql": {
       "parameterValues": {
-        "connectionString": "@appsetting('Sql_ConnectionString')"
+        "connectionString": "@appsetting('Sql-ConnectionString')"
       },
       "serviceProvider": {
         "id": "/serviceProviders/sql"
@@ -38,7 +38,7 @@
     },
     "ffcServiceBus": {
       "parameterValues": {
-        "connectionString": "@appsetting('ffcServiceBus_ConnectionString')"
+        "connectionString": "@appsetting('ffcServiceBus-ConnectionString')"
       },
       "parameterSetName": "connectionString",
       "serviceProvider": {
@@ -69,7 +69,7 @@
       "connection": {
         "id": "/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/resourceGroups/SNDESTLOGICAPPS-RG/providers/Microsoft.Web/connections/commondataservice"
       },
-      "connectionRuntimeUrl": "@appsetting('CommonDataService-ManagedConnectionRuntimeUrl')",
+      "connectionRuntimeUrl": "@appsetting('CommonDataService-ConnString')",
       "authentication": {
         "type": "Raw",
         "scheme": "Key",

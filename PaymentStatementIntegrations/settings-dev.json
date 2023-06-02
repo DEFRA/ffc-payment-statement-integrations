@@ -1,11 +1,11 @@
 [
   {
-    "name": "ffcServiceBusConnectionString",
+    "name": "ffcServiceBus-ConnectionString",
     "value": "@Microsoft.KeyVault(VaultName=SNDESTLOGICAPPKV1;SecretName=ffcServiceBusConnStringDev)",
     "slotSetting": false
     },
     {
-    "name": "commonDataServiceWrite",
+    "name": "CommonDataService-ConnString",
     "value": "@Microsoft.KeyVault(VaultName=SNDESTLOGICAPPKV1;SecretName=CommonDataServiceConnStringDev)",
     "slotSetting": false
     },
