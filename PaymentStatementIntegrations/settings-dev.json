@@ -1,7 +1,7 @@
 [
   {
-    "name": "serviceBusConnectionString",
-    "value": "@Microsoft.KeyVault(VaultName=SNDESTLOGICAPPKV1;SecretName=ServiceBusConnStringDev)",
+    "name": "ffcServiceBusConnectionString",
+    "value": "@Microsoft.KeyVault(VaultName=SNDESTLOGICAPPKV1;SecretName=ffcServiceBusConnStringDev)",
     "slotSetting": false
     },
     {
