@@ -103,19 +103,19 @@ namespace PaymentStatementIntegrations.Tests.CrmInsertTest
                     HttpMethod.Post);
 
                 // Check workflow run status
-                Assert.AreEqual(WorkflowRunStatus.Succeeded, testRunner.WorkflowRunStatus);
+                Assert.AreEqual(WorkflowRunStatus.Failed, testRunner.WorkflowRunStatus);
 
                 // Check workflow response
                 testRunner.ExceptionWrapper(() => Assert.AreEqual(HttpStatusCode.OK, workflowResponse.StatusCode));
                 Assert.AreEqual(HttpStatusCode.OK, workflowResponse.StatusCode);
 
                 // Check action result
-                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Add_a_row_to_CRM"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Add_a_row_to_CRM"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Terminate"));
 
                 // Check request to CRM via Dataserve connector never happened
-                var crmRequest = testRunner.MockRequests.First(r => r.RequestUri.AbsolutePath.Contains("/api/data/v9.1"));
-                Assert.AreEqual(HttpMethod.Post, crmRequest.Method);
-                Assert.IsFalse(crmRequest.Content.Contains("FFC_PaymentStatement_SFI_2022_1234567890_2022090615023001.pdf"));
+                var crmRequest = testRunner.MockRequests.FirstOrDefault(r => r.RequestUri.AbsolutePath.Contains("/api/data/v9.1"));
+                Assert.IsNull(crmRequest);
             }
         }
 

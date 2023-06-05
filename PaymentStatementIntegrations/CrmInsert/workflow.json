@@ -2,33 +2,6 @@
     "definition": {
         "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
         "actions": {
-            "Add_a_row_to_CRM": {
-                "type": "ApiConnection",
-                "inputs": {
-                    "host": {
-                        "connection": {
-                            "referenceName": "commondataservicewrite"
-                        }
-                    },
-                    "method": "post",
-                    "body": {
-                        "subject": "Demo Title",
-                        "notetext": "Demo Description @{body('Parse_JSON')?['apiLink']}",
-                        "isdocument": false
-                    },
-                    "headers": {
-                        "prefer": "return=representation,odata.include-annotations=*",
-                        "organization": "https://Prohibited.crm4.dynamics.com"
-                    },
-                    "path": "/api/data/v9.1/@{encodeURIComponent(encodeURIComponent('annotations'))}"
-                },
-                "runAfter": {
-                    "Parse_JSON": [
-                        "SUCCEEDED"
-                    ]
-                },
-                "trackedProperties": {}
-            },
             "Parse_JSON": {
                 "type": "ParseJson",
                 "inputs": {
@@ -56,6 +29,72 @@
                 },
                 "runAfter": {},
                 "trackedProperties": {}
+            },
+            "Condition": {
+                "type": "If",
+                "expression": {
+                    "and": [
+                        {
+                            "not": {
+                                "equals": [
+                                    "@string(body('Parse_JSON')?['apiLink'])",
+                                    ""
+                                ]
+                            }
+                        },
+                        {
+                            "not": {
+                                "equals": [
+                                    "@string(body('Parse_JSON')?['sbi'])",
+                                    ""
+                                ]
+                            }
+                        }
+                    ]
+                },
+                "actions": {
+                    "Add_a_row_to_CRM": {
+                        "type": "ApiConnection",
+                        "inputs": {
+                            "host": {
+                                "connection": {
+                                    "referenceName": "commondataservicewrite"
+                                }
+                            },
+                            "method": "post",
+                            "body": {
+                                "subject": "Demo Title",
+                                "notetext": "Demo description @{body('Parse_JSON')?['apiLink']} @{body('Parse_JSON')?['sbi']}",
+                                "isdocument": false
+                            },
+                            "headers": {
+                                "prefer": "return=representation,odata.include-annotations=*",
+                                "organization": "https://Prohibited.crm4.dynamics.com"
+                            },
+                            "path": "/api/data/v9.1/@{encodeURIComponent(encodeURIComponent('annotations'))}"
+                        }
+                    }
+                },
+                "else": {
+                    "actions": {
+                        "Terminate": {
+                            "type": "Terminate",
+                            "inputs": {
+                                "runStatus": "Failed",
+                                "runError": {
+                                    "code": "400",
+                                    "message": "Missing sbi or apiLink in message contents"
+                                }
+                            }
+                        }
+                    }
+                },
+                "runAfter": {
+                    "Parse_JSON": [
+                        "SUCCEEDED",
+                        "FAILED"
+                    ]
+                }
             }
         },
         "contentVersion": "1.0.0.0",
