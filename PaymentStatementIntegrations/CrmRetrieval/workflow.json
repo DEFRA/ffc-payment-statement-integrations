@@ -8,7 +8,7 @@
                     "and": [
                         {
                             "equals": [
-                                "@triggerOutputs()?['headers']?['x-api-key']",
+                                "@triggerOutputs()?['queries']['token']",
                                 "@parameters('AuthService-WebHook-APIKey')"
                             ]
                         }
@@ -19,7 +19,7 @@
                         "type": "Http",
                         "description": "Track some properties in this action",
                         "inputs": {
-                            "uri": "@{parameters('PdfServiceUrl')}/pdf/@{triggerBody()?['customerId']}",
+                            "uri": "@{parameters('PdfServiceUrl')}/statements/statement/@{triggerOutputs()?['queries']['id']}",
                             "method": "GET",
                             "headers": {
                                 "x-api-key": "ApiKey @{parameters('AuthService-APIKey')}"
@@ -94,7 +94,9 @@
                 },
                 "runAfter": {
                     "Validate_Auth_Token": [
-                        "SUCCEEDED"
+                        "SUCCEEDED",
+                        "TIMEDOUT",
+                        "FAILED"
                     ]
                 }
             },
@@ -103,9 +105,9 @@
                 "inputs": {
                     "uri": "@{parameters('AuthTokenValidationUrl')}/validate",
                     "method": "POST",
-                  "headers": {
-                    "x-api-key": "ApiKey @{parameters('AuthService-APIKey')}"
-                  }
+                    "headers": {
+                        "x-api-key": "ApiKey @{triggerOutputs()?['queries']['token']}"
+                    }
                 },
                 "runAfter": {}
             }
@@ -113,40 +115,11 @@
         "contentVersion": "1.0.0.0",
         "outputs": {},
         "triggers": {
-            "HTTP_POST": {
+            "HTTP_GET": {
                 "type": "Request",
                 "kind": "Http",
                 "inputs": {
-                    "schema": {
-                        "type": "object",
-                        "properties": {
-                            "correlationId": {
-                                "type": "string"
-                            },
-                            "customerId": {
-                                "type": "integer"
-                            },
-                            "id": {
-                                "type": "string"
-                            },
-                            "resourceId": {
-                                "type": "string"
-                            },
-                            "resourceURI": {
-                                "type": "string"
-                            },
-                            "sourceSystem": {
-                                "type": "string"
-                            },
-                            "timestamp": {
-                                "type": "string"
-                            },
-                            "type": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "method": "POST"
+                    "method": "GET"
                 }
             }
         }

@@ -34,9 +34,9 @@ jobs:
       run: dotnet build ${{ env.tests-project-name }} --no-restore
 
     - name: set up node
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v3
       with:
-          node-version: '14.x'
+          node-version: '16.x'
 
     - name: Install and run azurite
       run: |
@@ -48,6 +48,13 @@ jobs:
       run: |
         npm i -g azure-functions-core-tools@4 --unsafe-perm true
 
+    # local.settings.json is updated when editing locally in the GUI designer. In case connection secrets get saved to it,
+    # a copy (local.settings.unit-tests.json) is pushed to GitHub but not local.settings.json
+    # Here, that copy is renamed to be used in the unit testing
+    - name: 'Use local.settings'
+      run: |
+        mv ${{ github.workspace }}/PaymentStatementIntegrations/local.settings.unit-tests.json ${{ github.workspace }}/PaymentStatementIntegrations/local.settings.json
+      
     - name: Run Tests
       run: dotnet test ${{ env.tests-project-name }} --no-restore --logger "trx;LogFileName=test-results.trx"
 

@@ -399,3 +399,6 @@ FodyWeavers.xsd
 
 # Mac thumbnail files
 .DS_Store
+
+# Local Settings (in case secrets get saved)
+local.settings.json

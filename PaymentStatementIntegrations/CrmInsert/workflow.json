@@ -2,9 +2,56 @@
     "definition": {
         "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
         "actions": {
-            "For_each": {
-                "type": "foreach",
-                "foreach": "@variables('ConvertToArray')",
+            "Parse_JSON": {
+                "type": "ParseJson",
+                "inputs": {
+                    "content": "@triggerBody()?['contentData']",
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "sbi": {
+                                "type": "integer"
+                            },
+                            "frn": {
+                                "type": "integer"
+                            },
+                            "apiLink": {
+                                "type": "string"
+                            },
+                            "documentType": {
+                                "type": "string"
+                            },
+                            "scheme": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "runAfter": {},
+                "trackedProperties": {}
+            },
+            "Condition": {
+                "type": "If",
+                "expression": {
+                    "and": [
+                        {
+                            "not": {
+                                "equals": [
+                                    "@string(body('Parse_JSON')?['apiLink'])",
+                                    ""
+                                ]
+                            }
+                        },
+                        {
+                            "not": {
+                                "equals": [
+                                    "@string(body('Parse_JSON')?['sbi'])",
+                                    ""
+                                ]
+                            }
+                        }
+                    ]
+                },
                 "actions": {
                     "Add_a_row_to_CRM": {
                         "type": "ApiConnection",
@@ -17,7 +64,7 @@
                             "method": "post",
                             "body": {
                                 "subject": "Demo Title",
-                                "notetext": "Demo Description @{item()['contentData']['apiLink']}",
+                                "notetext": "Demo description @{body('Parse_JSON')?['apiLink']} @{body('Parse_JSON')?['sbi']}",
                                 "isdocument": false
                             },
                             "headers": {
@@ -28,44 +75,24 @@
                         }
                     }
                 },
-                "runAfter": {
-                    "Initialize_variable": [
-                        "SUCCEEDED"
-                    ]
-                }
-            },
-            "Compose": {
-                "type": "Compose",
-                "inputs": "@triggerBody()?['body']",
-                "runAfter": {}
-            },
-            "Initialize_variable": {
-                "type": "InitializeVariable",
-                "inputs": {
-                    "variables": [
-                        {
-                            "name": "ConvertToArray",
-                            "type": "array",
-                            "value": "@outputs('Compose')"
+                "else": {
+                    "actions": {
+                        "Terminate": {
+                            "type": "Terminate",
+                            "inputs": {
+                                "runStatus": "Failed",
+                                "runError": {
+                                    "code": "400",
+                                    "message": "Missing sbi or apiLink in message contents"
+                                }
+                            }
                         }
-                    ]
+                    }
                 },
                 "runAfter": {
-                    "Compose": [
-                        "SUCCEEDED"
-                    ]
-                }
-            },
-            "Response": {
-                "type": "Response",
-                "kind": "Http",
-                "inputs": {
-                    "statusCode": 200,
-                    "body": "Success"
-                },
-                "runAfter": {
-                    "For_each": [
-                        "SUCCEEDED"
+                    "Parse_JSON": [
+                        "SUCCEEDED",
+                        "FAILED"
                     ]
                 }
             }
@@ -73,12 +100,21 @@
         "contentVersion": "1.0.0.0",
         "outputs": {},
         "triggers": {
-            "When_messages_are_available_in_a_queue": {
+            "When_messages_are_available_in_a_topic": {
                 "type": "ServiceProvider",
                 "inputs": {
-                    "queueName": "paymentgeneratorqueue",
-                    "isSessionsEnabled": false
-                }
+                    "parameters": {
+                        "topicName": "ffc-pay-statement-crm-snd",
+                        "subscriptionName": "crm",
+                        "isSessionsEnabled": false
+                    },
+                    "serviceProviderConfiguration": {
+                        "connectionName": "ffcServiceBus",
+                        "operationId": "receiveTopicMessages",
+                        "serviceProviderId": "/serviceProviders/serviceBus"
+                    }
+                },
+                "splitOn": "@triggerOutputs()?['body']"
             }
         }
     },
