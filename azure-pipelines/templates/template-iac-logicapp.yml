@@ -57,7 +57,7 @@ jobs:
               -location $(resourceGroupLocation)
               -connections_azureblob_name $(blobConnectionName)
               -logicAppSystemAssignedIdentityTenantId $(logicAppSystemAssignedIdentityTenantId)
-              -logicAppSystemAssignedIdentityObjectId $(logicAppSystemAssignedIdentityObjectId)'
+              -logicAppSystemAssignedIdentityObjectId $(logicAppSystemAssignedIdentityObjectId)
             deploymentMode: $(deploymentMode)
 
         - task: ARM Outputs@6
