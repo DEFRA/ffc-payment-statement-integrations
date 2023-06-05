@@ -69,7 +69,7 @@
       "connection": {
         "id": "/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/resourceGroups/SNDESTLOGICAPPS-RG/providers/Microsoft.Web/connections/commondataservice"
       },
-      "connectionRuntimeUrl": "@appsetting('CommonDataService-ConnString')",
+      "connectionRuntimeUrl": "@appsetting('CommonDataService-ManagedConnectionRuntimeUrl')",
       "authentication": {
         "type": "Raw",
         "scheme": "Key",

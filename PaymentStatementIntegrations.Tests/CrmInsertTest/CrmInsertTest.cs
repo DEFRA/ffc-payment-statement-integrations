@@ -103,15 +103,15 @@ namespace PaymentStatementIntegrations.Tests.CrmInsertTest
                     HttpMethod.Post);
 
                 // Check workflow run status
-                Assert.AreEqual(WorkflowRunStatus.Failed, testRunner.WorkflowRunStatus);
+                Assert.AreEqual(WorkflowRunStatus.Succeeded, testRunner.WorkflowRunStatus);
 
                 // Check workflow response
-                testRunner.ExceptionWrapper(() => Assert.AreEqual(HttpStatusCode.OK, workflowResponse.StatusCode));
-                Assert.AreEqual(HttpStatusCode.OK, workflowResponse.StatusCode);
+                testRunner.ExceptionWrapper(() => Assert.AreEqual(HttpStatusCode.BadRequest, workflowResponse.StatusCode));
+                Assert.AreEqual(HttpStatusCode.BadRequest, workflowResponse.StatusCode);
 
                 // Check action result
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Add_a_row_to_CRM"));
-                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Terminate"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Bad_Response"));
 
                 // Check request to CRM via Dataserve connector never happened
                 var crmRequest = testRunner.MockRequests.FirstOrDefault(r => r.RequestUri.AbsolutePath.Contains("/api/data/v9.1"));

@@ -4,11 +4,11 @@
     "value": "@Microsoft.KeyVault(VaultName=SNDESTLOGICAPPKV1;SecretName=ffcServiceBusConnStringDev)",
     "slotSetting": false
     },
-    {
-    "name": "CommonDataService-ConnString",
+  {
+    "name": "CommonDataService-ManagedConnectionRuntimeUrl",
     "value": "@Microsoft.KeyVault(VaultName=SNDESTLOGICAPPKV1;SecretName=CommonDataServiceConnStringDev)",
     "slotSetting": false
-    },
+  },
     {
     "name": "PdfServiceUrl",
     "value": "https://ffc-pay-statement-receiver.ffc.snd.azure.defra.cloud/v1",
