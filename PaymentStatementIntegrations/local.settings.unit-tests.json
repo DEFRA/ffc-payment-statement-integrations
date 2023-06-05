@@ -3,24 +3,18 @@
   "Values": {
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "FUNCTIONS_WORKER_RUNTIME": "node",
-    "WORKFLOWS_SUBSCRIPTION_ID": "d49bcc71-d9a8-400b-9385-0015251d90c5",
-    "WORKFLOWS_TENANT_ID": "c9d74090-b4e6-4b04-981d-e6757a160812",
-    "WORKFLOWS_RESOURCE_GROUP_NAME": "SNDESTLOGICAPPS-RG",
-    "WORKFLOWS_LOCATION_NAME": "uksouth",
-    "WORKFLOWS_MANAGEMENT_BASE_URI": "https://management.azure.com/",
     "AzureBlob-ConnectionString": "any-blob-connection-string",
     "AzureQueue-ConnectionString": "any-queue-connection-string",
     "Outlook-ConnectionKey": "any-outlook-connection-key",
     "Outlook-SubjectPrefix": "INFORMATION",
     "Outlook-ManagedConnectionRuntimeUrl": "https://tbc.com",
-    "Salesforce-ConnectionKey": "any-salesforce-connection-key",
     "CommonDataService-ConnectionKey": "any-commondata-connection-key",
     "AuthService-APIKey": "valid-auth-apikey",
     "AuthService-WebHook-APIKey": "valid-auth-webhook-apikey",
     "AuthTokenValidationUrl": "https://external-auth-service.testing.net/api/v1",
-    "Sql_ConnectionString": "any-sql-connection-string",
-    "ServiceBus_ConnectionString": "any-servicebus-connection-string",
+    "Sql-ConnectionString": "any-sql-connection-string",
+    "ServiceBus-ConnectionString": "any-servicebus-connection-string",
     "PdfServiceUrl": "https://external-pdf-service.testing.net/api/v1",
-    "CommonDataService-ManagedConnectionRuntimeUrl": "https://eca9b9c6c62075fe.03.common.logic-uksouth.azure-apihub.net/apim/commondataservice/3105f59d600c4a89a54890005b089513/"
+    "CommonDataService-ConnString": "https://external-common-data-service.testing.net/apim/commondataservice/abcdef/"
   }
 }

@@ -9,7 +9,6 @@ namespace LogicAppUnit.Hosting
     using System.IO;
     using System.Linq;
     using System.Net.Http;
-    using System.Runtime.InteropServices;
     using System.Threading.Tasks;
 
     /// <summary>
@@ -205,7 +204,6 @@ namespace LogicAppUnit.Hosting
         /// </summary>
         private static void KillFunctionHostProcesses()
         {
-            // TODO - handle OSX/Linux
             Process[] processes = Process.GetProcessesByName("func");
             foreach (var process in processes)
             {
@@ -214,52 +212,33 @@ namespace LogicAppUnit.Hosting
         }
 
         /// <summary>
-        /// Retrieve the exact path of func.exe (Azure Function core tools). 
+        /// Retrieve the exact path of func executable (Azure Function core tools). 
         /// </summary>
-        /// <returns>The path to func.exe.</returns>
-        /// <exception cref="Exception">Thrown when the location of func.exe could not be found.</exception>
+        /// <returns>The path to the func executable.</returns>
+        /// <exception cref="Exception">Thrown when the location of func executable could not be found.</exception>
         private static string GetEnvPathForFunctionTools()
         {
-            if (DetermineOperatingSystem() == OSPlatform.Windows)
+            string exePath;
+            if (OperatingSystem.IsWindows())
             {
                 var enviromentPath = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Machine);
-
-                var exePath = enviromentPath.Split(';').Select(x => Path.Combine(x, "func.exe")).Where(x => File.Exists(x)).FirstOrDefault();
-
-                if (!string.IsNullOrWhiteSpace(exePath))
-                {
-                    Console.WriteLine($"Path for Azure Function Core tools: {exePath}");
-                    return exePath;
-                }
-                else
-                {
-                    throw new ArgumentException("Enviroment variables do not have FUNC.EXE path added.");
-                }
+                exePath = enviromentPath.Split(Path.PathSeparator).Select(x => Path.Combine(x, "func.exe")).Where(x => File.Exists(x)).FirstOrDefault();
             }
             else
             {
-                return "func";
+                var enviromentPath = Environment.GetEnvironmentVariable("PATH");
+                exePath = enviromentPath.Split(Path.PathSeparator).Select(x => Path.Combine(x, "func")).Where(x => File.Exists(x)).FirstOrDefault();
             }
-        }
 
-        private static OSPlatform DetermineOperatingSystem()
-        {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            if (!string.IsNullOrWhiteSpace(exePath))
             {
-                return OSPlatform.OSX;
+                Console.WriteLine($"Path for Azure Function Core tools: {exePath}");
+                return exePath;
             }
-
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            else
             {
-                return OSPlatform.Linux;
+                throw new ArgumentException("Enviroment variables do not have func executable path added.");
             }
-
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                return OSPlatform.Windows;
-            }
-
-            throw new ArgumentException("Unable to determine Operating System");
         }
 
         /// <summary>

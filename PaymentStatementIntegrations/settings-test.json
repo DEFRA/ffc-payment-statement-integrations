@@ -1,0 +1,22 @@
+[
+  {
+    "name": "ffcServiceBus-ConnectionString",
+    "value": "@Microsoft.KeyVault(VaultName=SNDESTLOGICAPPKV1;SecretName=ServiceBusConnStringTest)",
+    "slotSetting": false
+    },
+    {
+    "name": "CommonDataService-ConnString",
+    "value": "@Microsoft.KeyVault(VaultName=SNDESTLOGICAPPKV1;SecretName=CommonDataServiceConnStringTest)",
+    "slotSetting": false
+    },
+    {
+    "name": "PdfServiceUrl",
+    "value": "https://ffc-pay-statement-receiver.ffc.snd.azure.defra.cloud/v1",
+    "slotSetting": false
+    },
+    {
+    "name": "AuthTokenValidationUrl",
+    "value": "authtokenurl-test",
+    "slotSetting": false
+    }
+]
