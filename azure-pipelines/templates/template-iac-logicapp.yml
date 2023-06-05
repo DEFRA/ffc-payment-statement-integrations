@@ -38,13 +38,13 @@ jobs:
             deploymentMode: $(deploymentMode)
             deploymentOutputs: 'LogicAppArmOutputs'
 
-#        - task: ARM Outputs@6
-#          displayName: 'ARM Outputs'
-#          inputs:
-#            ConnectedServiceNameSelector: 'ConnectedServiceNameARM'
-#            ConnectedServiceNameARM: ${{ parameters.serviceConnection }}
-#            resourceGroupName: $(resourceGroupName)
-#            whenLastDeploymentIsFailed: 'fail'
+        - task: ARM Outputs@6
+          displayName: 'ARM Outputs'
+          inputs:
+            ConnectedServiceNameSelector: 'ConnectedServiceNameARM'
+            ConnectedServiceNameARM: ${{ parameters.serviceConnection }}
+            resourceGroupName: $(resourceGroupName)
+            whenLastDeploymentIsFailed: 'fail'
 
         - task: AzureResourceGroupDeployment@2
           displayName: 'Deploy Connectors'
@@ -60,13 +60,13 @@ jobs:
               -logicAppSystemAssignedIdentityObjectId $(logicAppSystemAssignedIdentityObjectId)'
             deploymentMode: $(deploymentMode)
 
-#        - task: ARM Outputs@6
-#          displayName: 'ARM Outputs Connections'
-#          inputs:
-#            ConnectedServiceNameSelector: 'ConnectedServiceNameARM'
-#            ConnectedServiceNameARM: ${{ parameters.serviceConnection }}
-#            resourceGroupName: $(resourceGroupName)
-#            whenLastDeploymentIsFailed: 'fail'
+        - task: ARM Outputs@6
+          displayName: 'ARM Outputs Connections'
+          inputs:
+            ConnectedServiceNameSelector: 'ConnectedServiceNameARM'
+            ConnectedServiceNameARM: ${{ parameters.serviceConnection }}
+            resourceGroupName: $(resourceGroupName)
+            whenLastDeploymentIsFailed: 'fail'
 
 #        - task: AzureCLI@2
 #          inputs:
