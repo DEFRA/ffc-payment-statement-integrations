@@ -39,6 +39,14 @@ jobs:
       run: |
         ./cd/setup_vars_dev.sh
     
+    - name: Create resource group (if not exists)
+      uses: Azure/CLI@v1
+      with:
+        inlineScript: |
+          #!/bin/bash
+          az group create --name ${{ env.RESOURCE_GROUP_NAME }} --location ${{ env.RESOURCE_GROUP_LOCATION }}
+          echo "Azure resource group created or already exists"
+
     # Deploy the Logic App resources
     - name: Deploy Logic App resources
       uses: Azure/arm-deploy@v1.0.1
