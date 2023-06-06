@@ -53,7 +53,7 @@ jobs:
         subscriptionId: ${{ env.AZURE_SUBSCRIPTION }}
         resourceGroupName:  ${{ env.RESOURCE_GROUP_NAME }}
         template: azure-pipelines/templates/logicapp-template.json  # Set this to the location of your template file
-        parameters: appServicePlanName=${{env.APP_SERVICE_PLAN_NAME}} environmentName=${{ env.ENV_SHORT_NAME}} location=${{ env.RESOURCE_GROUP_LOCATION }} logicAppName=$${{ env.LOGIC_APP_NAME }} projectName=${{ env.PROJECT_NAME }} storageName=${{ env.STORAGE_NAME }}
+        parameters: appServicePlanName=${{env.APP_SERVICE_PLAN_NAME}} environmentName=${{ env.ENV_SHORT_NAME}} location=${{ env.RESOURCE_GROUP_LOCATION }} logicAppName=${{ env.LOGIC_APP_NAME }} projectName=${{ env.PROJECT_NAME }} storageName=${{ env.STORAGE_NAME }}
         deploymentMode: Incremental
    
     # Deployment of template    
