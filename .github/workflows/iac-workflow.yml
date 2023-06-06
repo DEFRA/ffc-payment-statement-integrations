@@ -25,6 +25,19 @@ jobs:
       with:
           creds: ${{secrets.AZURE_CREDENTIALS}}
     
+    # TODO - sub-template per env
+
+    # Set up variables
+    - name: Set up variables
+      run: |
+        ./cd/setup_vars_common.sh
+        ./cd/setup_vars_dev.sh
+    
+    # Debug
+    - name: Debug - list env vars
+      run: |
+        printenv
+
     # Deploy the Logic App resources
     - name: Deploy Logic App resources
       uses: Azure/arm-deploy@v1.0.1
@@ -32,9 +45,10 @@ jobs:
       with:
         # You can change these environment variables for your configuration:   AZURE_SUBSCRIPTION_ID, AZURE_RESOURCE_GROUP
         scope: resourcegroup  
-        subscriptionId: ${{ vars.AZURE_SUBSCRIPTION }}
-        resourceGroupName:  ${{ vars.RG_NAME }}
+        subscriptionId: ${{ env.AZURE_SUBSCRIPTION }}
+        resourceGroupName:  ${{ env.RESOURCE_GROUP_NAME }}
         template: azure-pipelines/templates/logicapp-template.json  # Set this to the location of your template file
+        parameters: appServicePlanName=${{env.APP_SERVICE_PLAN_NAME}} environmentName=${{ env.ENV_SHORT_NAME}} location=${{ env.RESOURCE_GROUP_LOCATION }} logicAppName=$${{ env.LOGIC_APP_NAME }} projectName=${{ env.PROJECT_NAME }} storageName=${{ env.STORAGE_NAME }}
         deploymentMode: Incremental
    
     # Deployment of template    
@@ -43,8 +57,8 @@ jobs:
       uses: Azure/arm-deploy@v1.0.1
       with:
         scope: resourcegroup  
-        subscriptionId: ${{ vars.AZURE_SUBSCRIPTION }}
-        resourceGroupName: ${{ vars.RG_NAME }}
+        subscriptionId: ${{ env.AZURE_SUBSCRIPTION }}
+        resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
         template: ARM/connectors-template.json  # Set this to the location of your template file
         parameters: ARM/connectors-parameters.json logicAppSystemAssignedIdentityTenantId=${{ steps.ladeploy.outputs.logicAppSystemAssignedIdentityTenantId }} logicAppSystemAssignedIdentityObjectId=${{ steps.ladeploy.outputs.logicAppSystemAssignedIdentityObjectId }}
         deploymentMode: Incremental
@@ -53,7 +67,7 @@ jobs:
       uses: azure/CLI@v1
       with:
         inlineScript: |
-          az functionapp config appsettings set --name ${{ steps.ladeploy.outputs.LAname }} --resource-group  ${{ vars.RG_NAME }} --settings "BLOB_CONNECTION_RUNTIMEURL=${{ steps.conndeploy.outputs.blobendpointurl }}"
-          az functionapp config appsettings set --name ${{ steps.ladeploy.outputs.LAname }} --resource-group  ${{ vars.RG_NAME }} --settings "WORKFLOWS_RESOURCE_GROUP_NAME=${{ vars.RG_NAME }}"
+          az functionapp config appsettings set --name ${{ steps.ladeploy.outputs.LAname }} --resource-group  ${{ env.RESOURCE_GROUP_NAME }} --settings "BLOB_CONNECTION_RUNTIMEURL=${{ steps.conndeploy.outputs.blobendpointurl }}"
+          az functionapp config appsettings set --name ${{ steps.ladeploy.outputs.LAname }} --resource-group  ${{ env.RESOURCE_GROUP_NAME }} --settings "WORKFLOWS_RESOURCE_GROUP_NAME=${{ env.RESOURCE_GROUP_NAME }}"
 
   
