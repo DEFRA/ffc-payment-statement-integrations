@@ -5,7 +5,7 @@ on:
  push:
    branches:
      - main
-     - github-pipeline
+     - github-pipelines
 
 jobs:
   deploy-dev:
