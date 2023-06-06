@@ -1,4 +1,5 @@
-name: Deploy Logic App (Standard) excluding underlying workflows
+name: Deploy Logic App (Standard)
+# excluding underlying workflows
 
 #On merge of PR into main - assuming main is a protected branch
 on:
