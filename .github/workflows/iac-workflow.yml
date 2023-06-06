@@ -27,10 +27,15 @@ jobs:
     
     # TODO - sub-template per env
 
-    # Set up variables
-    - name: Set up variables
+    # Set up common variables
+    - name: Set up common variables
       run: |
         ./cd/setup_vars_common.sh
+
+    # Set up environment-specific variables
+    # This has to be a separate step from common vars in order for this step to use common vars
+    - name: Set up env-specific variables
+      run: |
         ./cd/setup_vars_dev.sh
     
     # Debug
