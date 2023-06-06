@@ -2,9 +2,9 @@
 
 name: Build and test Logic App
 
-#On merge of PR into main - assuming main is a protected branch
-on:
- push:
+#On create of PR into main - assuming main is a protected branch
+on: workflow_dispatch
+# push:
 #   branches:
 #     - main
 

@@ -1,11 +1,11 @@
 name: Deploy Logic App (Standard) excluding underlying workflows
 
 #On merge of PR into main - assuming main is a protected branch
-on:
- push:
-   branches:
-     - main
-     - github-pipelines
+on: workflow_dispatch
+# push:
+#   branches:
+#     - main
+#     - github-pipelines
 
 jobs:
   deploy-dev:
@@ -34,8 +34,7 @@ jobs:
         scope: resourcegroup  
         subscriptionId: ${{ vars.AZURE_SUBCRIPTION }}
         resourceGroupName:  ${{ vars.RG_NAME }}
-        template: ARM/la-template.json  # Set this to the location of your template file
-        parameters: ARM/la-parameters.json # Set this to the location of your parameters file
+        template: azure-pipelines/templates/logicapp-template.json  # Set this to the location of your template file
         deploymentMode: Incremental
    
     # Deployment of template    
