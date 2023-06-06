@@ -73,18 +73,29 @@
                             },
                             "path": "/api/data/v9.1/@{encodeURIComponent(encodeURIComponent('annotations'))}"
                         }
+                    },
+                    "OK_Response": {
+                        "type": "Response",
+                        "kind": "Http",
+                        "inputs": {
+                            "statusCode": 200,
+                            "body": "success"
+                        },
+                        "runAfter": {
+                            "Add_a_row_to_CRM": [
+                                "SUCCEEDED"
+                            ]
+                        }
                     }
                 },
                 "else": {
                     "actions": {
-                        "Terminate": {
-                            "type": "Terminate",
+                        "Bad_Response": {
+                            "type": "Response",
+                            "kind": "Http",
                             "inputs": {
-                                "runStatus": "Failed",
-                                "runError": {
-                                    "code": "400",
-                                    "message": "Missing sbi or apiLink in message contents"
-                                }
+                                "statusCode": 400,
+                                "body": "Missing sbi or apiLink in message contents"
                             }
                         }
                     }
