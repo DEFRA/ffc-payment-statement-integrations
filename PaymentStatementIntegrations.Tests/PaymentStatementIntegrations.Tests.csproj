@@ -16,6 +16,7 @@
     </PackageReference>
     <PackageReference Include="MSTest.TestFramework" Version="3.0.2" />
     <PackageReference Include="MSTest.TestAdapter" Version="3.0.2" />
+    <PackageReference Include="LogicAppUnit" Version="1.6.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,8 +32,5 @@
 <ItemGroup>
   <Folder Include="CrmInsertTest\" />
   <Folder Include="CrmRetrievalTest\" />
-</ItemGroup>
-<ItemGroup>
-  <ProjectReference Include="..\LogicAppUnit\LogicAppUnit.csproj" />
 </ItemGroup>
 </Project>

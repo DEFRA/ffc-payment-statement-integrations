@@ -15,6 +15,6 @@
     "Sql-ConnectionString": "any-sql-connection-string",
     "ServiceBus-ConnectionString": "any-servicebus-connection-string",
     "PdfServiceUrl": "https://external-pdf-service.testing.net/api/v1",
-    "CommonDataService-ConnString": "https://external-common-data-service.testing.net/apim/commondataservice/abcdef/"
+    "CommonDataService-ManagedConnectionRuntimeUrl": "https://external-common-data-service.testing.net/apim/commondataservice/abcdef/"
   }
 }

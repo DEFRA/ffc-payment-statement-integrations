@@ -38,13 +38,13 @@ jobs:
             deploymentMode: $(deploymentMode)
             deploymentOutputs: 'LogicAppArmOutputs'
 
-#        - task: ARM Outputs@6
-#          displayName: 'ARM Outputs'
-#          inputs:
-#            ConnectedServiceNameSelector: 'ConnectedServiceNameARM'
-#            ConnectedServiceNameARM: ${{ parameters.serviceConnection }}
-#            resourceGroupName: $(resourceGroupName)
-#            whenLastDeploymentIsFailed: 'fail'
+        - task: ARM Outputs@6
+          displayName: 'ARM Outputs'
+          inputs:
+            ConnectedServiceNameSelector: 'ConnectedServiceNameARM'
+            ConnectedServiceNameARM: ${{ parameters.serviceConnection }}
+            resourceGroupName: $(resourceGroupName)
+            whenLastDeploymentIsFailed: 'fail'
 
         - task: AzureResourceGroupDeployment@2
           displayName: 'Deploy Connectors'
@@ -57,24 +57,24 @@ jobs:
               -location $(resourceGroupLocation)
               -connections_azureblob_name $(blobConnectionName)
               -logicAppSystemAssignedIdentityTenantId $(logicAppSystemAssignedIdentityTenantId)
-              -logicAppSystemAssignedIdentityObjectId $(logicAppSystemAssignedIdentityObjectId)'
+              -logicAppSystemAssignedIdentityObjectId $(logicAppSystemAssignedIdentityObjectId)
             deploymentMode: $(deploymentMode)
 
-#        - task: ARM Outputs@6
-#          displayName: 'ARM Outputs Connections'
-#          inputs:
-#            ConnectedServiceNameSelector: 'ConnectedServiceNameARM'
-#            ConnectedServiceNameARM: ${{ parameters.serviceConnection }}
-#            resourceGroupName: $(resourceGroupName)
-#            whenLastDeploymentIsFailed: 'fail'
+        - task: ARM Outputs@6
+          displayName: 'ARM Outputs Connections'
+          inputs:
+            ConnectedServiceNameSelector: 'ConnectedServiceNameARM'
+            ConnectedServiceNameARM: ${{ parameters.serviceConnection }}
+            resourceGroupName: $(resourceGroupName)
+            whenLastDeploymentIsFailed: 'fail'
 
-#        - task: AzureCLI@2
-#          inputs:
-#            azureSubscription: ${{ parameters.serviceConnection }}
-#            scriptType: 'bash'
-#            scriptLocation: 'inlineScript'
-#            inlineScript: |
-#              az functionapp config appsettings set --name $(LAname) --resource-group  $(resourceGroupName) --settings "BLOB_CONNECTION_RUNTIMEURL=$(blobendpointurl)"
-#              az functionapp config appsettings set --name $(LAname) --resource-group  $(resourceGroupName) --settings "WORKFLOWS_RESOURCE_GROUP_NAME=$(resourceGroupName)"
-#            addSpnToEnvironment: true
-#            useGlobalConfig: true
+        - task: AzureCLI@2
+          inputs:
+            azureSubscription: ${{ parameters.serviceConnection }}
+            scriptType: 'bash'
+            scriptLocation: 'inlineScript'
+            inlineScript: |
+              az functionapp config appsettings set --name $(LAname) --resource-group  $(resourceGroupName) --settings "BLOB_CONNECTION_RUNTIMEURL=$(blobendpointurl)"
+              az functionapp config appsettings set --name $(LAname) --resource-group  $(resourceGroupName) --settings "WORKFLOWS_RESOURCE_GROUP_NAME=$(resourceGroupName)"
+            addSpnToEnvironment: true
+            useGlobalConfig: true
