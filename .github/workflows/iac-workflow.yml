@@ -32,7 +32,7 @@ jobs:
       with:
         # You can change these environment variables for your configuration:   AZURE_SUBSCRIPTION_ID, AZURE_RESOURCE_GROUP
         scope: resourcegroup  
-        subscriptionId: ${{ vars.AZURE_SUBCRIPTION }}
+        subscriptionId: ${{ vars.AZURE_SUBSCRIPTION }}
         resourceGroupName:  ${{ vars.RG_NAME }}
         template: azure-pipelines/templates/logicapp-template.json  # Set this to the location of your template file
         deploymentMode: Incremental
@@ -43,7 +43,7 @@ jobs:
       uses: Azure/arm-deploy@v1.0.1
       with:
         scope: resourcegroup  
-        subscriptionId: ${{ vars.AZURE_SUBCRIPTION }}
+        subscriptionId: ${{ vars.AZURE_SUBSCRIPTION }}
         resourceGroupName: ${{ vars.RG_NAME }}
         template: ARM/connectors-template.json  # Set this to the location of your template file
         parameters: ARM/connectors-parameters.json logicAppSystemAssignedIdentityTenantId=${{ steps.ladeploy.outputs.logicAppSystemAssignedIdentityTenantId }} logicAppSystemAssignedIdentityObjectId=${{ steps.ladeploy.outputs.logicAppSystemAssignedIdentityObjectId }}
