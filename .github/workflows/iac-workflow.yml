@@ -60,8 +60,8 @@ jobs:
         scope: resourcegroup  
         subscriptionId: ${{ env.AZURE_SUBSCRIPTION_ID }}
         resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
-        template: ARM/connectors-template.json  # Set this to the location of your template file
-        parameters: ARM/connectors-parameters.json logicAppSystemAssignedIdentityTenantId=${{ steps.ladeploy.outputs.logicAppSystemAssignedIdentityTenantId }} logicAppSystemAssignedIdentityObjectId=${{ steps.ladeploy.outputs.logicAppSystemAssignedIdentityObjectId }}
+        template: azure-pipelines/templates/connectors-template.json  # Set this to the location of your template file
+        parameters: logicAppSystemAssignedIdentityTenantId=${{ steps.ladeploy.outputs.logicAppSystemAssignedIdentityTenantId }} logicAppSystemAssignedIdentityObjectId=${{ steps.ladeploy.outputs.logicAppSystemAssignedIdentityObjectId }}  location=${{ env.RESOURCE_GROUP_LOCATION }} connections_azureblob_name=${{ env.BLOB_CONNECTION_NAME }}
         deploymentMode: Incremental
 
     - name: Update Logic App Connections 
