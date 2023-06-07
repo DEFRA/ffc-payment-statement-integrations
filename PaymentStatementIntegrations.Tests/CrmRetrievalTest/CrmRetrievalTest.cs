@@ -15,7 +15,6 @@ namespace PaymentStatementIntegrations.Tests.CrmRetrievalTest
     [TestClass]
     public class CrmRetrievalTest : WorkflowTestBase
     {
-        private const string _WebHookRequestApiKey = "valid-auth-webhook-apikey";
         private const string _ExamplePdfFile = "FFC_PaymentStatement_SFI_2022_1234567890_2023020911105608.pdf";
 
         [TestInitialize]
@@ -31,29 +30,41 @@ namespace PaymentStatementIntegrations.Tests.CrmRetrievalTest
         }
 
         /// <summary>
-        /// Tests that the correct response is returned when an incorrect value for the 'X-API-Key header' is used with the webhook request.
+        /// Tests that the correct response is returned when the filename is missing from the request.
         /// </summary>
         [TestMethod]
-        public void CrmRetrievalTest_When_Invalid_Auth_Token_In_Request()
+        public void CrmRetrievalTest_When_Missing_Param_In_Request()
         {
             using (ITestRunner testRunner = CreateTestRunner())
             {
+                // Mock the HTTP calls and customize responses
+                testRunner.AddApiMocks = (request) =>
+                {
+                    HttpResponseMessage mockedResponse = new HttpResponseMessage();
+                    if (request.RequestUri?.AbsolutePath == "/api/v1/statements/statement/" && request.Method == HttpMethod.Get)
+                    {
+                        mockedResponse.RequestMessage = request;
+                        mockedResponse.StatusCode = HttpStatusCode.NotFound;
+                        mockedResponse.Content = ContentHelper.CreatePlainStringContent("PDF not found");
+                    }
+                    return mockedResponse;
+                };
                 // Run the workflow
                 var workflowResponse = testRunner.TriggerWorkflow(
-                    GetParamsWithInvalidToken(),
+                    GetParamsWithIdMissing(),
                     HttpMethod.Get);
 
                 // Check workflow run status
                 Assert.AreEqual(WorkflowRunStatus.Succeeded, testRunner.WorkflowRunStatus);
 
                 // Check workflow response
-                testRunner.ExceptionWrapper(() => Assert.AreEqual(HttpStatusCode.Unauthorized, workflowResponse.StatusCode));
-                Assert.AreEqual("Invalid/No authorization header passed", workflowResponse.Content.ReadAsStringAsync().Result);
+                testRunner.ExceptionWrapper(() => Assert.AreEqual(HttpStatusCode.NotFound, workflowResponse.StatusCode));
+                Assert.AreEqual("Unable to get PDF content: PDF not found", workflowResponse.Content.ReadAsStringAsync().Result);
                 Assert.AreEqual("text/plain; charset=utf-8", workflowResponse.Content.Headers.ContentType?.ToString());
 
                 // Check action result
-                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Unauthorized_Response"));
-                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Get_PDF_Contents"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Failed_Response"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Serve_PDF"));
             }
         }
 
@@ -75,12 +86,6 @@ namespace PaymentStatementIntegrations.Tests.CrmRetrievalTest
                         mockedResponse.StatusCode = HttpStatusCode.InternalServerError;
                         mockedResponse.Content = ContentHelper.CreatePlainStringContent("Internal server error detected in PDF Service");
                     }
-                    else if (request.RequestUri?.AbsolutePath == "/api/v1/validate" && request.Method == HttpMethod.Post)
-                    {
-                        mockedResponse.RequestMessage = request;
-                        mockedResponse.StatusCode = HttpStatusCode.OK;
-                        mockedResponse.Content = ContentHelper.CreatePlainStringContent("success");
-                    }
                     return mockedResponse;
                 };
 
@@ -98,9 +103,8 @@ namespace PaymentStatementIntegrations.Tests.CrmRetrievalTest
                 Assert.AreEqual("text/plain; charset=utf-8", workflowResponse.Content.Headers.ContentType?.ToString());
 
                 // Check action result
-                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Unauthorized_Response"));
-                Assert.AreEqual(ActionStatus.Failed, testRunner.GetWorkflowActionStatus("Get_PDF_Contents"));
-                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Failed_PDF_Response"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Serve_PDF"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Failed_Response"));
             }
         }
 
@@ -123,13 +127,7 @@ namespace PaymentStatementIntegrations.Tests.CrmRetrievalTest
                     {
                         mockedResponse.RequestMessage = request;
                         mockedResponse.StatusCode = HttpStatusCode.OK;
-                        mockedResponse.Content = GetCustomerResponse();
-                    }
-                    else if (request.RequestUri?.AbsolutePath == "/api/v1/validate" && request.Method == HttpMethod.Post)
-                    {
-                        mockedResponse.RequestMessage = request;
-                        mockedResponse.StatusCode = HttpStatusCode.OK;
-                        mockedResponse.Content = ContentHelper.CreatePlainStringContent("success");
+                        mockedResponse.Content = GetPdfResponse();
                     }
                     return mockedResponse;
                 };
@@ -144,24 +142,17 @@ namespace PaymentStatementIntegrations.Tests.CrmRetrievalTest
 
                 // Check workflow response
                 testRunner.ExceptionWrapper(() => Assert.AreEqual(HttpStatusCode.OK, workflowResponse.StatusCode));
-                //Assert.AreEqual("Webhook processed successfully", workflowResponse.Content.ReadAsStringAsync().Result);
+                Assert.AreEqual("Some dummy PDF content", workflowResponse.Content.ReadAsStringAsync().Result);
                 Assert.AreEqual("application/pdf", workflowResponse.Content.Headers.ContentType?.ToString());
 
                 // Check action result
-                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Unauthorized_Response"));
-                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_PDF_Contents"));
-                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Failed_PDF_Response"));
-                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Return_PDF"));
-
-                // Check request to Auth Server
-                var authServerRequest = testRunner.MockRequests.First(r => r.RequestUri.AbsolutePath == "/api/v1/validate");
-                Assert.AreEqual(HttpMethod.Post, authServerRequest.Method);
-                Assert.AreEqual("ApiKey valid-auth-webhook-apikey", authServerRequest.Headers["x-api-key"].First());
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_PDF_from_service"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Failed_Response"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Serve_PDF"));
 
                 // Check request to PDF Server
                 var pdfServerRequest = testRunner.MockRequests.First(r => r.RequestUri.AbsolutePath == $"/api/v1/statements/statement/{_ExamplePdfFile}");
                 Assert.AreEqual(HttpMethod.Get, pdfServerRequest.Method);
-                Assert.AreEqual("ApiKey valid-auth-apikey", pdfServerRequest.Headers["x-api-key"].First());
             }
         }
 
@@ -169,40 +160,19 @@ namespace PaymentStatementIntegrations.Tests.CrmRetrievalTest
         {
             var dict = new Dictionary<string, string>();
             dict.Add("id", _ExamplePdfFile);
-            dict.Add("token", _WebHookRequestApiKey);
             return dict;
         }
 
-        private static Dictionary<string, string> GetParamsWithInvalidToken()
+        private static Dictionary<string, string> GetParamsWithIdMissing()
         {
             var dict = new Dictionary<string, string>();
-            dict.Add("id", _ExamplePdfFile);
-            dict.Add("token", "bad-token");
+            dict.Add("id2", _ExamplePdfFile);
             return dict;
         }
 
-        private static StringContent GetCustomerResponse()
+        private static StringContent GetPdfResponse()
         {
-            return ContentHelper.CreateJsonStringContent(new
-            {
-                id = 54624,
-                title = "Mr",
-                firstName = "Peter",
-                lastName = "Smith",
-                dateOfBirth = "1970-04-25",
-                languageCode = "en-GB",
-                address = new
-                {
-                    line1 = "8 High Street",
-                    line2 = (string?)null,
-                    line3 = (string?)null,
-                    town = "Luton",
-                    county = "Bedfordshire",
-                    postcode = "LT12 6TY",
-                    countryCode = "UK",
-                    countryName = "United Kingdom"
-                }
-            });
+            return new StringContent("Some dummy PDF content");
         }
     }
 }
