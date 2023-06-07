@@ -3,10 +3,11 @@
 name: Build and test Logic App
 
 #On create of PR into main - assuming main is a protected branch
-on: workflow_dispatch
-# push:
-#   branches:
+on:
+ push:
+   branches:
 #     - main
+      - github-pipelines
 
 env:
   tests-project-name: 'PaymentStatementIntegrations.Tests/PaymentStatementIntegrations.Tests.csproj'

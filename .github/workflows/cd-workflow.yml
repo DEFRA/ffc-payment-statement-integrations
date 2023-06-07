@@ -25,7 +25,7 @@ jobs:
         name: build-artifact
         path: ./output/
 
-    # Log on to azure using service pricipal
+    # Login to azure using service pricipal
     - name: Login to Azure
       uses: azure/login@v1
       with:
