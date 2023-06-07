@@ -49,9 +49,8 @@ jobs:
       run: |
         ./cd/setup_vars_dev.sh
 
-    - name: Extract settings for environment ${{ env.ENV_SHORT_NAME }}
+    - name: "Extract settings for environment ${{ env.ENV_SHORT_NAME }}"
       run: |
-        unzip -q './output/${{ github.run_id }}.zip' -d ./unpacked
         echo "settingsJson=$(cat ./unpacked/${{ env.settingsFile }} | tr -d '\n')" >> $GITHUB_ENV
         
     - name: Debug1
