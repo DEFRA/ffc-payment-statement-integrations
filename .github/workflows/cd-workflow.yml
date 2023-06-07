@@ -51,7 +51,9 @@ jobs:
 
     - name: Unzip artifact
       run: |
-        unzip -q './output/${{ env.ARTIFACT_NAME}}/*.zip' -d ./unpacked
+        ZIP_PATH_AND_FILE=`ls ./output/${{ env.ARTIFACT_NAME }}/*.zip`
+        unzip -q $ZIP_PATH_AND_FILE -d ./unpacked
+        echo "ZIP_PATH_AND_FILE=$ZIP_PATH_AND_FILE" >> $GITHUB_ENV
 
     - name: Extract settings for environment
       run: |
@@ -86,7 +88,7 @@ jobs:
       id: la
       with:
         app-name: ${{ env.LOGIC_APP_NAME }}
-        package: './output/${{ env.ARTIFACT_NAME}}/*.zip'
+        package: ${{ env.ZIP_PATH_AND_FILE }}
  #       publish-profile: ${{steps.publishprofile.outputs.profile}}
 
     - name: Logout from Azure
