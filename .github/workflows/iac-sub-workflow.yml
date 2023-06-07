@@ -13,10 +13,9 @@ on:
         required: true
 
 jobs:
-  deploy-dev:
+  deploy:
    runs-on: ubuntu-latest
-   environment:
-     name: dev
+   environment: ${{ inputs.env-short-name }}
 
    steps:
 
