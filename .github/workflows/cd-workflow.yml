@@ -62,7 +62,7 @@ jobs:
       uses: azure/appservice-settings@v1
       with:
         app-name: ${{ env.LOGIC_APP_NAME }}
-        app-settings-json: '${{ secrets.APP_SETTINGS }}' 
+        app-settings-json: '${{ env.settingsJson }}' 
       
     # Deploy the Logic App workflows
     - name: Get publish Profile
