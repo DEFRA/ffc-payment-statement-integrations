@@ -1,5 +1,5 @@
 # GitHub Action workflow for single environment deployment of Logic App top-level resources
-name: Deploy Logic App resources - single env
+name: "_sub single env - deploy Logic App resources"
 # excluding underlying workflows
 
 on:
@@ -15,7 +15,8 @@ on:
 jobs:
   deploy:
    runs-on: ubuntu-latest
-   environment: ${{ inputs.env-short-name }}
+   environment:
+     name: ${{ inputs.env-short-name }}
 
    steps:
 
