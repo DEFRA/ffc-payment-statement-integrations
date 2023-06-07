@@ -11,24 +11,15 @@ on:
 
 jobs:
   deploy-dev:
-   runs-on: ubuntu-latest
-   environment:
-     name: dev
-
-   steps:
-    - name: Deploy to dev
-      uses: DEFRA/ffc-payment-statement-integrations/.github/workflows/iac-sub-workflow.yml@github-split-env
-      with:
-        env-short-name: 'dev'
+    uses: DEFRA/ffc-payment-statement-integrations/.github/workflows/iac-sub-workflow.yml@github-split-env
+    with:
+      env-short-name: 'dev'
+    secrets:
+      azure-credentials: ${{ secrets.AZURE_CREDENTIALS }}
         
   deploy-test:
-    runs-on: ubuntu-latest
-    environment:
-      name: test
-  
-    steps:
-      - name: Deploy to test
-        uses: DEFRA/ffc-payment-statement-integrations/.github/workflows/iac-sub-workflow.yml@github-split-env
-        with:
-          env-short-name: 'test'
-  
+    uses: DEFRA/ffc-payment-statement-integrations/.github/workflows/iac-sub-workflow.yml@github-split-env
+    with:
+      env-short-name: 'test'
+    secrets:
+      azure-credentials: ${{ secrets.AZURE_CREDENTIALS }}
