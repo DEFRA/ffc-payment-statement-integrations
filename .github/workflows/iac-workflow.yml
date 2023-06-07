@@ -13,13 +13,13 @@ jobs:
   deploy-dev:
     uses: DEFRA/ffc-payment-statement-integrations/.github/workflows/iac-sub-workflow.yml@main
     with:
-      env-short-name: 'dev'
+      env-short-name: dev
     secrets:
       azure-credentials: ${{ secrets.AZURE_CREDENTIALS }}
           
   deploy-test:
     uses: DEFRA/ffc-payment-statement-integrations/.github/workflows/iac-sub-workflow.yml@main
     with:
-      env-short-name: 'test'
+      env-short-name: test
     secrets:
       azure-credentials: ${{ secrets.AZURE_CREDENTIALS }}
