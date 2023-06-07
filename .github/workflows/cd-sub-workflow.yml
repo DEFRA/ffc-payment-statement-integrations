@@ -1,0 +1,95 @@
+# GitHub Action workflow (pipeline) for single env deployment of underlying workflows
+name: Deploy Logic App workflows - single env
+
+on:
+  workflow_call:
+    inputs:
+      env-short-name:
+        required: true
+        type: string
+    secrets:
+      azure-credentials:
+        required: true
+
+jobs:
+  deploy:
+   runs-on: ubuntu-latest
+   environment:
+     name: ${{ inputs.env-short-name }}
+   env:
+     settingsFile: settings-${{ inputs.env-short-name }}.json
+
+   steps:
+
+    # Check out files (for scripts, not Logic App definitions)
+    - name: Check out files
+      uses: actions/checkout@v3
+  
+    # Download artifact
+    - name: Download artifact
+      uses: dawidd6/action-download-artifact@v2
+      with:
+        workflow: ci-workflow.yml
+        workflow_conclusion: success
+        path: ./output/
+
+    # Login to azure using service pricipal
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+          creds: ${{secrets.azure-credentials}}
+    
+    # TODO - sub-template per env
+
+    # Set up common variables
+    - name: Set up common variables
+      run: |
+        ./cd/setup_vars_common.sh
+
+    # Set up environment-specific variables
+    # This has to be a separate step from common vars in order for this step to use common vars
+    - name: Set up env-specific variables
+      run: |
+        ./cd/setup_vars_dev.sh
+
+    - name: Unzip artifact
+      run: |
+        ZIP_PATH_AND_FILE=`ls ./output/${{ env.ARTIFACT_NAME }}/*.zip`
+        unzip -q $ZIP_PATH_AND_FILE -d ./unpacked
+        echo "ZIP_PATH_AND_FILE=$ZIP_PATH_AND_FILE" >> $GITHUB_ENV
+
+    - name: Extract settings for environment
+      run: |
+        echo "Extracting settings for environment ${{ env.ENV_SHORT_NAME }}"
+        echo "settingsJson=$(cat ./unpacked/${{ env.settingsFile }} | tr -d '\n')" >> $GITHUB_ENV
+        
+    - name: App Service settings
+      uses: azure/appservice-settings@v1
+      with:
+        app-name: ${{ env.LOGIC_APP_NAME }}
+        app-settings-json: '${{ env.settingsJson }}' 
+      
+    # Deploy the Logic App workflows
+#    - name: Get publish Profile
+#      id: publishprofile
+#      uses: azure/powershell@v1
+#      with:
+#        inlineScript: |
+#          $profile = Get-AzWebAppPublishingProfile `
+#              -ResourceGroupName ${{ env.RESOURCE_GROUP_NAME }} `
+#              -Name ${{ env.LOGIC_APP_NAME }}
+#          $profile = $profile.Replace("`r", "").Replace("`n", "")
+#          Write-Output "::set-output name=profile::$profile"
+#        azPSVersion: latest
+
+    - name: Deploy to Logic App workflows
+      uses: azure/functions-action@v1.3.1
+      id: la
+      with:
+        app-name: ${{ env.LOGIC_APP_NAME }}
+        package: ${{ env.ZIP_PATH_AND_FILE }}
+ #       publish-profile: ${{steps.publishprofile.outputs.profile}}
+
+    - name: Logout from Azure
+      run: |
+        az logout
