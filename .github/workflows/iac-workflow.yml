@@ -2,23 +2,23 @@
 name: Deploy Logic App resources (Standard)
 # excluding underlying workflows
 
-#On merge of PR into main - assuming main is a protected branch
+# Currently only manual trigger
 on:
- push:
-   branches:
+  workflow_dispatch
+# push:
+#   branches:
 #     - main
-      - github-split-env
 
 jobs:
   deploy-dev:
-    uses: DEFRA/ffc-payment-statement-integrations/.github/workflows/iac-sub-workflow.yml@github-split-env
+    uses: DEFRA/ffc-payment-statement-integrations/.github/workflows/iac-sub-workflow.yml@main
     with:
       env-short-name: 'dev'
     secrets:
       azure-credentials: ${{ secrets.AZURE_CREDENTIALS }}
           
   deploy-test:
-    uses: DEFRA/ffc-payment-statement-integrations/.github/workflows/iac-sub-workflow.yml@github-split-env
+    uses: DEFRA/ffc-payment-statement-integrations/.github/workflows/iac-sub-workflow.yml@main
     with:
       env-short-name: 'test'
     secrets:
