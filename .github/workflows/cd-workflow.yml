@@ -49,15 +49,20 @@ jobs:
       run: |
         ./cd/setup_vars_dev.sh
 
+    - name: Unzip artifact
+      run: |
+        unzip -q './output/${{ env.ARTIFACT_NAME}}/*.zip' -d ./unpacked
+
     - name: Extract settings for environment
       run: |
         echo "Extracting settings for environment ${{ env.ENV_SHORT_NAME }}"
-        echo "settingsJson=$(cat ./output/${{ env.ARTIFACT_NAME }}/${{ env.settingsFile }} | tr -d '\n')" >> $GITHUB_ENV
+        echo "settingsJson=$(cat ./unpacked/${{ env.ARTIFACT_NAME }}/${{ env.settingsFile }} | tr -d '\n')" >> $GITHUB_ENV
         
     - name: Debug1
       run: |
         echo "settings=${{ env.settingsJson }}"
         ls -al ./output/build-artifact
+        ls -al ./unpacked
   
     - name: App Service settings
       uses: azure/appservice-settings@v1
