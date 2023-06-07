@@ -1,4 +1,5 @@
-name: Deploy Logic App (Standard)
+# GitHub Action workflow (pipeline) for deployment of Logic App top-level resources
+name: Deploy Logic App resources (Standard)
 # excluding underlying workflows
 
 #On merge of PR into main - assuming main is a protected branch
@@ -16,11 +17,11 @@ jobs:
 
    steps:
 
-    #Check out files
+    # Check out files
     - name: Check out files
       uses: actions/checkout@v3
 
-    #Use the azure provided action to log on to azure using service pricipal
+    # Log on to azure using service pricipal
     - name: Login to Azure
       uses: azure/login@v1
       with:
@@ -38,14 +39,15 @@ jobs:
     - name: Set up env-specific variables
       run: |
         ./cd/setup_vars_dev.sh
-    
-    - name: Create resource group (if not exists)
-      uses: Azure/CLI@v1
-      with:
-        inlineScript: |
-          #!/bin/bash
-          az group create --name ${{ env.RESOURCE_GROUP_NAME }} --location ${{ env.RESOURCE_GROUP_LOCATION }}
-          echo "Azure resource group created or already exists"
+ 
+# Workflow doesn't have perms to create resource groups currently
+#    - name: Create resource group (if not exists)
+#      uses: Azure/CLI@v1
+#      with:
+#        inlineScript: |
+#          #!/bin/bash
+#          az group create --name ${{ env.RESOURCE_GROUP_NAME }} --location ${{ env.RESOURCE_GROUP_LOCATION }}
+#          echo "Azure resource group created or already exists"
 
     # Deploy the Logic App resources
     - name: Deploy Logic App resources
@@ -79,4 +81,6 @@ jobs:
           az functionapp config appsettings set --name ${{ steps.ladeploy.outputs.LAname }} --resource-group  ${{ env.RESOURCE_GROUP_NAME }} --settings "BLOB_CONNECTION_RUNTIMEURL=${{ steps.conndeploy.outputs.blobendpointurl }}"
           az functionapp config appsettings set --name ${{ steps.ladeploy.outputs.LAname }} --resource-group  ${{ env.RESOURCE_GROUP_NAME }} --settings "WORKFLOWS_RESOURCE_GROUP_NAME=${{ env.RESOURCE_GROUP_NAME }}"
 
-  
+    - name: Logout from Azure
+      run: |
+        az logout

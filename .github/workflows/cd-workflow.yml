@@ -1,0 +1,89 @@
+# GitHub Action workflow (pipeline) for deployment of underlying workflows
+name: Deploy Logic App workflows (Standard)
+
+#On merge of PR into main - assuming main is a protected branch
+on:
+ push:
+   branches:
+#     - main
+     - github-pipelines
+
+jobs:
+  deploy-dev:
+   runs-on: ubuntu-latest
+   environment:
+     name: dev
+   env:
+     settingsFile: settings-dev.json
+
+   steps:
+
+    # Download artifact
+    - name: Download artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: build-artifact
+        path: ./output/
+
+    # Log on to azure using service pricipal
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+          creds: ${{secrets.AZURE_CREDENTIALS}}
+    
+    # TODO - sub-template per env
+
+    # Set up common variables
+    - name: Set up common variables
+      run: |
+        ./cd/setup_vars_common.sh
+
+    # Set up environment-specific variables
+    # This has to be a separate step from common vars in order for this step to use common vars
+    - name: Set up env-specific variables
+      run: |
+        ./cd/setup_vars_dev.sh
+
+    - name: Extract settings for environment ${{ env.ENV_SHORT_NAME }}
+      run: |
+        unzip -q './output/${{ github.run_id }}.zip' -d ./unpacked
+        echo "settingsJson=$(cat ./unpacked/${{ env.settingsFile }} | tr -d '\n')" >> $GITHUB_ENV
+        
+    - name: Debug1
+      run: |
+        echo "settings=${{ env.settingsJson }}"
+  
+    - name: App Service settings
+      uses: azure/appservice-settings@v1
+      with:
+        app-name: ${{ env.LOGIC_APP_NAME }}
+        app-settings-json: '${{ secrets.APP_SETTINGS }}' 
+      
+    # Deploy the Logic App workflows
+    - name: Get publish Profile
+      id: publishprofile
+      uses: azure/powershell@v1
+      with:
+        inlineScript: |
+          $profile = Get-AzWebAppPublishingProfile `
+              -ResourceGroupName ${{ env.RESOURCE_GROUP_NAME }} `
+              -Name ${{ env.LOGIC_APP_NAME }}
+          $profile = $profile.Replace("`r", "").Replace("`n", "")
+          Write-Output "::set-output name=profile::$profile"
+        azPSVersion: latest
+
+    - name: Debug2
+      run: |
+        echo "profile=${{steps.publishprofile.outputs.profile}}"
+
+    - name: Deploy to Logic App workflows
+      uses: azure/functions-action@v1.3.1
+      id: la
+      with:
+        app-name: ${{ env.LOGIC_APP_NAME }}
+        package: './output/${{ github.run_id }}.zip'
+        publish-profile: ${{steps.publishprofile.outputs.profile}}
+
+    - name: Logout from Azure
+      run: |
+        az logout

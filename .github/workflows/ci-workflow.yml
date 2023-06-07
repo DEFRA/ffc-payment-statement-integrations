@@ -74,7 +74,7 @@ jobs:
         files: ./${{ env.project-folder}}
 
     - name: Publish artifact
-      uses: actions/upload-artifact@master
+      uses: actions/upload-artifact@v3
       with:
         name: build-artifact
         path: ${{ github.run_id }}.zip
