@@ -39,8 +39,6 @@ jobs:
       with:
           creds: ${{secrets.azure-credentials}}
     
-    # TODO - sub-template per env
-
     # Set up common variables
     - name: Set up common variables
       run: |
@@ -50,7 +48,7 @@ jobs:
     # This has to be a separate step from common vars in order for this step to use common vars
     - name: Set up env-specific variables
       run: |
-        ./cd/setup_vars_dev.sh
+        ./cd/setup_vars_${{ inputs.env-short-name}}.sh
 
     - name: Unzip artifact
       run: |
@@ -69,26 +67,12 @@ jobs:
         app-name: ${{ env.LOGIC_APP_NAME }}
         app-settings-json: '${{ env.settingsJson }}' 
       
-    # Deploy the Logic App workflows
-#    - name: Get publish Profile
-#      id: publishprofile
-#      uses: azure/powershell@v1
-#      with:
-#        inlineScript: |
-#          $profile = Get-AzWebAppPublishingProfile `
-#              -ResourceGroupName ${{ env.RESOURCE_GROUP_NAME }} `
-#              -Name ${{ env.LOGIC_APP_NAME }}
-#          $profile = $profile.Replace("`r", "").Replace("`n", "")
-#          Write-Output "::set-output name=profile::$profile"
-#        azPSVersion: latest
-
     - name: Deploy to Logic App workflows
       uses: azure/functions-action@v1.3.1
       id: la
       with:
         app-name: ${{ env.LOGIC_APP_NAME }}
         package: ${{ env.ZIP_PATH_AND_FILE }}
- #       publish-profile: ${{steps.publishprofile.outputs.profile}}
 
     - name: Logout from Azure
       run: |
