@@ -18,6 +18,10 @@ jobs:
 
    steps:
 
+    # Check out files (for scripts, not Logic App definitions)
+    - name: Check out files
+      uses: actions/checkout@v3
+  
     # Download artifact
     - name: Download artifact
       uses: dawidd6/action-download-artifact@v2

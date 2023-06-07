@@ -3,11 +3,11 @@
 name: Build and test Logic App
 
 #On create of PR into main - assuming main is a protected branch
-on:
- push:
-   branches:
+on: workflow_dispatch
+# push:
+#   branches:
 #     - main
-      - github-pipelines
+#      - github-pipelines
 
 env:
   tests-project-name: 'PaymentStatementIntegrations.Tests/PaymentStatementIntegrations.Tests.csproj'
@@ -19,7 +19,7 @@ jobs:
    
    steps:
 
-    #Check out files
+    # Check out files
     - name: Check out files
       uses: actions/checkout@v3
 
