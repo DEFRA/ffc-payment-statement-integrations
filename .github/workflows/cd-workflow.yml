@@ -56,7 +56,7 @@ jobs:
     - name: Extract settings for environment
       run: |
         echo "Extracting settings for environment ${{ env.ENV_SHORT_NAME }}"
-        echo "settingsJson=$(cat ./unpacked/${{ env.ARTIFACT_NAME }}/${{ env.settingsFile }} | tr -d '\n')" >> $GITHUB_ENV
+        echo "settingsJson=$(cat ./unpacked/${{ env.settingsFile }} | tr -d '\n')" >> $GITHUB_ENV
         
     - name: Debug1
       run: |
