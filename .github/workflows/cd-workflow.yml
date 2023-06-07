@@ -15,6 +15,7 @@ jobs:
       env-short-name: 'dev'
     secrets:
       azure-credentials: ${{ secrets.AZURE_CREDENTIALS }}
+    concurrency: deploy-one-env-at-once
   
   deploy-test:
     uses: DEFRA/ffc-payment-statement-integrations/.github/workflows/cd-sub-workflow.yml@github-split-env
@@ -22,4 +23,5 @@ jobs:
       env-short-name: 'test'
     secrets:
       azure-credentials: ${{ secrets.AZURE_CREDENTIALS }}
+    concurrency: deploy-one-env-at-once
     
