@@ -20,9 +20,10 @@ jobs:
 
     # Download artifact
     - name: Download artifact
-      uses: actions/download-artifact@v3
+      uses: dawidd6/action-download-artifact@v2
       with:
-        name: build-artifact
+        workflow: ci-workflow.yml
+        workflow_conclusion: success
         path: ./output/
 
     # Login to azure using service pricipal
