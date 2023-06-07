@@ -2,11 +2,10 @@
 name: Deploy Logic App workflows (Standard)
 
 #On merge of PR into main - assuming main is a protected branch
-on:
- push:
-   branches:
+on: workflow_dispatch
+# push:
+#   branches:
 #     - main
-     - github-pipelines
 
 jobs:
   deploy-dev:
