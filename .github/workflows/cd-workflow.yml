@@ -52,11 +52,12 @@ jobs:
     - name: Extract settings for environment
       run: |
         echo "Extracting settings for environment ${{ env.ENV_SHORT_NAME }}"
-        echo "settingsJson=$(cat ./output/${{ env.settingsFile }} | tr -d '\n')" >> $GITHUB_ENV
+        echo "settingsJson=$(cat ./output/${{ env.ARTIFACT_NAME }}/${{ env.settingsFile }} | tr -d '\n')" >> $GITHUB_ENV
         
     - name: Debug1
       run: |
         echo "settings=${{ env.settingsJson }}"
+        ls -al ./output/build-artifact
   
     - name: App Service settings
       uses: azure/appservice-settings@v1
