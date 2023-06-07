@@ -1,5 +1,5 @@
 # GitHub Action workflow (pipeline) for single env deployment of underlying workflows
-name: Deploy Logic App workflows - single env
+name: "_sub single env - deploy Logic App workflows"
 
 on:
   workflow_call:
