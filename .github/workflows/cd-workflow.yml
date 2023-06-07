@@ -86,7 +86,7 @@ jobs:
       id: la
       with:
         app-name: ${{ env.LOGIC_APP_NAME }}
-        package: './output/${{ github.run_id }}.zip'
+        package: './output/${{ env.ARTIFACT_NAME}}/*.zip'
  #       publish-profile: ${{steps.publishprofile.outputs.profile}}
 
     - name: Logout from Azure
