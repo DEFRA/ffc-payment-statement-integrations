@@ -2,114 +2,59 @@
     "definition": {
         "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
         "actions": {
-            "Check_Auth_Result": {
+            "Get_PDF_from_service": {
+                "type": "Http",
+                "inputs": {
+                    "uri": "@{parameters('PdfServiceUrl')}/statements/statement/@{trigger().outputs?.queries?.id}",
+                    "method": "GET"
+                },
+                "runAfter": {}
+            },
+            "Check_PDF": {
                 "type": "If",
                 "expression": {
                     "and": [
                         {
                             "equals": [
-                                "@triggerOutputs()?['queries']['token']",
-                                "@parameters('AuthService-WebHook-APIKey')"
+                                "@outputs('Get_PDF_from_service')?['statusCode']",
+                                200
                             ]
                         }
                     ]
                 },
                 "actions": {
-                    "Get_PDF_Contents": {
-                        "type": "Http",
-                        "description": "Track some properties in this action",
+                    "Serve_PDF": {
+                        "type": "Response",
+                        "kind": "Http",
                         "inputs": {
-                            "uri": "@{parameters('PdfServiceUrl')}/statements/statement/@{triggerOutputs()?['queries']['id']}",
-                            "method": "GET",
+                            "statusCode": 200,
                             "headers": {
-                                "x-api-key": "ApiKey @{parameters('AuthService-APIKey')}"
-                            }
-                        },
-                        "operationOptions": "DisableAsyncPattern, SuppressWorkflowHeaders",
-                        "trackedProperties": {
-                            "recordType": "customer",
-                            "recordId": "@{triggerBody()?['customerId']}",
-                            "correlationId": "@{triggerBody()?['correlationId']}"
-                        }
-                    },
-                    "Check_PDF_Result": {
-                        "type": "If",
-                        "expression": {
-                            "and": [
-                                {
-                                    "equals": [
-                                        "@outputs('Get_PDF_Contents')['statusCode']",
-                                        200
-                                    ]
-                                }
-                            ]
-                        },
-                        "actions": {
-                            "Return_PDF": {
-                                "type": "Response",
-                                "kind": "Http",
-                                "inputs": {
-                                    "statusCode": 200,
-                                    "headers": {
-                                        "Content-Type": "application/pdf",
-                                        "Content-disposition": "inline"
-                                    },
-                                    "body": "@body('Get_PDF_Contents')"
-                                }
-                            }
-                        },
-                        "else": {
-                            "actions": {
-                                "Failed_PDF_Response": {
-                                    "type": "Response",
-                                    "kind": "http",
-                                    "inputs": {
-                                        "statusCode": "@outputs('Get_PDF_Contents')['statusCode']",
-                                        "body": "Unable to get PDF content: @{body('Get_PDF_Contents')}"
-                                    }
-                                }
-                            }
-                        },
-                        "runAfter": {
-                            "Get_PDF_Contents": [
-                                "Succeeded",
-                                "TIMEDOUT",
-                                "SKIPPED",
-                                "FAILED"
-                            ]
+                                "Content-Type": "application/pdf",
+                                "Content-disposition": "inline"
+                            },
+                            "body": "@body('Get_PDF_from_service')"
                         }
                     }
                 },
                 "else": {
                     "actions": {
-                        "Unauthorized_Response": {
+                        "Failed_Response": {
                             "type": "Response",
-                            "kind": "http",
+                            "kind": "Http",
                             "inputs": {
-                                "statusCode": 401,
-                                "body": "Invalid/No authorization header passed"
+                                "statusCode": "@outputs('Get_PDF_from_service')?['statusCode']",
+                                "body": "Unable to get PDF content: @{body('Get_PDF_from_service')}"
                             }
                         }
                     }
                 },
                 "runAfter": {
-                    "Validate_Auth_Token": [
+                    "Get_PDF_from_service": [
                         "SUCCEEDED",
                         "TIMEDOUT",
                         "FAILED"
                     ]
                 }
-            },
-            "Validate_Auth_Token": {
-                "type": "Http",
-                "inputs": {
-                    "uri": "@{parameters('AuthTokenValidationUrl')}/validate",
-                    "method": "POST",
-                    "headers": {
-                        "x-api-key": "ApiKey @{triggerOutputs()?['queries']['token']}"
-                    }
-                },
-                "runAfter": {}
             }
         },
         "contentVersion": "1.0.0.0",
