@@ -24,6 +24,9 @@ stages:
         targetFolder: '$(Build.ArtifactStagingDirectory)'
     - publish: '$(Build.ArtifactStagingDirectory)'
       artifact: $(artifactName)
+    - bash: |
+        ls -al $(Build.ArtifactStagingDirectory)
+      displayName: Debug1
 
 - stage: DEV
   displayName: 'DEV Deployment'
