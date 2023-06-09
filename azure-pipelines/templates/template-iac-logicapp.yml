@@ -5,6 +5,8 @@ parameters:
   type: string
 - name: serviceConnection
   type: string
+- name: runId
+  type: string
 
 jobs:
 - deployment: deploy_logicapp_resources
@@ -14,16 +16,14 @@ jobs:
   environment: ${{ parameters.environment }}
   variables:
     deploymentMode: 'Incremental'
+    artifactPath: '$(Pipeline.Workspace)/cipipeline/logicapp-artifact'
   strategy:
     runOnce:
       deploy:
         steps:
-        - download: current
-          artifact: $(artifactName)
-
         - bash: |
-            ls -al $(Pipeline.Workspace)/unpacked
-          displayName: Debug2
+            unzip -q '${{ variables.artifactPath}}/${{ parameters.runID }}.zip' -d ./unpacked
+          displayName: Unzip artifact
 
         - task: AzureResourceGroupDeployment@2
           displayName: 'Deploy Logic App'

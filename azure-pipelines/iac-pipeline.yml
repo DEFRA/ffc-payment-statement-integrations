@@ -24,6 +24,7 @@ stages:
     parameters:
       environment: ${{ variables.envShortName }}
       serviceConnection: ${{ variables.serviceConnection }}
+      runId: $(resources.pipeline.cipipeline.runID)
 
 - stage: TEST
   displayName: 'TEST Deployment'
@@ -34,3 +35,4 @@ stages:
     parameters:
       environment: ${{ variables.envShortName }}
       serviceConnection: ${{ variables.serviceConnection }}
+      runId: $(resources.pipeline.cipipeline.runID)
