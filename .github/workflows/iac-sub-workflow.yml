@@ -32,12 +32,6 @@ jobs:
         workflow_conclusion: success
         path: ./output/
 
-    - name: Unzip artifact
-      run: |
-        ZIP_PATH_AND_FILE=`ls ./output/${{ env.ARTIFACT_NAME }}/*.zip`
-        unzip -q $ZIP_PATH_AND_FILE -d ./unpacked
-        echo "ZIP_PATH_AND_FILE=$ZIP_PATH_AND_FILE" >> $GITHUB_ENV
-  
     # Log on to azure using service pricipal
     - name: Login to Azure
       uses: azure/login@v1
