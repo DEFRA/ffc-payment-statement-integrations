@@ -28,7 +28,8 @@ stages:
     - bash: |
         artifactPath="$(Pipeline.Workspace)/cipipeline/logicapp-artifact"
         echo "artifactPath=$artifactPath"
-        unzip -q "$(artifactPath)/$(resources.pipeline.cipipeline.runID).zip" -d $(Pipeline.Workspace)/unpacked
+        ls -al $artifactPath
+        unzip -q "$artifactPath/$(resources.pipeline.cipipeline.runID).zip" -d $(Pipeline.Workspace)/unpacked
       displayName: Unzip artifact
     - bash: |
         ls -al $(Pipeline.Workspace)/unpacked
