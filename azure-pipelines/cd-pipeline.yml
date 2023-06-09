@@ -3,9 +3,15 @@
 # The Logic App structure (including service plan, storage account and connections)
 # is deployed separately using the iac-pipeline.yml pipeline.
 
-trigger: none
+#trigger: none
 
-pr: none
+#pr: none
+on:
+#  workflow_dispatch
+ push:
+   branches:
+#     - main
+     - github-fixes
 
 variables:
 - template: variables/pipeline-vars-common.yml

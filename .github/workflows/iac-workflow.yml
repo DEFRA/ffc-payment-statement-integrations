@@ -4,10 +4,11 @@ name: Deploy Logic App resources (Standard)
 
 # Currently only manual trigger
 on:
-  workflow_dispatch
-# push:
-#   branches:
+#  workflow_dispatch
+ push:
+   branches:
 #     - main
+     - github-fixes
 
 jobs:
   deploy-dev:
