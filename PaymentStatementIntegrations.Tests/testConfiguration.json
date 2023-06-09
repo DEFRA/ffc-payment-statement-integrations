@@ -5,7 +5,6 @@
 
   "workflow": {
     "externalApiUrlsToMock": [
-      "https://external-auth-service.testing.net",
       "https://external-pdf-service.testing.net"
     ],
     "builtInConnectorsToMock": [
