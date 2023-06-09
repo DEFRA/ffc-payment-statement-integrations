@@ -26,11 +26,12 @@ stages:
       vmImage: ubuntu-latest
     steps:
     - bash: |
-        unzip -q '${{ variables.artifactPath}}/$(resources.pipeline.cipipeline.runID).zip' -d $(Pipeline.Workspace)/unpacked
-      displayName: Unzip artifact
-    - bash: |
         ls -al $(Pipeline.Workspace)/unpacked
       displayName: Debug1
+    - bash: |
+        artifactPath='$(Pipeline.Workspace)/cipipeline/logicapp-artifact'
+        unzip -q '$artifactPath/$(resources.pipeline.cipipeline.runID).zip' -d $(Pipeline.Workspace)/unpacked
+      displayName: Unzip artifact
 
 - stage: DEV
   displayName: 'DEV Deployment'
