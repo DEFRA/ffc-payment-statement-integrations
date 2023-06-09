@@ -7,11 +7,11 @@
 
 #pr: none
 on:
-#  workflow_dispatch
- push:
-   branches:
+  workflow_dispatch
+# push:
+#   branches:
 #     - main
-     - github-fixes
+#     - github-fixes
 
 variables:
 - template: variables/pipeline-vars-common.yml
