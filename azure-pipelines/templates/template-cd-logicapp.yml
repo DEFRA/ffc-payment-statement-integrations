@@ -18,7 +18,7 @@ jobs:
     environment: ${{ parameters.environment }}
     variables:
       deploymentMode: 'Incremental'
-      artifactPath: '$(Pipeline.Workspace)/cipipeline/logicapp-artifact'
+      artifactPath: '$(Pipeline.Workspace)/cipipeline/$(artifactName)'
     strategy:
       runOnce:
         deploy:
@@ -45,5 +45,5 @@ jobs:
               azureSubscription: ${{ parameters.serviceConnection }}
               appType: 'functionApp'
               appName: $(logicAppName)
-              package: '$(Pipeline.Workspace)/cipipeline/logicapp-artifact/${{ parameters.runID }}.zip'
+              package: '$(Pipeline.Workspace)/cipipeline/$(artifactName)/${{ parameters.runID }}.zip'
               deploymentMethod: 'zipDeploy'

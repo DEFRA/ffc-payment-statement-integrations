@@ -14,9 +14,6 @@ resources:
   pipelines:
   - pipeline: cipipeline
     source: payment-statement-integrations-ci
-    trigger:
-      branches:
-      - main
 
 stages:
 - stage: DEV

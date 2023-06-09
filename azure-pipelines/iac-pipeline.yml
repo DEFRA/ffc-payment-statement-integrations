@@ -9,22 +9,12 @@ pr: none
 variables:
 - template: variables/pipeline-vars-common.yml
 
-stages:
-- stage: Build
-  displayName: 'Publish IaC Artifacts'
-  jobs:
-  - job: Build
-    pool:
-      vmImage: ubuntu-latest
-    steps:
-    - task: CopyFiles@2
-      displayName: 'Copy ARM templates'
-      inputs:
-        sourceFolder: 'azure-pipelines/templates'
-        targetFolder: '$(Build.ArtifactStagingDirectory)'
-    - publish: '$(Build.ArtifactStagingDirectory)'
-      artifact: $(artifactName)
+resources:
+  pipelines:
+  - pipeline: cipipeline
+    source: payment-statement-integrations-ci
 
+stages:
 - stage: DEV
   displayName: 'DEV Deployment'
   variables:
@@ -34,6 +24,7 @@ stages:
     parameters:
       environment: ${{ variables.envShortName }}
       serviceConnection: ${{ variables.serviceConnection }}
+      runId: $(resources.pipeline.cipipeline.runID)
 
 - stage: TEST
   displayName: 'TEST Deployment'
@@ -44,3 +35,4 @@ stages:
     parameters:
       environment: ${{ variables.envShortName }}
       serviceConnection: ${{ variables.serviceConnection }}
+      runId: $(resources.pipeline.cipipeline.runID)

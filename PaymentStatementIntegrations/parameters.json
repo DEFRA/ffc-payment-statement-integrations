@@ -2,17 +2,5 @@
   "PdfServiceUrl": {
     "type": "String",
     "value": "@appsetting('PdfServiceUrl')"
-  },
-  "AuthService-APIKey": {
-    "type": "String",
-    "value": "@appsetting('AuthService-APIKey')"
-  },
-  "AuthService-WebHook-APIKey": {
-    "type": "String",
-    "value": "@appsetting('AuthService-WebHook-APIKey')"
-  },
-  "AuthTokenValidationUrl": {
-    "type": "String",
-    "value": "@appsetting('AuthTokenValidationUrl')"
   }
 }
