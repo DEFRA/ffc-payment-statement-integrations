@@ -24,6 +24,7 @@ jobs:
         - bash: |
             unzip -q '${{ variables.artifactPath}}/${{ parameters.runID }}.zip' -d ./unpacked
             ls -al ./unpacked
+            ls -al ./unpacked/templates
             pwd
           displayName: Unzip artifact
 
@@ -33,7 +34,7 @@ jobs:
             azureSubscription: ${{ parameters.serviceConnection }}
             resourceGroupName: $(resourceGroupName)
             location: $(resourceGroupLocation)
-            csmFile: '$(Pipeline.Workspace)/unpacked/templates/logicapp-template.json'
+            csmFile: './unpacked/templates/logicapp-template.json'
             overrideParameters:
               -location $(resourceGroupLocation)
               -environmentName ${{ parameters.environment }}
@@ -58,7 +59,7 @@ jobs:
             azureSubscription: ${{ parameters.serviceConnection }}
             resourceGroupName: $(resourceGroupName)
             location: $(resourceGroupLocation)
-            csmFile: '$(Pipeline.Workspace)/unpacked/templates/connectors-template.json'
+            csmFile: './unpacked/templates/connectors-template.json'
             overrideParameters:
               -location $(resourceGroupLocation)
               -connections_azureblob_name $(blobConnectionName)
