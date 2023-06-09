@@ -15,26 +15,9 @@ resources:
     source: payment-statement-integrations-ci
     trigger:
       branches:
-      - test-az-pipeline
+        - main
 
 stages:
-- stage: Build
-  displayName: 'Publish IaC Artifacts'
-  jobs:
-  - job: Build
-    pool:
-      vmImage: ubuntu-latest
-    steps:
-    - bash: |
-        artifactPath="$(Pipeline.Workspace)/cipipeline/logicapp-artifact"
-        echo "artifactPath=$artifactPath"
-        ls -al $(Pipeline.Workspace)
-        unzip -q "$artifactPath/$(resources.pipeline.cipipeline.runID).zip" -d $(Pipeline.Workspace)/unpacked
-      displayName: Unzip artifact
-    - bash: |
-        ls -al $(Pipeline.Workspace)/unpacked
-      displayName: Debug1
-
 - stage: DEV
   displayName: 'DEV Deployment'
   variables:

@@ -16,7 +16,7 @@ resources:
     source: payment-statement-integrations-ci
     trigger:
       branches:
-      - main
+        - main
 
 stages:
 - stage: DEV
