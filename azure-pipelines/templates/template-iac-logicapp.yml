@@ -21,6 +21,10 @@ jobs:
         - download: current
           artifact: $(artifactName)
 
+        - bash: |
+            ls -al $(Pipeline.Workspace)/$(artifactName)
+          displayName: Debug2
+
         - task: AzureResourceGroupDeployment@2
           displayName: 'Deploy Logic App'
           inputs:
