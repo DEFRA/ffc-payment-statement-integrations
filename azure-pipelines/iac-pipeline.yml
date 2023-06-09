@@ -9,6 +9,14 @@ pr: none
 variables:
 - template: variables/pipeline-vars-common.yml
 
+resources:
+  pipelines:
+  - pipeline: cipipeline
+    source: payment-statement-integrations-ci
+    trigger:
+      branches:
+      - main
+
 stages:
 - stage: Build
   displayName: 'Publish IaC Artifacts'
