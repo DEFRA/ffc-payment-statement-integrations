@@ -48,7 +48,7 @@
     }
   },
   "managedApiConnections": {
-    "outlook": {
+    "outlook-test": {
       "api": {
         "id": "/subscriptions/c1661296-a732-44b9-8458-d1a0dd19815e/providers/Microsoft.Web/locations/uksouth/managedApis/outlook"
       },
