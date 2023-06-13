@@ -44,7 +44,7 @@ jobs:
           - bash: |
               cd ./unpacked
               cp ./${{ parameters.connectionsFile }} ./connections.json
-              zip -r newArtifact.zip
+              zip -r newArtifact.zip *
             displayName: 'Use environment-specific connections.json - create new artifact'
 
           - task: AzureFunctionApp@2
