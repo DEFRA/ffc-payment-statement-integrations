@@ -85,9 +85,7 @@
       },
       "connectionRuntimeUrl": "https://eca9b9c6c62075fe.03.common.logic-uksouth.azure-apihub.net/apim/servicebus/39c9c857ec114a248441333c62edb3e3/",
       "authentication": {
-        "type": "Raw",
-        "scheme": "Key",
-        "parameter": "@appsetting('servicebus-connectionKey')"
+        "type": "ManagedIdentity"
       }
     }
   }
