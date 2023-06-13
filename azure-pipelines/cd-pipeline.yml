@@ -3,15 +3,9 @@
 # The Logic App structure (including service plan, storage account and connections)
 # is deployed separately using the iac-pipeline.yml pipeline.
 
-#trigger: none
+trigger: none
 
-#pr: none
-on:
-  workflow_dispatch
-# push:
-#   branches:
-#     - main
-#     - github-fixes
+pr: none
 
 variables:
 - template: variables/pipeline-vars-common.yml
@@ -32,7 +26,8 @@ stages:
       environment: ${{ variables.envShortName }}
       serviceConnection: ${{ variables.serviceConnection }}
       runId: $(resources.pipeline.cipipeline.runID)
-      settingsFile: 'settings-dev.json' 
+      settingsFile: 'environments/dev/settings-dev.json' 
+      connectionsFile: 'environments/dev/connections-dev.json' 
 
 - stage: TEST
   displayName: 'TEST Deployment'
@@ -44,4 +39,5 @@ stages:
       environment: ${{ variables.envShortName }}
       serviceConnection: ${{ variables.serviceConnection }}
       runId: $(resources.pipeline.cipipeline.runID)
-      settingsFile: 'settings-test.json' 
+      settingsFile: 'environments/test/settings-test.json' 
+      connectionsFile: 'environments/test/connections-test.json' 

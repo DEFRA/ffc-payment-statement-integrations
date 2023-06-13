@@ -30,7 +30,7 @@
                 "runAfter": {},
                 "trackedProperties": {}
             },
-            "Condition": {
+            "If_JSON_is_valid": {
                 "type": "If",
                 "expression": {
                     "and": [
@@ -53,49 +53,113 @@
                     ]
                 },
                 "actions": {
-                    "Add_a_row_to_CRM": {
-                        "type": "ApiConnection",
-                        "inputs": {
-                            "host": {
-                                "connection": {
-                                    "referenceName": "commondataservicewrite"
-                                }
-                            },
-                            "method": "post",
-                            "body": {
-                                "subject": "Demo Title",
-                                "notetext": "Demo description @{body('Parse_JSON')?['apiLink']} @{body('Parse_JSON')?['sbi']}",
-                                "isdocument": false
-                            },
-                            "headers": {
-                                "prefer": "return=representation,odata.include-annotations=*",
-                                "organization": "https://Prohibited.crm4.dynamics.com"
-                            },
-                            "path": "/api/data/v9.1/@{encodeURIComponent(encodeURIComponent('annotations'))}"
-                        }
+                    "Try_Scope": {
+                        "type": "Scope",
+                        "actions": {
+                            "Add_a_row_to_CRM": {
+                                "type": "ApiConnection",
+                                "inputs": {
+                                    "host": {
+                                        "connection": {
+                                            "referenceName": "commondataservice"
+                                        }
+                                    },
+                                    "method": "post",
+                                    "body": {
+                                        "subject": "Demo Title",
+                                        "notetext": "Demo Description @{body('Parse_JSON')?['apiLink']}",
+                                        "isdocument": false
+                                    },
+                                    "headers": {
+                                        "prefer": "return=representation,odata.include-annotations=*",
+                                        "organization": "https://Prohibited.crm4.dynamics.com"
+                                    },
+                                    "path": "/api/data/v9.1/@{encodeURIComponent(encodeURIComponent('annotations'))}",
+                                    "retryPolicy": {
+                                        "type": "none"
+                                    }
+                                },
+                                "trackedProperties": {}
+                            }
+                        },
+                        "trackedProperties": {}
                     },
-                    "OK_Response": {
-                        "type": "Response",
-                        "kind": "Http",
-                        "inputs": {
-                            "statusCode": 200,
-                            "body": "success"
+                    "Catch_Scope": {
+                        "type": "Scope",
+                        "actions": {
+                            "Dead-letter_the_message_in_a_topic_subscription_failed_CRM": {
+                                "type": "ApiConnection",
+                                "inputs": {
+                                    "host": {
+                                        "connection": {
+                                            "referenceName": "servicebus"
+                                        }
+                                    },
+                                    "method": "post",
+                                    "path": "/@{encodeURIComponent(encodeURIComponent('ffc-pay-statement-crm-snd'))}/subscriptions/@{encodeURIComponent('crm')}/messages/deadletter",
+                                    "queries": {
+                                        "lockToken": "@triggerBody()?['lockToken']",
+                                        "sessionId": "",
+                                        "deadLetterReason": "Failed CRM",
+                                        "deadLetterErrorDescription": ""
+                                    }
+                                }
+                            }
                         },
                         "runAfter": {
-                            "Add_a_row_to_CRM": [
-                                "SUCCEEDED"
+                            "Try_Scope": [
+                                "TIMEDOUT",
+                                "FAILED",
+                                "SKIPPED"
+                            ]
+                        }
+                    },
+                    "Success_Scope": {
+                        "type": "Scope",
+                        "actions": {
+                            "Complete_the_message_in_a_topic_subscription": {
+                                "type": "ApiConnection",
+                                "inputs": {
+                                    "host": {
+                                        "connection": {
+                                            "referenceName": "servicebus"
+                                        }
+                                    },
+                                    "method": "delete",
+                                    "path": "/@{encodeURIComponent(encodeURIComponent('ffc-pay-statement-crm-snd'))}/subscriptions/@{encodeURIComponent('crm')}/messages/complete",
+                                    "queries": {
+                                        "lockToken": "@triggerBody()?['lockToken']",
+                                        "subscriptionType": "Main",
+                                        "sessionId": ""
+                                    }
+                                }
+                            }
+                        },
+                        "runAfter": {
+                            "Catch_Scope": [
+                                "SKIPPED"
                             ]
                         }
                     }
                 },
                 "else": {
                     "actions": {
-                        "Bad_Response": {
-                            "type": "Response",
-                            "kind": "Http",
+                        "Dead-letter_the_message_in_a_topic_subscription_invalid_JSON": {
+                            "type": "ApiConnection",
                             "inputs": {
-                                "statusCode": 400,
-                                "body": "Missing sbi or apiLink in message contents"
+                                "host": {
+                                    "connection": {
+                                        "referenceName": "servicebus"
+                                    }
+                                },
+                                "method": "post",
+                                "path": "/@{encodeURIComponent(encodeURIComponent('ffc-pay-statement-crm-snd'))}/subscriptions/@{encodeURIComponent('crm')}/messages/deadletter",
+                                "queries": {
+                                    "lockToken": "@triggerBody()?['lockToken']",
+                                    "sessionId": "",
+                                    "deadLetterReason": "Invalid JSON @{triggerBody()?['contentData']}",
+                                    "deadLetterErrorDescription": ""
+                                }
                             }
                         }
                     }
@@ -103,7 +167,9 @@
                 "runAfter": {
                     "Parse_JSON": [
                         "SUCCEEDED",
-                        "FAILED"
+                        "FAILED",
+                        "TIMEDOUT",
+                        "SKIPPED"
                     ]
                 }
             }
@@ -111,7 +177,7 @@
         "contentVersion": "1.0.0.0",
         "outputs": {},
         "triggers": {
-            "When_messages_are_available_in_a_topic": {
+            "When_messages_are_available_in_a_topic_subscription_(peek-lock)": {
                 "type": "ServiceProvider",
                 "inputs": {
                     "parameters": {
@@ -121,7 +187,7 @@
                     },
                     "serviceProviderConfiguration": {
                         "connectionName": "ffcServiceBus",
-                        "operationId": "receiveTopicMessages",
+                        "operationId": "peekLockTopicMessages",
                         "serviceProviderId": "/serviceProviders/serviceBus"
                     }
                 },

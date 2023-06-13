@@ -132,10 +132,6 @@
               "value": "~14"
             }, 
             {
-              "name": "WEBSITE_RUN_FROM_PACKAGE",
-              "value": "1"
-            }, 
-            {
               "name": "WORKFLOWS_SUBSCRIPTION_ID", 
               "value": "[subscription().subscriptionId]"
             },
