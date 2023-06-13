@@ -42,8 +42,9 @@ jobs:
               appSettings: $(settingsJson)
 
           - bash: |
-              cp ./unpacked/${{ parameters.connectionsFile }} ./unpacked/connections.json
-              zip -r newArtifact.zip ./unpacked
+              cd ./unpacked
+              cp ./${{ parameters.connectionsFile }} ./connections.json
+              zip -r newArtifact.zip
             displayName: 'Use environment-specific connections.json - create new artifact'
 
           - task: AzureFunctionApp@2
@@ -52,5 +53,5 @@ jobs:
               azureSubscription: ${{ parameters.serviceConnection }}
               appType: 'functionApp'
               appName: $(logicAppName)
-              package: 'newArtifact.zip'
+              package: './unpacked/newArtifact.zip'
               deploymentMethod: 'zipDeploy'
