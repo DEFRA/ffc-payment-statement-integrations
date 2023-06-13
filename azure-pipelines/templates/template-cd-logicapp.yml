@@ -28,7 +28,7 @@ jobs:
             displayName: Unzip artifact
 
           - bash: |
-              echo "##vso[task.setvariable variable=settingsJson]$(cat ./unpacked/${{ parameters.settingsFile }} | tr -d '\n')"
+              echo "##vso[task.setvariable variable=settingsJson]$(cat ./unpacked/environments/${{ parameters.environment }}/${{ parameters.settingsFile }} | tr -d '\n')"
             displayName: 'Read settings for environment ${{ parameters.environment }}'
 
           - task: AzureAppServiceSettings@1
