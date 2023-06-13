@@ -43,7 +43,9 @@ jobs:
 
           - bash: |
               cd ./unpacked
+              ls -al *
               cp ./${{ parameters.connectionsFile }} ./connections.json
+              ls -al *
               zip -r newArtifact.zip *
             displayName: 'Use environment-specific connections.json - create new artifact'
 
