@@ -74,11 +74,9 @@
                                         "prefer": "return=representation,odata.include-annotations=*",
                                         "organization": "https://Prohibited.crm4.dynamics.com"
                                     },
-                                    "path": "/api/data/v9.1/@{encodeURIComponent(encodeURIComponent('annotations'))}",
-                                    "retryPolicy": {
-                                        "type": "none"
-                                    }
+                                    "path": "/api/data/v9.1/@{encodeURIComponent(encodeURIComponent('annotations'))}"
                                 },
+                                "operationOptions": "DisableAsyncPattern",
                                 "trackedProperties": {}
                             }
                         },

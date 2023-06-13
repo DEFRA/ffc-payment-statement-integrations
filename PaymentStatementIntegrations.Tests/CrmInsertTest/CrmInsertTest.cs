@@ -143,8 +143,11 @@ namespace PaymentStatementIntegrations.Tests.CrmInsertTest
                     HttpResponseMessage mockedResponse = new HttpResponseMessage();
                     if (request?.RequestUri != null && request.RequestUri.AbsolutePath.Contains("/api/data/v9.1/") && request.Method == HttpMethod.Post)
                     {
+                        // As this is a connector (and not an action HTTP call), the Unit Test Framework
+                        // will not automatically remove the retry policy. Therefore we must use a coe that is not 408, 429 or 5xx
+                        // so BadRequest (400) is chosen to ensure the unit test completes without long retries.
                         mockedResponse.RequestMessage = request;
-                        mockedResponse.StatusCode = HttpStatusCode.BadGateway;
+                        mockedResponse.StatusCode = HttpStatusCode.BadRequest;
                         mockedResponse.Content = ContentHelper.CreatePlainStringContent("error");
                     }
                     return mockedResponse;
