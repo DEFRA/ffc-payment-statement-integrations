@@ -9,6 +9,8 @@ parameters:
   type: string
 - name: settingsFile
   type: string
+- name: connectionsFile
+  type: string
 
 jobs:
   - deployment: deploy_logicapp_resources
@@ -39,11 +41,16 @@ jobs:
               resourceGroupName: $(resourceGroupName)
               appSettings: $(settingsJson)
 
+          - bash: |
+              cp ./unpacked/${{ parameters.connectionsFile }} ./unpacked/connections.json
+              zip -r newArtifact.zip ./unpacked
+            displayName: 'Use environment-specific connections.json - create new artifact'
+
           - task: AzureFunctionApp@2
             displayName: 'Deploy logic app workflows'
             inputs:
               azureSubscription: ${{ parameters.serviceConnection }}
               appType: 'functionApp'
               appName: $(logicAppName)
-              package: '$(Pipeline.Workspace)/cipipeline/$(artifactName)/${{ parameters.runID }}.zip'
+              package: 'newArtifact.zip'
               deploymentMethod: 'zipDeploy'
