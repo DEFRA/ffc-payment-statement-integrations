@@ -6,12 +6,9 @@
 #trigger: none
 
 #pr: none
-#  workflow_dispatch
-on:
- push:
-   branches:
-#     - main
-     - env-conns
+trigger:
+#  - main
+  - env-conns
 
 variables:
 - template: variables/pipeline-vars-common.yml
