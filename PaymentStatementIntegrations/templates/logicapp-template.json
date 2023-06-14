@@ -433,16 +433,52 @@
               "value": "[reference(concat('microsoft.insights/components/', parameters('appInsightsName'))).InstrumentationKey]"
             },
             {
+              "name": "APPINSIGHTS_PROFILEFEATURE_VERSION",
+              "value": "disabled"
+            },
+            {
+              "name": "APPINSIGHTS_SNAPSHOTFEATURE_VERSION",
+              "value": "disabled"
+            },
+            {
               "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
               "value": "[reference(resourceid('microsoft.insights/components/', parameters('appInsightsName')), '2020-02-02').ConnectionString]"
             },
             {
               "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
-              "value": "~2"
+              "value": "disabled"
+            },
+            {
+              "name": "DiagnosticServices_EXTENSION_VERSION",
+              "value": "disabled"
+            },
+            {
+              "name": "InstrumentationEngine_EXTENSION_VERSION",
+              "value": "disabled"
+            },
+            {
+              "name": "SnapshotDebugger_EXTENSION_VERSION",
+              "value": "disabled"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_BaseExtensions",
+              "value": "disabled"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_Java",
+              "value": "disabled"
             },
             {
               "name": "XDT_MicrosoftApplicationInsights_Mode",
-              "value": "recommended"
+              "value": "default"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_NodeJS",
+              "value": "disabled"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_PreemptSdk",
+              "value": "disabled"
             },
             {
               "name": "AzureFunctionsJobHost__extensionBundle__id",
