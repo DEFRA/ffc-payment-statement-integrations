@@ -16,3 +16,4 @@ variables:
    # MUST BE LOWERCASE. No spaces or hyphens allowed
   storageName: 'sa$(projectName)$(envShortName)'
 
+  appInsightsName: 'la-$(projectName)-$(envShortName)'
