@@ -39,6 +39,7 @@ jobs:
               -logicAppName $(logicAppName)
               -appServicePlanName $(appServicePlanName)
               -storageName $(storageName)
+              -appInsightsName $(appInsightsName)
             deploymentMode: $(deploymentMode)
             deploymentOutputs: 'LogicAppArmOutputs'
 
