@@ -43,7 +43,7 @@
   },
   "resources": [
     {
-      "name": "[concat('components_', parameters('logicAppName'))]",
+      "name": "[parameters('appInsightsName'))]",
       "type": "microsoft.insights/components",
       "location": "[parameters('location')]",
       "apiVersion": "2020-02-02",
@@ -63,10 +63,10 @@
     {
         "type": "microsoft.insights/components/ProactiveDetectionConfigs",
         "apiVersion": "2018-05-01-preview",
-        "name": "[concat('components_', parameters('logicAppName'), '/degradationindependencyduration')]",
+        "name": "[concat(parameters('appInsightsName'), '/degradationindependencyduration')]",
         "location": "[parameters('location')]",
         "dependsOn": [
-            "[resourceId('microsoft.insights/components', [concat('components_', parameters('logicAppName')])]"
+            "[resourceId('microsoft.insights/components', parameters('appInsightsName')]"
         ],
         "properties": {
             "ruleDefinitions": {
@@ -87,10 +87,10 @@
         {
             "type": "microsoft.insights/components/ProactiveDetectionConfigs",
             "apiVersion": "2018-05-01-preview",
-            "name": "[concat('components_', parameters('logicAppName'), '/degradationinserverresponsetime')]",
+            "name": "[concat(parameters('appInsightsName') '/degradationinserverresponsetime')]",
             "location": "[parameters('location')]",
             "dependsOn": [
-              "[resourceId('microsoft.insights/components', [concat('components_', parameters('logicAppName')])]"
+              "[resourceId('microsoft.insights/components', parameters('appInsightsName')]"
             ],
             "properties": {
                 "ruleDefinitions": {
@@ -111,10 +111,10 @@
         {
             "type": "microsoft.insights/components/ProactiveDetectionConfigs",
             "apiVersion": "2018-05-01-preview",
-            "name": "[concat('components_', parameters('logicAppName'), '/digestMailConfiguration')]",
+            "name": "[concat(parameters('appInsightsName'), '/digestMailConfiguration')]",
             "location": "[parameters('location')]",
             "dependsOn": [
-              "[resourceId('microsoft.insights/components', [concat('components_', parameters('logicAppName')])]"
+              "[resourceId('microsoft.insights/components', parameters('appInsightsName')]"
             ],
             "properties": {
                 "ruleDefinitions": {
@@ -135,10 +135,10 @@
         {
             "type": "microsoft.insights/components/ProactiveDetectionConfigs",
             "apiVersion": "2018-05-01-preview",
-            "name": "[concat('components_', parameters('logicAppName'), '/extension_billingdatavolumedailyspikeextension')]",
+            "name": "[concat(parameters('appInsightsName'), '/extension_billingdatavolumedailyspikeextension')]",
             "location": "[parameters('location')]",
             "dependsOn": [
-              "[resourceId('microsoft.insights/components', [concat('components_', parameters('logicAppName')])]"
+              "[resourceId('microsoft.insights/components', parameters('appInsightsName')]"
             ],
             "properties": {
                 "ruleDefinitions": {
@@ -159,10 +159,10 @@
         {
             "type": "microsoft.insights/components/ProactiveDetectionConfigs",
             "apiVersion": "2018-05-01-preview",
-            "name": "[concat('components_', parameters('logicAppName'), '/extension_canaryextension')]",
+            "name": "[concat(parameters('appInsightsName'), '/extension_canaryextension')]",
             "location": "[parameters('location')]",
             "dependsOn": [
-              "[resourceId('microsoft.insights/components', [concat('components_', parameters('logicAppName')])]"
+              "[resourceId('microsoft.insights/components', parameters('appInsightsName')]"
             ],
             "properties": {
                 "ruleDefinitions": {
@@ -183,10 +183,10 @@
         {
             "type": "microsoft.insights/components/ProactiveDetectionConfigs",
             "apiVersion": "2018-05-01-preview",
-            "name": "[concat('components_', parameters('logicAppName'), '/extension_exceptionchangeextension')]",
+            "name": "[concat(parameters('appInsightsName'), '/extension_exceptionchangeextension')]",
             "location": "[parameters('location')]",
             "dependsOn": [
-              "[resourceId('microsoft.insights/components', [concat('components_', parameters('logicAppName')])]"
+              "[resourceId('microsoft.insights/components', parameters('appInsightsName')]"
             ],
             "properties": {
                 "ruleDefinitions": {
@@ -207,10 +207,10 @@
         {
             "type": "microsoft.insights/components/ProactiveDetectionConfigs",
             "apiVersion": "2018-05-01-preview",
-            "name": "[concat('components_', parameters('logicAppName'), '/extension_memoryleakextension')]",
+            "name": "[concat(parameters('appInsightsName'), '/extension_memoryleakextension')]",
             "location": "[parameters('location')]",
             "dependsOn": [
-              "[resourceId('microsoft.insights/components', [concat('components_', parameters('logicAppName')])]"
+              "[resourceId('microsoft.insights/components', parameters('appInsightsName')]"
             ],
             "properties": {
                 "ruleDefinitions": {
@@ -231,10 +231,10 @@
         {
             "type": "microsoft.insights/components/ProactiveDetectionConfigs",
             "apiVersion": "2018-05-01-preview",
-            "name": "[concat('components_', parameters('logicAppName'), '/extension_securityextensionspackage')]",
+            "name": "[concat(parameters('appInsightsName'), '/extension_securityextensionspackage')]",
             "location": "[parameters('location')]",
             "dependsOn": [
-              "[resourceId('microsoft.insights/components', [concat('components_', parameters('logicAppName')])]"
+              "[resourceId('microsoft.insights/components', parameters('appInsightsName')]"
             ],
             "properties": {
                 "ruleDefinitions": {
@@ -255,10 +255,10 @@
         {
             "type": "microsoft.insights/components/ProactiveDetectionConfigs",
             "apiVersion": "2018-05-01-preview",
-            "name": "[concat('components_', parameters('logicAppName'), '/extension_traceseveritydetector')]",
+            "name": "[concat(parameters('appInsightsName'), '/extension_traceseveritydetector')]",
             "location": "[parameters('location')]",
             "dependsOn": [
-              "[resourceId('microsoft.insights/components', [concat('components_', parameters('logicAppName')])]"
+              "[resourceId('microsoft.insights/components', parameters('appInsightsName')]"
             ],
             "properties": {
                 "ruleDefinitions": {
@@ -279,10 +279,10 @@
         {
             "type": "microsoft.insights/components/ProactiveDetectionConfigs",
             "apiVersion": "2018-05-01-preview",
-            "name": "[concat('components_', parameters('logicAppName'), '/longdependencyduration')]",
+            "name": "[concat(parameters('appInsightsName') '/longdependencyduration')]",
             "location": "[parameters('location')]",
             "dependsOn": [
-              "[resourceId('microsoft.insights/components', [concat('components_', parameters('logicAppName')])]"
+              "[resourceId('microsoft.insights/components', parameters('appInsightsName')]"
             ],
             "properties": {
                 "ruleDefinitions": {
@@ -303,10 +303,10 @@
         {
             "type": "microsoft.insights/components/ProactiveDetectionConfigs",
             "apiVersion": "2018-05-01-preview",
-            "name": "[concat('components_', parameters('logicAppName'), '/migrationToAlertRulesCompleted')]",
+            "name": "[concat(parameters('appInsightsName') '/migrationToAlertRulesCompleted')]",
             "location": "[parameters('location')]",
             "dependsOn": [
-              "[resourceId('microsoft.insights/components', [concat('components_', parameters('logicAppName')])]"
+              "[resourceId('microsoft.insights/components', parameters('appInsightsName')]"
             ],
             "properties": {
                 "ruleDefinitions": {
@@ -327,10 +327,10 @@
         {
             "type": "microsoft.insights/components/ProactiveDetectionConfigs",
             "apiVersion": "2018-05-01-preview",
-            "name": "[concat('components_', parameters('logicAppName'), '/slowpageloadtime')]",
+            "name": "[concat(parameters('appInsightsName'), '/slowpageloadtime')]",
             "location": "[parameters('location')]",
             "dependsOn": [
-              "[resourceId('microsoft.insights/components', [concat('components_', parameters('logicAppName')])]"
+              "[resourceId('microsoft.insights/components', parameters('appInsightsName')]"
             ],
             "properties": {
                 "ruleDefinitions": {
@@ -351,10 +351,10 @@
         {
             "type": "microsoft.insights/components/ProactiveDetectionConfigs",
             "apiVersion": "2018-05-01-preview",
-            "name": "[concat('components_', parameters('logicAppName'),'/slowserverresponsetime')]",
+            "name": "[concat(parameters('appInsightsName'),'/slowserverresponsetime')]",
             "location": "[parameters('location')]",
             "dependsOn": [
-              "[resourceId('microsoft.insights/components', [concat('components_', parameters('logicAppName')])]"
+              "[resourceId('microsoft.insights/components', parameters('appInsightsName')]"
             ],
             "properties": {
                 "ruleDefinitions": {
