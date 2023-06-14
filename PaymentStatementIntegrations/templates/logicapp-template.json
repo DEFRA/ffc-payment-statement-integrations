@@ -66,7 +66,7 @@
         "name": "[concat(parameters('appInsightsName'), '/degradationindependencyduration')]",
         "location": "[parameters('location')]",
         "dependsOn": [
-            "[resourceId('microsoft.insights/components', parameters('appInsightsName')]"
+            "[resourceId('microsoft.insights/components', parameters('appInsightsName'))]"
         ],
         "properties": {
             "ruleDefinitions": {
@@ -90,7 +90,7 @@
             "name": "[concat(parameters('appInsightsName') '/degradationinserverresponsetime')]",
             "location": "[parameters('location')]",
             "dependsOn": [
-              "[resourceId('microsoft.insights/components', parameters('appInsightsName')]"
+              "[resourceId('microsoft.insights/components', parameters('appInsightsName'))]"
             ],
             "properties": {
                 "ruleDefinitions": {
@@ -114,7 +114,7 @@
             "name": "[concat(parameters('appInsightsName'), '/digestMailConfiguration')]",
             "location": "[parameters('location')]",
             "dependsOn": [
-              "[resourceId('microsoft.insights/components', parameters('appInsightsName')]"
+              "[resourceId('microsoft.insights/components', parameters('appInsightsName'))]"
             ],
             "properties": {
                 "ruleDefinitions": {
@@ -138,7 +138,7 @@
             "name": "[concat(parameters('appInsightsName'), '/extension_billingdatavolumedailyspikeextension')]",
             "location": "[parameters('location')]",
             "dependsOn": [
-              "[resourceId('microsoft.insights/components', parameters('appInsightsName')]"
+              "[resourceId('microsoft.insights/components', parameters('appInsightsName'))]"
             ],
             "properties": {
                 "ruleDefinitions": {
@@ -162,7 +162,7 @@
             "name": "[concat(parameters('appInsightsName'), '/extension_canaryextension')]",
             "location": "[parameters('location')]",
             "dependsOn": [
-              "[resourceId('microsoft.insights/components', parameters('appInsightsName')]"
+              "[resourceId('microsoft.insights/components', parameters('appInsightsName'))]"
             ],
             "properties": {
                 "ruleDefinitions": {
@@ -186,7 +186,7 @@
             "name": "[concat(parameters('appInsightsName'), '/extension_exceptionchangeextension')]",
             "location": "[parameters('location')]",
             "dependsOn": [
-              "[resourceId('microsoft.insights/components', parameters('appInsightsName')]"
+              "[resourceId('microsoft.insights/components', parameters('appInsightsName'))]"
             ],
             "properties": {
                 "ruleDefinitions": {
@@ -210,7 +210,7 @@
             "name": "[concat(parameters('appInsightsName'), '/extension_memoryleakextension')]",
             "location": "[parameters('location')]",
             "dependsOn": [
-              "[resourceId('microsoft.insights/components', parameters('appInsightsName')]"
+              "[resourceId('microsoft.insights/components', parameters('appInsightsName'))]"
             ],
             "properties": {
                 "ruleDefinitions": {
@@ -234,7 +234,7 @@
             "name": "[concat(parameters('appInsightsName'), '/extension_securityextensionspackage')]",
             "location": "[parameters('location')]",
             "dependsOn": [
-              "[resourceId('microsoft.insights/components', parameters('appInsightsName')]"
+              "[resourceId('microsoft.insights/components', parameters('appInsightsName'))]"
             ],
             "properties": {
                 "ruleDefinitions": {
@@ -258,7 +258,7 @@
             "name": "[concat(parameters('appInsightsName'), '/extension_traceseveritydetector')]",
             "location": "[parameters('location')]",
             "dependsOn": [
-              "[resourceId('microsoft.insights/components', parameters('appInsightsName')]"
+              "[resourceId('microsoft.insights/components', parameters('appInsightsName'))]"
             ],
             "properties": {
                 "ruleDefinitions": {
@@ -282,7 +282,7 @@
             "name": "[concat(parameters('appInsightsName') '/longdependencyduration')]",
             "location": "[parameters('location')]",
             "dependsOn": [
-              "[resourceId('microsoft.insights/components', parameters('appInsightsName')]"
+              "[resourceId('microsoft.insights/components', parameters('appInsightsName'))]"
             ],
             "properties": {
                 "ruleDefinitions": {
@@ -306,7 +306,7 @@
             "name": "[concat(parameters('appInsightsName') '/migrationToAlertRulesCompleted')]",
             "location": "[parameters('location')]",
             "dependsOn": [
-              "[resourceId('microsoft.insights/components', parameters('appInsightsName')]"
+              "[resourceId('microsoft.insights/components', parameters('appInsightsName'))]"
             ],
             "properties": {
                 "ruleDefinitions": {
@@ -330,7 +330,7 @@
             "name": "[concat(parameters('appInsightsName'), '/slowpageloadtime')]",
             "location": "[parameters('location')]",
             "dependsOn": [
-              "[resourceId('microsoft.insights/components', parameters('appInsightsName')]"
+              "[resourceId('microsoft.insights/components', parameters('appInsightsName'))]"
             ],
             "properties": {
                 "ruleDefinitions": {
@@ -354,7 +354,7 @@
             "name": "[concat(parameters('appInsightsName'),'/slowserverresponsetime')]",
             "location": "[parameters('location')]",
             "dependsOn": [
-              "[resourceId('microsoft.insights/components', parameters('appInsightsName')]"
+              "[resourceId('microsoft.insights/components', parameters('appInsightsName'))]"
             ],
             "properties": {
                 "ruleDefinitions": {
