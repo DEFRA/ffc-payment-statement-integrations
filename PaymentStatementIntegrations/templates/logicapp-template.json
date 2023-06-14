@@ -87,7 +87,7 @@
         {
             "type": "microsoft.insights/components/ProactiveDetectionConfigs",
             "apiVersion": "2018-05-01-preview",
-            "name": "[concat(parameters('appInsightsName')', '/degradationinserverresponsetime')]",
+            "name": "[concat(parameters('appInsightsName'), '/degradationinserverresponsetime')]",
             "location": "[parameters('location')]",
             "dependsOn": [
               "[resourceId('microsoft.insights/components', parameters('appInsightsName'))]"
