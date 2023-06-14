@@ -8,7 +8,15 @@
                     "uri": "@{parameters('PdfServiceUrl')}/statements/statement/@{trigger().outputs?.queries?.id}",
                     "method": "GET"
                 },
-                "runAfter": {}
+                "runAfter": {
+                    "Compose_-_for_logging_only": [
+                        "SUCCEEDED",
+                        "TIMEDOUT",
+                        "SKIPPED",
+                        "FAILED"
+                    ]
+                },
+                "trackedProperties": {}
             },
             "Check_PDF": {
                 "type": "If",
@@ -44,7 +52,8 @@
                             "inputs": {
                                 "statusCode": "@outputs('Get_PDF_from_service')?['statusCode']",
                                 "body": "Unable to get PDF content: @{body('Get_PDF_from_service')}"
-                            }
+                            },
+                            "trackedProperties": {}
                         }
                     }
                 },
@@ -52,8 +61,19 @@
                     "Get_PDF_from_service": [
                         "SUCCEEDED",
                         "TIMEDOUT",
-                        "FAILED"
+                        "FAILED",
+                        "SKIPPED"
                     ]
+                },
+                "trackedProperties": {}
+            },
+            "Compose_-_for_logging_only": {
+                "type": "Compose",
+                "inputs": "@triggerOutputs()?['queries']",
+                "runAfter": {},
+                "trackedProperties": {
+                    "file_id": "@{triggerOutputs()?['queries']?['id']}",
+                    "pdf_service_url": "@{parameters('PdfServiceUrl')}"
                 }
             }
         },

@@ -28,7 +28,9 @@
                     }
                 },
                 "runAfter": {},
-                "trackedProperties": {}
+                "trackedProperties": {
+                    "messageBody": "@{triggerBody()?['contentData']}"
+                }
             },
             "If_JSON_is_valid": {
                 "type": "If",
@@ -76,7 +78,6 @@
                                     },
                                     "path": "/api/data/v9.1/@{encodeURIComponent(encodeURIComponent('annotations'))}"
                                 },
-                                "operationOptions": "DisableAsyncPattern",
                                 "trackedProperties": {}
                             }
                         },
@@ -164,12 +165,10 @@
                 },
                 "runAfter": {
                     "Parse_JSON": [
-                        "SUCCEEDED",
-                        "FAILED",
-                        "TIMEDOUT",
-                        "SKIPPED"
+                        "SUCCEEDED"
                     ]
-                }
+                },
+                "trackedProperties": {}
             }
         },
         "contentVersion": "1.0.0.0",
