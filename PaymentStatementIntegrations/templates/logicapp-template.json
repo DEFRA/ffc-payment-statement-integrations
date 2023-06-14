@@ -56,7 +56,6 @@
       },
       "properties": {
         "applicationId": "[parameters('appInsightsName')]",
-        "IngestionMode": "LogAnalytics",
         "Application_Type": "web"
       }
     },
