@@ -191,7 +191,7 @@
                         "isSessionsEnabled": false
                     },
                     "serviceProviderConfiguration": {
-                        "connectionName": "serviceBus-2",
+                        "connectionName": "servicebus",
                         "operationId": "peekLockTopicMessages",
                         "serviceProviderId": "/serviceProviders/serviceBus"
                     }
