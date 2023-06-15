@@ -37,6 +37,12 @@
                 "expression": {
                     "and": [
                         {
+                            "equals": [
+                                "@actions('Parse_JSON').status",
+                                "Succeeded"
+                            ]
+                        },
+                        {
                             "not": {
                                 "equals": [
                                     "@string(body('Parse_JSON')?['apiLink'])",
@@ -165,7 +171,9 @@
                 },
                 "runAfter": {
                     "Parse_JSON": [
-                        "SUCCEEDED"
+                        "SUCCEEDED",
+                        "FAILED",
+                        "TIMEDOUT"
                     ]
                 },
                 "trackedProperties": {}
@@ -177,16 +185,9 @@
             "When_messages_are_available_in_a_topic_subscription_(peek-lock)": {
                 "type": "ServiceProvider",
                 "inputs": {
-                    "parameters": {
-                        "topicName": "ffc-pay-statement-crm-snd",
-                        "subscriptionName": "crm",
-                        "isSessionsEnabled": false
-                    },
-                    "serviceProviderConfiguration": {
-                        "connectionName": "ffcServiceBus",
-                        "operationId": "peekLockTopicMessages",
-                        "serviceProviderId": "/serviceProviders/serviceBus"
-                    }
+                    "topicName": "ffc-pay-statement-crm-snd",
+                    "subscriptionName": "crm",
+                    "isSessionsEnabled": false
                 },
                 "splitOn": "@triggerOutputs()?['body']"
             }
