@@ -185,9 +185,16 @@
             "When_messages_are_available_in_a_topic_subscription_(peek-lock)": {
                 "type": "ServiceProvider",
                 "inputs": {
-                    "topicName": "ffc-pay-statement-crm-snd",
-                    "subscriptionName": "crm",
-                    "isSessionsEnabled": false
+                    "parameters": {
+                        "topicName": "ffc-pay-statement-crm-snd",
+                        "subscriptionName": "crm",
+                        "isSessionsEnabled": false
+                    },
+                    "serviceProviderConfiguration": {
+                        "connectionName": "serviceBus-2",
+                        "operationId": "peekLockTopicMessages",
+                        "serviceProviderId": "/serviceProviders/serviceBus"
+                    }
                 },
                 "splitOn": "@triggerOutputs()?['body']"
             }

@@ -23,6 +23,9 @@
     "appInsightsName": {
       "type": "string"
     },
+    "userManagedIdentityName": {
+      "type": "string"
+    },
     "storageName": {
       "type": "string",
       "minLength": 3,
@@ -413,7 +416,10 @@
       ],
       "kind": "workflowapp,functionapp",
       "identity": {
-        "type": "SystemAssigned"
+        "type": "SystemAssigned, UserAssigned",
+        "userAssignedIdentities": {
+            "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', parameters('userManagedIdentityName'))]": {}
+        }
       },
       "tags": {
         "Environment": "[parameters('environmentName')]",

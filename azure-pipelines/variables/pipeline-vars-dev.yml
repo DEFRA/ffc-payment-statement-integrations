@@ -17,3 +17,5 @@ variables:
   storageName: 'sa$(projectName)$(envShortName)'
 
   appInsightsName: 'la-$(projectName)-$(envShortName)'
+
+  userManagedIdentityName: 'MILOGICAPPSDEV'
