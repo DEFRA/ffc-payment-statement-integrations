@@ -18,4 +18,7 @@ variables:
 
   appInsightsName: 'la-$(projectName)-$(envShortName)'
 
-  userManagedIdentityName: 'MILOGICAPPSDEV'
+  # Full url is specified here as opposed to just the MI name.
+  # This is because the MI may exist in a different resource group than the Logic App and so
+  # the normal resource lookup in the template will fail.
+  userManagedIdentityUrl: '/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/resourcegroups/SNDESTLOGICAPPS-RG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MILOGICAPPSDEV'

@@ -40,7 +40,7 @@ jobs:
               -appServicePlanName $(appServicePlanName)
               -storageName $(storageName)
               -appInsightsName $(appInsightsName)
-              -userManagedIdentityName $(userManagedIdentityName)
+              -userManagedIdentityUrl $(userManagedIdentityUrl)
             deploymentMode: $(deploymentMode)
             deploymentOutputs: 'LogicAppArmOutputs'
 

@@ -23,7 +23,7 @@
     "appInsightsName": {
       "type": "string"
     },
-    "userManagedIdentityName": {
+    "userManagedIdentityUrl": {
       "type": "string"
     },
     "storageName": {
@@ -418,7 +418,7 @@
       "identity": {
         "type": "SystemAssigned, UserAssigned",
         "userAssignedIdentities": {
-            "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', parameters('userManagedIdentityName'))]": {}
+            "[parameters('userManagedIdentityUrl')]": {}
         }
       },
       "tags": {
