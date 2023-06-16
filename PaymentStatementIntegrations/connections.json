@@ -1,6 +1,6 @@
 {
   "serviceProviderConnections": {
-    "serviceBus": {
+    "servicebus-sp": {
       "parameterValues": {
         "connectionString": "@appsetting('ServiceBus-ConnectionString')"
       },
@@ -35,16 +35,6 @@
         "id": "/serviceProviders/azurequeues"
       },
       "displayName": "storageQueueConnection"
-    },
-    "ffcServiceBus": {
-      "parameterValues": {
-        "connectionString": "@appsetting('ffcServiceBus-connectionString')"
-      },
-      "parameterSetName": "connectionString",
-      "serviceProvider": {
-        "id": "/serviceProviders/serviceBus"
-      },
-      "displayName": "ffcServiceBus"
     }
   },
   "managedApiConnections": {
@@ -76,7 +66,7 @@
         "parameter": "@appsetting('commondataservice-connectionKey')"
       }
     },
-    "servicebus": {
+    "servicebus-api": {
       "api": {
         "id": "/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/providers/Microsoft.Web/locations/uksouth/managedApis/servicebus"
       },
