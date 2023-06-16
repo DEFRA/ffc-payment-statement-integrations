@@ -61,18 +61,19 @@
         "id": "/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/providers/Microsoft.Web/locations/uksouth/managedApis/servicebus"
       },
       "authentication": {
-        "type": "ManagedServiceIdentity"
+          "type": "ManagedServiceIdentity"
       },
       "connection": {
-        "id": "/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/resourceGroups/ESTLOGICAPPS-RG2-dev/providers/Microsoft.Web/connections/servicebus-api"
+          "id": "/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/resourceGroups/ESTLOGICAPPS-RG2-dev/providers/Microsoft.Web/connections/servicebus"
       },
       "connectionProperties": {
-        "authentication": {
-            "audience": "https://servicebus.azure.net",
-            "type": "ManagedServiceIdentity"
-        }
+          "authentication": {
+              "audience": "https://servicebus.azure.net",
+              "identity": "/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/resourcegroups/SNDESTLOGICAPPS-RG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MILOGICAPPSDEV",
+              "type": "ManagedServiceIdentity"
+          }
       },
-      "connectionRuntimeUrl": "https://eca9b9c6c62075fe.03.common.logic-uksouth.azure-apihub.net/apim/servicebus/7d77309acfdb41978a6e33154c38bca2"
-    }
+      "connectionRuntimeUrl": "https://eca9b9c6c62075fe.03.common.logic-uksouth.azure-apihub.net/apim/servicebus/bcdeca8010764a78b7fde346937394dc"
+    },
   }
 }
