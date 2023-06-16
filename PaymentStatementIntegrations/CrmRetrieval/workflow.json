@@ -19,7 +19,7 @@
                 "operationOptions": "DisableAsyncPattern",
                 "runtimeConfiguration": {
                     "requestOptions": {
-                        "timeout": "15"
+                        "timeout": "PT15S"
                     }
                 },
                 "trackedProperties": {}
