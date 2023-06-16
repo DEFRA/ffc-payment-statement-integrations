@@ -243,7 +243,7 @@
                         "isSessionsEnabled": false
                     },
                     "serviceProviderConfiguration": {
-                        "connectionName": "servicebus-sp",
+                        "connectionName": "servicebus-mi-sp",
                         "operationId": "peekLockTopicMessages",
                         "serviceProviderId": "/serviceProviders/serviceBus"
                     }

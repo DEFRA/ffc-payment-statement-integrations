@@ -5,7 +5,7 @@
     "slotSetting": false
     },
   {
-    "name": "CommonDataService-ManagedConnectionRuntimeUrl",
+    "name": "commondataservice-connectionKey",
     "value": "@Microsoft.KeyVault(VaultName=SNDESTLOGICAPPKV1;SecretName=CommonDataServiceConnStringDev)",
     "slotSetting": false
   },
