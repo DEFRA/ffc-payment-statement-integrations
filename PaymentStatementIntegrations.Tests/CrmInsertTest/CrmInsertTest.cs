@@ -208,11 +208,11 @@ namespace PaymentStatementIntegrations.Tests.CrmInsertTest
                     if (request?.RequestUri != null && request.RequestUri.AbsolutePath.Contains("/api/data/v9.1/") && request.Method == HttpMethod.Post)
                     {
                         // As this is a connector (and not an action HTTP call), the Unit Test Framework
-                        // will not automatically remove the retry policy. Therefore we must use a coe that is not 408, 429 or 5xx
+                        // will not automatically remove the retry policy. Therefore we must use a code that is not 408, 429 or 5xx
                         // so BadRequest (400) is chosen to ensure the unit test completes without long retries.
                         mockedResponse.RequestMessage = request;
                         mockedResponse.StatusCode = HttpStatusCode.BadRequest;
-                        mockedResponse.Content = ContentHelper.CreatePlainStringContent("error");
+                        mockedResponse.Content = ContentHelper.CreatePlainStringContent("bad request specific error");
                     }
                     return mockedResponse;
                 };
@@ -245,6 +245,8 @@ namespace PaymentStatementIntegrations.Tests.CrmInsertTest
                 var trackedProps = testRunner.GetWorkflowActionTrackedProperties("Parse_JSON");
                 var expectedBody = "{\"sbi\":12345678,\"frn\":123456789,\"apiLink\":\"https://myStatementRetrievalApiEndpoint/statement-receiver/statement/v1/FFC_PaymentStatement_SFI_2022_1234567890_2022090615023001.pdf\",\"documentType\":\"Payment statement\",\"scheme\":\"SFI\"}";
                 Assert.AreEqual(expectedBody, trackedProps["messageBody"]);
+                var trackedPropsError = testRunner.GetWorkflowActionTrackedProperties("Compose_for_logging");
+                Assert.IsTrue(trackedPropsError["ErrorText"].Contains("BadRequest"));
             }
         }
 
