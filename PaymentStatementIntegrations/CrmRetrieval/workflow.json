@@ -2,28 +2,6 @@
     "definition": {
         "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
         "actions": {
-            "Get_PDF_from_service": {
-                "type": "Http",
-                "inputs": {
-                    "uri": "@{parameters('PdfServiceUrl')}/statements/statement/@{trigger().outputs?.queries?.id}",
-                    "method": "GET"
-                },
-                "runAfter": {
-                    "Compose_-_for_logging_only": [
-                        "SUCCEEDED",
-                        "TIMEDOUT",
-                        "SKIPPED",
-                        "FAILED"
-                    ]
-                },
-                "operationOptions": "DisableAsyncPattern",
-                "runtimeConfiguration": {
-                    "requestOptions": {
-                        "timeout": "PT15S"
-                    }
-                },
-                "trackedProperties": {}
-            },
             "Check_PDF": {
                 "type": "If",
                 "expression": {
@@ -64,7 +42,7 @@
                     }
                 },
                 "runAfter": {
-                    "Get_PDF_from_service": [
+                    "Catch_Scope": [
                         "SUCCEEDED",
                         "TIMEDOUT",
                         "FAILED",
@@ -73,14 +51,86 @@
                 },
                 "trackedProperties": {}
             },
-            "Compose_-_for_logging_only": {
-                "type": "Compose",
-                "inputs": "@triggerOutputs()?['queries']",
-                "runAfter": {},
-                "trackedProperties": {
-                    "file_id": "@{triggerOutputs()?['queries']?['id']}",
-                    "pdf_service_url": "@{parameters('PdfServiceUrl')}"
+            "Try_Scope": {
+                "type": "Scope",
+                "actions": {
+                    "Get_PDF_from_service": {
+                        "type": "Http",
+                        "inputs": {
+                            "uri": "@{parameters('PdfServiceUrl')}/statements/statement/@{trigger().outputs?.queries?.id}",
+                            "method": "GET"
+                        },
+                        "runtimeConfiguration": {
+                            "contentTransfer": {
+                                "transferMode": "Chunked"
+                            }
+                        },
+                        "trackedProperties": {
+                            "file_id": "@{trigger().outputs?.queries?.id}",
+                            "pdf_service_url": "@{parameters('PdfServiceUrl')}"
+                        }
+                    }
+                },
+                "runAfter": {
+                    "Initialize_ErrorText": [
+                        "SUCCEEDED"
+                    ]
                 }
+            },
+            "Catch_Scope": {
+                "type": "Scope",
+                "actions": {
+                    "Filter_array": {
+                        "type": "Query",
+                        "inputs": {
+                            "from": "@result('Try_Scope')",
+                            "where": "@equals(item()?['status'],'Failed')"
+                        }
+                    },
+                    "Set_ErrorText_with_error": {
+                        "type": "SetVariable",
+                        "inputs": {
+                            "name": "ErrorText",
+                            "value": "@string(first(body('Filter_array')))"
+                        },
+                        "runAfter": {
+                            "Filter_array": [
+                                "SUCCEEDED"
+                            ]
+                        }
+                    },
+                    "Compose_for_logging": {
+                        "type": "Compose",
+                        "inputs": "@variables('ErrorText')",
+                        "runAfter": {
+                            "Set_ErrorText_with_error": [
+                                "SUCCEEDED"
+                            ]
+                        },
+                        "trackedProperties": {
+                            "ErrorText": "@action()?['inputs']"
+                        }
+                   }
+                },
+                "runAfter": {
+                    "Try_Scope": [
+                        "TIMEDOUT",
+                        "FAILED"
+                    ]
+                },
+                "trackedProperties": {}
+            },
+            "Initialize_ErrorText": {
+                "type": "InitializeVariable",
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "ErrorText",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "runAfter": {}
             }
         },
         "contentVersion": "1.0.0.0",

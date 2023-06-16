@@ -27,7 +27,11 @@
                         }
                     }
                 },
-                "runAfter": {},
+                "runAfter": {
+                    "Initialize_ErrorText": [
+                        "SUCCEEDED"
+                    ]
+                },
                 "trackedProperties": {
                     "messageBody": "@{triggerBody()?['contentData']}"
                 }
@@ -105,9 +109,45 @@
                                     "queries": {
                                         "lockToken": "@triggerBody()?['lockToken']",
                                         "sessionId": "",
-                                        "deadLetterReason": "Failed CRM",
+                                        "deadLetterReason": "Failed CRM: @{variables('ErrorText')}",
                                         "deadLetterErrorDescription": ""
                                     }
+                                },
+                                "runAfter": {
+                                    "Compose_for_logging": [
+                                        "SUCCEEDED"
+                                    ]
+                                }
+                            },
+                            "Filter_array": {
+                                "type": "Query",
+                                "inputs": {
+                                    "from": "@result('Try_Scope')",
+                                    "where": "@equals(item()?['status'],'Failed')"
+                                }
+                            },
+                            "Set_ErrorText_with_error": {
+                                "type": "SetVariable",
+                                "inputs": {
+                                    "name": "ErrorText",
+                                    "value": "@string(first(body('Filter_array')))"
+                                },
+                                "runAfter": {
+                                    "Filter_array": [
+                                        "SUCCEEDED"
+                                    ]
+                                }
+                            },
+                            "Compose_for_logging": {
+                                "type": "Compose",
+                                "inputs": "@variables('ErrorText')",
+                                "runAfter": {
+                                    "Set_ErrorText_with_error": [
+                                        "SUCCEEDED"
+                                    ]
+                                },
+                                "trackedProperties": {
+                                    "ErrorText": "@action()?['inputs']"
                                 }
                             }
                         },
@@ -177,6 +217,18 @@
                     ]
                 },
                 "trackedProperties": {}
+            },
+            "Initialize_ErrorText": {
+                "type": "InitializeVariable",
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "ErrorText",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "runAfter": {}
             }
         },
         "contentVersion": "1.0.0.0",
