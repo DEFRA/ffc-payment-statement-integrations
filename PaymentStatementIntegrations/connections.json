@@ -45,16 +45,6 @@
         "id": "/serviceProviders/serviceBus"
       },
       "displayName": "ffcServiceBus"
-    },
-    "serviceBus-2": {
-      "parameterValues": {
-        "connectionString": "@appsetting('serviceBus_12_connectionString')"
-      },
-      "parameterSetName": "connectionString",
-      "serviceProvider": {
-        "id": "/serviceProviders/serviceBus"
-      },
-      "displayName": "newServiceBus"
     }
   },
   "managedApiConnections": {

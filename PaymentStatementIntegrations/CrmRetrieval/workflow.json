@@ -50,7 +50,7 @@
                             "type": "Response",
                             "kind": "Http",
                             "inputs": {
-                                "statusCode": "@outputs('Get_PDF_from_service')?['statusCode']",
+                                "statusCode": "@coalesce(outputs('Get_PDF_from_service')?['statusCode'], 400)",
                                 "body": "Unable to get PDF content: @{body('Get_PDF_from_service')}"
                             },
                             "trackedProperties": {}
