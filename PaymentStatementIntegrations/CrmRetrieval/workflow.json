@@ -16,6 +16,12 @@
                         "FAILED"
                     ]
                 },
+                "operationOptions": "DisableAsyncPattern",
+                "runtimeConfiguration": {
+                    "requestOptions": {
+                        "timeout": "15"
+                    }
+                },
                 "trackedProperties": {}
             },
             "Check_PDF": {
