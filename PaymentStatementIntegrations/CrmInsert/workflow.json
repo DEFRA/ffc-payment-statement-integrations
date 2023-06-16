@@ -73,7 +73,7 @@
                                 "inputs": {
                                     "host": {
                                         "connection": {
-                                            "referenceName": "commondataservice"
+                                            "referenceName": "commondataservice-api-raw"
                                         }
                                     },
                                     "method": "post",
