@@ -42,15 +42,13 @@
       "api": {
         "id": "/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/providers/Microsoft.Web/locations/uksouth/managedApis/commondataservice"
       },
-      "connection": {
-        "id": "/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/resourceGroups/SNDESTLOGICAPPS-RG/providers/Microsoft.Web/connections/commondataservice-2"
-      },
-      "connectionRuntimeUrl": "https://eca9b9c6c62075fe.03.common.logic-uksouth.azure-apihub.net/apim/commondataservice/a02fe7ab888a411b9c627145835c0e05/",
       "authentication": {
-        "type": "Raw",
-        "scheme": "Key",
-        "parameter": "@appsetting('commondataservice-connectionKey')"
-      }
+        "type": "ManagedServiceIdentity"
+      },
+      "connection": {
+        "id": "/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/resourceGroups/ESTLOGICAPPS-RG2-dev/providers/Microsoft.Web/connections/commondataservice"
+      },
+      "connectionRuntimeUrl": "https://eca9b9c6c62075fe.03.common.logic-uksouth.azure-apihub.net/apim/commondataservice/b3409dbe37aa4fbeb2d26ef401b9d8d1"
     },
     "servicebus-api": {
       "api": {
