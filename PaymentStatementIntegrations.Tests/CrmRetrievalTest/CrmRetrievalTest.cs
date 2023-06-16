@@ -105,6 +105,12 @@ namespace PaymentStatementIntegrations.Tests.CrmRetrievalTest
                 // Check action result
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Serve_PDF"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Failed_Response"));
+
+                // Check tracked properties
+                var trackedProps = testRunner.GetWorkflowActionTrackedProperties("Get_PDF_from_service");
+                Assert.AreEqual(_ExamplePdfFile, trackedProps["file_id"]);
+                var trackedPropsError = testRunner.GetWorkflowActionTrackedProperties("Compose_for_logging");
+                Assert.IsTrue(trackedPropsError["ErrorText"].Contains("InternalServerError"));
             }
         }
 

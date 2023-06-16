@@ -23,6 +23,9 @@
     "appInsightsName": {
       "type": "string"
     },
+    "userManagedIdentityUrl": {
+      "type": "string"
+    },
     "storageName": {
       "type": "string",
       "minLength": 3,
@@ -413,7 +416,10 @@
       ],
       "kind": "workflowapp,functionapp",
       "identity": {
-        "type": "SystemAssigned"
+        "type": "SystemAssigned, UserAssigned",
+        "userAssignedIdentities": {
+            "[parameters('userManagedIdentityUrl')]": {}
+        }
       },
       "tags": {
         "Environment": "[parameters('environmentName')]",
