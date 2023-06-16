@@ -38,21 +38,7 @@
     }
   },
   "managedApiConnections": {
-    "outlook": {
-      "api": {
-        "id": "/subscriptions/c1661296-a732-44b9-8458-d1a0dd19815e/providers/Microsoft.Web/locations/uksouth/managedApis/outlook"
-      },
-      "connection": {
-        "id": "/subscriptions/c1661296-a732-44b9-8458-d1a0dd19815e/resourceGroups/rg-uks-01/providers/Microsoft.Web/connections/outlook01"
-      },
-      "connectionRuntimeUrl": "@appsetting('Outlook-ManagedConnectionRuntimeUrl')",
-      "authentication": {
-        "type": "Raw",
-        "scheme": "Key",
-        "parameter": "@appsetting('Outlook-ConnectionKey')"
-      }
-    },
-    "commondataservice": {
+    "commondataservice-api-raw": {
       "api": {
         "id": "/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/providers/Microsoft.Web/locations/uksouth/managedApis/commondataservice"
       },
