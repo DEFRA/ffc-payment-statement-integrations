@@ -62,8 +62,11 @@ jobs:
             overrideParameters:
               -location $(resourceGroupLocation)
               -connections_azureblob_name $(blobConnectionName)
+              -connections_servicebus_name $(servicebusConnectionName)
               -logicAppSystemAssignedIdentityTenantId $(logicAppSystemAssignedIdentityTenantId)
               -logicAppSystemAssignedIdentityObjectId $(logicAppSystemAssignedIdentityObjectId)
+              -userAssignedIdentityTenantId $(userAssignedIdentityTenantId)
+              -userAssignedIdentityObjectId $(userAssignedIdentityObjectId)
             deploymentMode: $(deploymentMode)
 
         - task: ARM Outputs@6
@@ -82,5 +85,6 @@ jobs:
             inlineScript: |
               az functionapp config appsettings set --name $(LAname) --resource-group  $(resourceGroupName) --settings "BLOB_CONNECTION_RUNTIMEURL=$(blobendpointurl)"
               az functionapp config appsettings set --name $(LAname) --resource-group  $(resourceGroupName) --settings "WORKFLOWS_RESOURCE_GROUP_NAME=$(resourceGroupName)"
+              az functionapp config appsettings set --name $(LAname) --resource-group  $(resourceGroupName) --settings "SERVICEBUS_CONNECTION_RUNTIMEURL=$(servicebusendpointurl)"
             addSpnToEnvironment: true
             useGlobalConfig: true
