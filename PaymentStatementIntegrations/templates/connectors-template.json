@@ -109,7 +109,7 @@
             "location": "[parameters('location')]",
             "kind": "V2",
             "properties": {
-                "displayName": "[parameters('serviceBusConnectionName')]",
+                "displayName": "[parameters('connections_servicebus_name')]",
                 "parameterValueSet":{
                     "name": "managedIdentityAuth",
                     "values": {}
