@@ -115,7 +115,7 @@
                     "values": {}
                 },
                 "api": {
-                    "id": "[concat(/subscriptions/',subscription().subscriptionId,'/providers/Microsoft.Web/locations/',parameters('location'),'/managedApis/servicebus')]"
+                    "id": "[concat('/subscriptions/',subscription().subscriptionId,'/providers/Microsoft.Web/locations/',parameters('location'),'/managedApis/servicebus')]"
                 }
             }
         },
