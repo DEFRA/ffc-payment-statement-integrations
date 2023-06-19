@@ -54,7 +54,7 @@
       },
       "connectionRuntimeUrl": "https://eca9b9c6c62075fe.03.common.logic-uksouth.azure-apihub.net/apim/commondataservice/b3409dbe37aa4fbeb2d26ef401b9d8d1"
     },
-    "servicebus-api": {
+    "pay-servicebus-api": {
       "api": {
         "id": "/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/providers/Microsoft.Web/locations/uksouth/managedApis/servicebus"
       },
@@ -62,7 +62,7 @@
           "type": "ManagedServiceIdentity"
       },
       "connection": {
-          "id": "/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/resourceGroups/ESTLOGICAPPS-RG2-dev/providers/Microsoft.Web/connections/servicebus"
+          "id": "/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/resourceGroups/ESTLOGICAPPS-RG2-dev/providers/Microsoft.Web/connections/pay-servicebus-api"
       },
       "connectionProperties": {
           "authentication": {

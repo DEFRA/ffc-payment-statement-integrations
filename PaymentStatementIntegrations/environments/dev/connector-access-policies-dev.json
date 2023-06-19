@@ -17,16 +17,16 @@
         {
             "type": "Microsoft.Web/connections",
             "apiVersion": "2018-07-01-preview",
-            "name": "payServiceBus",
+            "name": "pay-servicebus-api",
             "location": "[parameters('location')]",
             "kind": "V2",
             "properties": {
                 "alternativeParameterValues":{},
                 "api": {
-                    "id": "[subscriptionResourceId('Microsoft.Web/locations/managedApis', parameters('location'), 'payServiceBus')]"
+                    "id": "[subscriptionResourceId('Microsoft.Web/locations/managedApis', parameters('location'), 'pay-servicebus-api')]"
                 },
                 "customParameterValues": {},
-                "displayName": "payServiceBus",
+                "displayName": "pay-servicebus-api",
                 "parameterValueSet":{
                     "name": "managedIdentityAuth",
                     "values": {}
@@ -36,10 +36,10 @@
         {
             "type": "Microsoft.Web/connections/accessPolicies",
             "apiVersion": "2016-06-01",
-            "name": "[concat('payServiceBus','/',variables('userAssignedIdentityObjectId'))]",
+            "name": "[concat('pay-servicebus-api','/',variables('userAssignedIdentityObjectId'))]",
             "location": "[parameters('location')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/connections', 'payServiceBus')]"
+                "[resourceId('Microsoft.Web/connections', 'pay-servicebus-api')]"
             ],
             "properties": {
                 "principal": {
