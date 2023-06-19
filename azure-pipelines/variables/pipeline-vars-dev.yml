@@ -23,7 +23,7 @@ variables:
   # the normal resource lookup in the template will fail.
   userManagedIdentityUrl: '/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/resourcegroups/SNDESTLOGICAPPS-RG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MILOGICAPPSDEV'
   userAssignedIdentityTenantId: 'c9d74090-b4e6-4b04-981d-e6757a160812'
-  # was tenantId: 'd49bcc71-d9a8-400b-9385-0015251d90c5'
-  userAssignedIdentityObjectId: 'd1fd46e8-9d18-47d4-afab-b63513cb5098'
+  userAssignedIdentityObjectId: '2ec1a488-7b53-4b13-bc81-febbd2d7e1a7'
+  #'d1fd46e8-9d18-47d4-afab-b63513cb5098'
 
   servicebusConnectionName: 'pay-servicebus-api'
