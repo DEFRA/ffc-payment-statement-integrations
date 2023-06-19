@@ -55,3 +55,14 @@ jobs:
               appName: $(logicAppName)
               package: './unpacked/newArtifact.zip'
               deploymentMethod: 'zipDeploy'
+
+          - task: AzureResourceGroupDeployment@2
+            displayName: 'Deploy Connectors and Access Policies'
+            inputs:
+              azureSubscription: ${{ parameters.serviceConnection }}
+              resourceGroupName: $(resourceGroupName)
+              location: $(resourceGroupLocation)
+              csmFile: './unpacked/environments/${{ parameters.environment }}/connector-access-policies-${{ parameters.environment }}.json'
+              overrideParameters:
+                -location $(resourceGroupLocation)
+              deploymentMode: $(deploymentMode)
