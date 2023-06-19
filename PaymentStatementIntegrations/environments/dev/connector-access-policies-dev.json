@@ -23,7 +23,7 @@
             "properties": {
                 "alternativeParameterValues":{},
                 "api": {
-                    "id": "[concat('/subscriptions/',subscription().subscriptionId,'/providers/Microsoft.Web/locations/',parameters('location'),'/managedApis/', 'pay-servicebus-api')]"
+                    "id": "[concat('/subscriptions/',subscription().subscriptionId,'/providers/Microsoft.Web/locations/',parameters('location'),'/managedApis/servicebus')]"
                 },
                 "customParameterValues": {},
                 "displayName": "pay-servicebus-api",
