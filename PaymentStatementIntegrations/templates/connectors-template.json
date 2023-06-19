@@ -30,6 +30,9 @@
         },
         "connections_servicebus_name": {
             "type": "string"
+        },
+        "servicebus_namespace": {
+            "type": "string"
         }
     },
     "variables": {
@@ -112,7 +115,11 @@
                 "displayName": "[parameters('connections_servicebus_name')]",
                 "parameterValueSet":{
                     "name": "managedIdentityAuth",
-                    "values": {}
+                    "values": {
+                        "namespaceEndpoint": {
+                            "value": "[concat('sb://', parameters('servicebus_namespace'))]"
+                          }
+                    }
                 },
                 "api": {
                     "id": "[concat('/subscriptions/',subscription().subscriptionId,'/providers/Microsoft.Web/locations/',parameters('location'),'/managedApis/servicebus')]"

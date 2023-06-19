@@ -63,6 +63,7 @@ jobs:
               -location $(resourceGroupLocation)
               -connections_azureblob_name $(blobConnectionName)
               -connections_servicebus_name $(servicebusConnectionName)
+              -servicebus_namespace $(servicebusNamespace)
               -logicAppSystemAssignedIdentityTenantId $(logicAppSystemAssignedIdentityTenantId)
               -logicAppSystemAssignedIdentityObjectId $(logicAppSystemAssignedIdentityObjectId)
               -userAssignedIdentityTenantId $(userAssignedIdentityTenantId)

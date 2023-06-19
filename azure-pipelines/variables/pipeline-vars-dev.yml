@@ -26,3 +26,4 @@ variables:
   userAssignedIdentityObjectId: 'd1fd46e8-9d18-47d4-afab-b63513cb5098'
 
   servicebusConnectionName: 'pay-servicebus-api'
+  servicebusNamespace: 'SNDFFCINFSB1001.servicebus.windows.net'
