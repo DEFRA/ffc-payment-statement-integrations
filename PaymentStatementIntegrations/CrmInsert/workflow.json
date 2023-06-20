@@ -67,30 +67,7 @@
                 "actions": {
                     "Try_Scope": {
                         "type": "Scope",
-                        "actions": {
-                            "Add_a_row_to_CRM": {
-                                "type": "ApiConnection",
-                                "inputs": {
-                                    "host": {
-                                        "connection": {
-                                            "referenceName": "commondataservice-api-raw"
-                                        }
-                                    },
-                                    "method": "post",
-                                    "body": {
-                                        "subject": "Demo Title",
-                                        "notetext": "Demo Description @{body('Parse_JSON')?['apiLink']}",
-                                        "isdocument": false
-                                    },
-                                    "headers": {
-                                        "prefer": "return=representation,odata.include-annotations=*",
-                                        "organization": "https://Prohibited.crm4.dynamics.com"
-                                    },
-                                    "path": "/api/data/v9.1/@{encodeURIComponent(encodeURIComponent('annotations'))}"
-                                },
-                                "trackedProperties": {}
-                            }
-                        },
+                        "actions": {},
                         "trackedProperties": {}
                     },
                     "Catch_Scope": {
