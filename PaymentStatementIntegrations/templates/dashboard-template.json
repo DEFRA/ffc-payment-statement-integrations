@@ -660,7 +660,7 @@
                     {
                       "name": "ComponentId",
                       "value": {
-                        "SubscriptionId": "d49bcc71-d9a8-400b-9385-0015251d90c5",
+                        "SubscriptionId": "[subscription().subscriptionId]",
                         "ResourceGroup": "[parameters('logicAppResourceGroup')]",
                         "Name": "[parameters('logicAppName')]",
                         "LinkedApplicationType": 0,
