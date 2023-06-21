@@ -21,4 +21,14 @@ variables:
   # Full url is specified here as opposed to just the MI name.
   # This is because the MI may exist in a different resource group than the Logic App and so
   # the normal resource lookup in the template will fail.
+  # This value is required for adding a user-assigned MI to the Logic App (the system-assigned MI gets added also).
   userManagedIdentityUrl: '/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/resourcegroups/SNDESTLOGICAPPS-RG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MILOGICAPPSDEV'
+
+  # The following connection settings are used by individual workflows 
+  # but will be used by the IaC pipeline (at Logic App service level, not the CD pipeline at workflow level)
+
+  userAssignedIdentityTenantId: 'c9d74090-b4e6-4b04-981d-e6757a160812'
+  userAssignedIdentityObjectId: 'd1fd46e8-9d18-47d4-afab-b63513cb5098'
+
+  servicebusConnectionName: 'pay-servicebus-api'
+  servicebusNamespace: 'SNDFFCINFSB1001.servicebus.windows.net'

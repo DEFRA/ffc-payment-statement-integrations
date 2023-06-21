@@ -1,0 +1,1324 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "logicAppName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the Logic App to show in the dashboard"
+      }
+    },
+    "logicAppResourceGroup": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the resource group that contains the Logic App"
+      }
+    },
+    "dashboardName": {
+      "type": "string",
+      "defaultValue": "[guid(parameters('logicAppName'), parameters('logicAppResourceGroup'))]",
+      "metadata": {
+        "Description": "Resource name that Azure portal uses for the dashboard"
+      }
+    },
+    "dashboardDisplayName": {
+      "type": "string",
+      "defaultValue": "Simple Logic App Dashboard",
+      "metadata": {
+        "description": "Name of the dashboard to display in Azure portal"
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Portal/dashboards",
+      "apiVersion": "2020-09-01-preview",
+      "name": "[parameters('dashboardName')]",
+      "location": "[parameters('location')]",
+      "tags": {
+        "hidden-title": "[parameters('dashboardDisplayName')]"
+      },
+      "properties": {
+        "lenses": [
+          {
+            "order": 0,
+            "parts": [
+              {
+                "position": {
+                  "x": 0,
+                  "y": 0,
+                  "colSpan": 3,
+                  "rowSpan": 3
+                },
+                "metadata": {
+                  "inputs": [],
+                  "type": "Extension/HubsExtension/PartType/MarkdownPart",
+                  "settings": {
+                    "content": {
+                      "settings": {
+                        "content": "### Performance",
+                        "title": "",
+                        "subtitle": "",
+                        "markdownSource": 1,
+                        "markdownUri": null
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "position": {
+                  "x": 3,
+                  "y": 0,
+                  "colSpan": 5,
+                  "rowSpan": 3
+                },
+                "metadata": {
+                  "inputs": [
+                    {
+                      "name": "options",
+                      "value": {
+                        "chart": {
+                          "metrics": [
+                            {
+                              "resourceMetadata": {
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                              },
+                              "name": "availabilityResults/availabilityPercentage",
+                              "aggregationType": 4,
+                              "namespace": "microsoft.insights/components",
+                              "metricVisualization": {
+                                "resourceDisplayName": "[parameters('logicAppName')]",
+                                "color": "#54A300"
+                              }
+                            }
+                          ],
+                          "title": "Availability",
+                          "titleKind": 2,
+                          "visualization": {
+                            "chartType": 2,
+                            "axisVisualization": {
+                              "y": {
+                                "isVisible": true,
+                                "min": 0,
+                                "max": 100
+                              },
+                              "x": {
+                                "isVisible": true
+                              }
+                            }
+                          },
+                          "openBladeOnClick": {
+                            "openBlade": true,
+                            "destinationBlade": {
+                              "bladeName": "ResourceMenuBlade",
+                              "parameters": {
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                                "menuid": "availability"
+                              },
+                              "extensionName": "HubsExtension",
+                              "options": {
+                                "parameters": {
+                                  "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                                  "menuid": "availability"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "isOptional": true
+                    },
+                    {
+                      "name": "sharedTimeRange",
+                      "isOptional": true
+                    }
+                  ],
+                  "type": "Extension/HubsExtension/PartType/MonitorChartPart",
+                  "settings": {
+                    "content": {
+                      "options": {
+                        "chart": {
+                          "metrics": [
+                            {
+                              "resourceMetadata": {
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                              },
+                              "name": "availabilityResults/availabilityPercentage",
+                              "aggregationType": 4,
+                              "namespace": "microsoft.insights/components",
+                              "metricVisualization": {
+                                "resourceDisplayName": "[parameters('logicAppName')]",
+                                "color": "#54A300"
+                              }
+                            }
+                          ],
+                          "title": "Availability",
+                          "titleKind": 2,
+                          "visualization": {
+                            "chartType": 2,
+                            "axisVisualization": {
+                              "y": {
+                                "isVisible": true,
+                                "min": 0,
+                                "max": 100
+                              },
+                              "x": {
+                                "isVisible": true
+                              }
+                            },
+                            "disablePinning": true
+                          },
+                          "openBladeOnClick": {
+                            "openBlade": true,
+                            "destinationBlade": {
+                              "bladeName": "ResourceMenuBlade",
+                              "parameters": {
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                                "menuid": "availability"
+                              },
+                              "extensionName": "HubsExtension",
+                              "options": {
+                                "parameters": {
+                                  "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                                  "menuid": "availability"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "position": {
+                  "x": 8,
+                  "y": 0,
+                  "colSpan": 4,
+                  "rowSpan": 3
+                },
+                "metadata": {
+                  "inputs": [
+                    {
+                      "name": "options",
+                      "value": {
+                        "chart": {
+                          "metrics": [
+                            {
+                              "resourceMetadata": {
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                              },
+                              "name": "performanceCounters/requestExecutionTime",
+                              "aggregationType": 4,
+                              "namespace": "microsoft.insights/components",
+                              "metricVisualization": {
+                                "displayName": "HTTP request execution time"
+                              }
+                            }
+                          ],
+                          "title": "[concat('Avg HTTP request execution time for ', parameters('logicAppName'))]",
+                          "titleKind": 1,
+                          "visualization": {
+                            "chartType": 2,
+                            "legendVisualization": {
+                              "isVisible": true,
+                              "position": 2,
+                              "hideSubtitle": false
+                            },
+                            "axisVisualization": {
+                              "x": {
+                                "isVisible": true,
+                                "axisType": 2
+                              },
+                              "y": {
+                                "isVisible": true,
+                                "axisType": 1
+                              }
+                            }
+                          },
+                          "timespan": {
+                            "relative": {
+                              "duration": 86400000
+                            },
+                            "showUTCTime": false,
+                            "grain": 1
+                          }
+                        }
+                      },
+                      "isOptional": true
+                    },
+                    {
+                      "name": "sharedTimeRange",
+                      "isOptional": true
+                    }
+                  ],
+                  "type": "Extension/HubsExtension/PartType/MonitorChartPart",
+                  "settings": {
+                    "content": {
+                      "options": {
+                        "chart": {
+                          "metrics": [
+                            {
+                              "resourceMetadata": {
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                              },
+                              "name": "performanceCounters/requestExecutionTime",
+                              "aggregationType": 4,
+                              "namespace": "microsoft.insights/components",
+                              "metricVisualization": {
+                                "displayName": "HTTP request execution time"
+                              }
+                            }
+                          ],
+                          "title": "[concat('Avg HTTP request execution time for ', parameters('logicAppName'))]",
+                          "titleKind": 1,
+                          "visualization": {
+                            "chartType": 2,
+                            "legendVisualization": {
+                              "isVisible": true,
+                              "position": 2,
+                              "hideSubtitle": false
+                            },
+                            "axisVisualization": {
+                              "x": {
+                                "isVisible": true,
+                                "axisType": 2
+                              },
+                              "y": {
+                                "isVisible": true,
+                                "axisType": 1
+                              }
+                            },
+                            "disablePinning": true
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "position": {
+                  "x": 12,
+                  "y": 0,
+                  "colSpan": 4,
+                  "rowSpan": 3
+                },
+                "metadata": {
+                  "inputs": [
+                    {
+                      "name": "options",
+                      "value": {
+                        "chart": {
+                          "metrics": [
+                            {
+                              "resourceMetadata": {
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                              },
+                              "name": "requests/count",
+                              "aggregationType": 7,
+                              "namespace": "microsoft.insights/components",
+                              "metricVisualization": {
+                                "resourceDisplayName": "[parameters('logicAppName')]",
+                                "color": "#0078D4"
+                              }
+                            }
+                          ],
+                          "title": "Server requests",
+                          "titleKind": 2,
+                          "visualization": {
+                            "chartType": 3
+                          },
+                          "openBladeOnClick": {
+                            "openBlade": true,
+                            "destinationBlade": {
+                              "bladeName": "ResourceMenuBlade",
+                              "parameters": {
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                                "menuid": "performance"
+                              },
+                              "extensionName": "HubsExtension",
+                              "options": {
+                                "parameters": {
+                                  "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                                  "menuid": "performance"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "isOptional": true
+                    },
+                    {
+                      "name": "sharedTimeRange",
+                      "isOptional": true
+                    }
+                  ],
+                  "type": "Extension/HubsExtension/PartType/MonitorChartPart",
+                  "settings": {
+                    "content": {
+                      "options": {
+                        "chart": {
+                          "metrics": [
+                            {
+                              "resourceMetadata": {
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                              },
+                              "name": "requests/count",
+                              "aggregationType": 7,
+                              "namespace": "microsoft.insights/components",
+                              "metricVisualization": {
+                                "resourceDisplayName": "[parameters('logicAppName')]",
+                                "color": "#0078D4"
+                              }
+                            }
+                          ],
+                          "title": "Server requests",
+                          "titleKind": 2,
+                          "visualization": {
+                            "chartType": 3,
+                            "disablePinning": true
+                          },
+                          "openBladeOnClick": {
+                            "openBlade": true,
+                            "destinationBlade": {
+                              "bladeName": "ResourceMenuBlade",
+                              "parameters": {
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                                "menuid": "performance"
+                              },
+                              "extensionName": "HubsExtension",
+                              "options": {
+                                "parameters": {
+                                  "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                                  "menuid": "performance"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "position": {
+                  "x": 16,
+                  "y": 0,
+                  "colSpan": 4,
+                  "rowSpan": 3
+                },
+                "metadata": {
+                  "inputs": [
+                    {
+                      "name": "options",
+                      "value": {
+                        "chart": {
+                          "metrics": [
+                            {
+                              "resourceMetadata": {
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                              },
+                              "name": "requests/duration",
+                              "aggregationType": 4,
+                              "namespace": "microsoft.insights/components",
+                              "metricVisualization": {
+                                "resourceDisplayName": "[parameters('logicAppName')]",
+                                "color": "#0078D4"
+                              }
+                            }
+                          ],
+                          "title": "Server response time",
+                          "titleKind": 2,
+                          "visualization": {
+                            "chartType": 2
+                          },
+                          "openBladeOnClick": {
+                            "openBlade": true,
+                            "destinationBlade": {
+                              "bladeName": "ResourceMenuBlade",
+                              "parameters": {
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                                "menuid": "performance"
+                              },
+                              "extensionName": "HubsExtension",
+                              "options": {
+                                "parameters": {
+                                  "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                                  "menuid": "performance"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "isOptional": true
+                    },
+                    {
+                      "name": "sharedTimeRange",
+                      "isOptional": true
+                    }
+                  ],
+                  "type": "Extension/HubsExtension/PartType/MonitorChartPart",
+                  "settings": {
+                    "content": {
+                      "options": {
+                        "chart": {
+                          "metrics": [
+                            {
+                              "resourceMetadata": {
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                              },
+                              "name": "requests/duration",
+                              "aggregationType": 4,
+                              "namespace": "microsoft.insights/components",
+                              "metricVisualization": {
+                                "resourceDisplayName": "[parameters('logicAppName')]",
+                                "color": "#0078D4"
+                              }
+                            }
+                          ],
+                          "title": "Server response time",
+                          "titleKind": 2,
+                          "visualization": {
+                            "chartType": 2,
+                            "disablePinning": true
+                          },
+                          "openBladeOnClick": {
+                            "openBlade": true,
+                            "destinationBlade": {
+                              "bladeName": "ResourceMenuBlade",
+                              "parameters": {
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                                "menuid": "performance"
+                              },
+                              "extensionName": "HubsExtension",
+                              "options": {
+                                "parameters": {
+                                  "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                                  "menuid": "performance"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "position": {
+                  "x": 0,
+                  "y": 3,
+                  "colSpan": 3,
+                  "rowSpan": 4
+                },
+                "metadata": {
+                  "inputs": [],
+                  "type": "Extension/HubsExtension/PartType/MarkdownPart",
+                  "settings": {
+                    "content": {
+                      "settings": {
+                        "content": "### Failures",
+                        "title": "",
+                        "subtitle": "",
+                        "markdownSource": 1,
+                        "markdownUri": null
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "position": {
+                  "x": 3,
+                  "y": 3,
+                  "colSpan": 6,
+                  "rowSpan": 4
+                },
+                "metadata": {
+                  "inputs": [
+                    {
+                      "name": "options",
+                      "value": {
+                        "chart": {
+                          "metrics": [
+                            {
+                              "resourceMetadata": {
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                              },
+                              "name": "requests/failed",
+                              "aggregationType": 7,
+                              "namespace": "microsoft.insights/components",
+                              "metricVisualization": {
+                                "resourceDisplayName": "[parameters('logicAppName')]",
+                                "color": "#EC008C"
+                              }
+                            }
+                          ],
+                          "title": "Failed requests",
+                          "titleKind": 2,
+                          "visualization": {
+                            "chartType": 3
+                          },
+                          "openBladeOnClick": {
+                            "openBlade": true,
+                            "destinationBlade": {
+                              "bladeName": "ResourceMenuBlade",
+                              "parameters": {
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                                "menuid": "failures"
+                              },
+                              "extensionName": "HubsExtension",
+                              "options": {
+                                "parameters": {
+                                  "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                                  "menuid": "failures"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "isOptional": true
+                    },
+                    {
+                      "name": "sharedTimeRange",
+                      "isOptional": true
+                    }
+                  ],
+                  "type": "Extension/HubsExtension/PartType/MonitorChartPart",
+                  "settings": {
+                    "content": {
+                      "options": {
+                        "chart": {
+                          "metrics": [
+                            {
+                              "resourceMetadata": {
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                              },
+                              "name": "requests/failed",
+                              "aggregationType": 7,
+                              "namespace": "microsoft.insights/components",
+                              "metricVisualization": {
+                                "resourceDisplayName": "[parameters('logicAppName')]",
+                                "color": "#EC008C"
+                              }
+                            }
+                          ],
+                          "title": "Failed requests",
+                          "titleKind": 2,
+                          "visualization": {
+                            "chartType": 3,
+                            "disablePinning": true
+                          },
+                          "openBladeOnClick": {
+                            "openBlade": true,
+                            "destinationBlade": {
+                              "bladeName": "ResourceMenuBlade",
+                              "parameters": {
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                                "menuid": "failures"
+                              },
+                              "extensionName": "HubsExtension",
+                              "options": {
+                                "parameters": {
+                                  "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                                  "menuid": "failures"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "position": {
+                  "x": 9,
+                  "y": 3,
+                  "colSpan": 6,
+                  "rowSpan": 4
+                },
+                "metadata": {
+                  "inputs": [
+                    {
+                      "name": "ResourceId",
+                      "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                    },
+                    {
+                      "name": "ComponentId",
+                      "value": {
+                        "SubscriptionId": "[parameters('subscriptionId')]",
+                        "ResourceGroup": "[parameters('logicAppResourceGroup')]",
+                        "Name": "[parameters('logicAppName')]",
+                        "LinkedApplicationType": 0,
+                        "ResourceId": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                        "ResourceType": "microsoft.insights/components",
+                        "IsAzureFirst": false
+                      }
+                    },
+                    {
+                      "name": "TargetBlade",
+                      "value": "Failures"
+                    },
+                    {
+                      "name": "DataModel",
+                      "value": {
+                        "version": "1.0.0",
+                        "experience": 3,
+                        "clientTypeMode": "Server",
+                        "timeContext": {
+                          "durationMs": 86400000,
+                          "createdTime": "2021-04-06T21:56:10.624Z",
+                          "isInitialTime": false,
+                          "grain": 1,
+                          "useDashboardTimeRange": false
+                        },
+                        "prefix": "let OperationIdsWithExceptionType = (excType: string) { exceptions | where timestamp > ago(1d) \n    | where tobool(iff(excType == \"null\", isempty(type), type == excType)) \n    | distinct operation_ParentId };\nlet OperationIdsWithFailedReqResponseCode = (respCode: string) { requests | where timestamp > ago(1d)\n    | where iff(respCode == \"null\", isempty(resultCode), resultCode == respCode) and success == false \n    | distinct id };\nlet OperationIdsWithFailedDependencyType = (depType: string) { dependencies | where timestamp > ago(1d)\n    | where iff(depType == \"null\", isempty(type), type == depType) and success == false \n    | distinct operation_ParentId };\nlet OperationIdsWithFailedDepResponseCode = (respCode: string) { dependencies | where timestamp > ago(1d)\n    | where iff(respCode == \"null\", isempty(resultCode), resultCode == respCode) and success == false \n    | distinct operation_ParentId };\nlet OperationIdsWithExceptionBrowser = (browser: string) { exceptions | where timestamp > ago(1d)\n    | where tobool(iff(browser == \"null\", isempty(client_Browser), client_Browser == browser)) \n    | distinct operation_ParentId };",
+                        "grain": "5m",
+                        "selectedOperation": null,
+                        "selectedOperationName": null,
+                        "filters": []
+                      },
+                      "isOptional": true
+                    },
+                    {
+                      "name": "Version",
+                      "value": "1.0"
+                    }
+                  ],
+                  "type": "Extension/AppInsightsExtension/PartType/FailuresCuratedPinnedChartPart",
+                  "asset": {
+                    "idInputName": "ResourceId",
+                    "type": "ApplicationInsights"
+                  }
+                }
+              },
+              {
+                "position": {
+                  "x": 15,
+                  "y": 3,
+                  "colSpan": 5,
+                  "rowSpan": 4
+                },
+                "metadata": {
+                  "inputs": [
+                    {
+                      "name": "options",
+                      "value": {
+                        "chart": {
+                          "metrics": [
+                            {
+                              "resourceMetadata": {
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                              },
+                              "name": "requests/failed",
+                              "aggregationType": 7,
+                              "namespace": "microsoft.insights/components",
+                              "metricVisualization": {
+                                "displayName": "Failed requests"
+                              }
+                            }
+                          ],
+                          "title": "[concat('Count Failed requests for ', parameters('logicAppName'))]",
+                          "titleKind": 1,
+                          "visualization": {
+                            "chartType": 2,
+                            "legendVisualization": {
+                              "isVisible": true,
+                              "position": 2,
+                              "hideSubtitle": false
+                            },
+                            "axisVisualization": {
+                              "x": {
+                                "isVisible": true,
+                                "axisType": 2
+                              },
+                              "y": {
+                                "isVisible": true,
+                                "axisType": 1
+                              }
+                            }
+                          },
+                          "timespan": {
+                            "relative": {
+                              "duration": 86400000
+                            },
+                            "showUTCTime": false,
+                            "grain": 1
+                          }
+                        }
+                      },
+                      "isOptional": true
+                    },
+                    {
+                      "name": "sharedTimeRange",
+                      "isOptional": true
+                    }
+                  ],
+                  "type": "Extension/HubsExtension/PartType/MonitorChartPart",
+                  "settings": {
+                    "content": {
+                      "options": {
+                        "chart": {
+                          "metrics": [
+                            {
+                              "resourceMetadata": {
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                              },
+                              "name": "requests/failed",
+                              "aggregationType": 7,
+                              "namespace": "microsoft.insights/components",
+                              "metricVisualization": {
+                                "displayName": "Failed requests"
+                              }
+                            }
+                          ],
+                          "title": "[concat('Count Failed requests for ', parameters('logicAppName'))]",
+                          "titleKind": 1,
+                          "visualization": {
+                            "chartType": 2,
+                            "legendVisualization": {
+                              "isVisible": true,
+                              "position": 2,
+                              "hideSubtitle": false
+                            },
+                            "axisVisualization": {
+                              "x": {
+                                "isVisible": true,
+                                "axisType": 2
+                              },
+                              "y": {
+                                "isVisible": true,
+                                "axisType": 1
+                              }
+                            },
+                            "disablePinning": true
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "position": {
+                  "x": 0,
+                  "y": 7,
+                  "colSpan": 3,
+                  "rowSpan": 4
+                },
+                "metadata": {
+                  "inputs": [],
+                  "type": "Extension/HubsExtension/PartType/MarkdownPart",
+                  "settings": {
+                    "content": {
+                      "settings": {
+                        "content": "### Usage",
+                        "title": "",
+                        "subtitle": "",
+                        "markdownSource": 1,
+                        "markdownUri": null
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "position": {
+                  "x": 3,
+                  "y": 7,
+                  "colSpan": 6,
+                  "rowSpan": 4
+                },
+                "metadata": {
+                  "inputs": [
+                    {
+                      "name": "options",
+                      "value": {
+                        "chart": {
+                          "metrics": [
+                            {
+                              "resourceMetadata": {
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                              },
+                              "name": "sessions/count",
+                              "aggregationType": 5,
+                              "namespace": "microsoft.insights/components/kusto",
+                              "metricVisualization": {
+                                "displayName": "Sessions",
+                                "color": "#47BDF5"
+                              }
+                            },
+                            {
+                              "resourceMetadata": {
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                              },
+                              "name": "users/count",
+                              "aggregationType": 5,
+                              "namespace": "microsoft.insights/components/kusto",
+                              "metricVisualization": {
+                                "displayName": "Users",
+                                "color": "#7E58FF"
+                              }
+                            }
+                          ],
+                          "title": "Unique sessions and users",
+                          "visualization": {
+                            "chartType": 2,
+                            "legendVisualization": {
+                              "isVisible": true,
+                              "position": 2,
+                              "hideSubtitle": false
+                            },
+                            "axisVisualization": {
+                              "x": {
+                                "isVisible": true,
+                                "axisType": 2
+                              },
+                              "y": {
+                                "isVisible": true,
+                                "axisType": 1
+                              }
+                            }
+                          },
+                          "openBladeOnClick": {
+                            "openBlade": true,
+                            "destinationBlade": {
+                              "extensionName": "HubsExtension",
+                              "bladeName": "ResourceMenuBlade",
+                              "parameters": {
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                                "menuid": "segmentationUsers"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "name": "sharedTimeRange",
+                      "isOptional": true
+                    }
+                  ],
+                  "type": "Extension/HubsExtension/PartType/MonitorChartPart",
+                  "settings": {
+                    "content": {
+                      "options": {
+                        "chart": {
+                          "metrics": [
+                            {
+                              "resourceMetadata": {
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                              },
+                              "name": "sessions/count",
+                              "aggregationType": 5,
+                              "namespace": "microsoft.insights/components/kusto",
+                              "metricVisualization": {
+                                "displayName": "Sessions",
+                                "color": "#47BDF5"
+                              }
+                            },
+                            {
+                              "resourceMetadata": {
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                              },
+                              "name": "users/count",
+                              "aggregationType": 5,
+                              "namespace": "microsoft.insights/components/kusto",
+                              "metricVisualization": {
+                                "displayName": "Users",
+                                "color": "#7E58FF"
+                              }
+                            }
+                          ],
+                          "title": "Unique sessions and users",
+                          "visualization": {
+                            "chartType": 2,
+                            "legendVisualization": {
+                              "isVisible": true,
+                              "position": 2,
+                              "hideSubtitle": false
+                            },
+                            "axisVisualization": {
+                              "x": {
+                                "isVisible": true,
+                                "axisType": 2
+                              },
+                              "y": {
+                                "isVisible": true,
+                                "axisType": 1
+                              }
+                            },
+                            "disablePinning": true
+                          },
+                          "openBladeOnClick": {
+                            "openBlade": true,
+                            "destinationBlade": {
+                              "extensionName": "HubsExtension",
+                              "bladeName": "ResourceMenuBlade",
+                              "parameters": {
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                                "menuid": "segmentationUsers"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "position": {
+                  "x": 9,
+                  "y": 7,
+                  "colSpan": 6,
+                  "rowSpan": 4
+                },
+                "metadata": {
+                  "inputs": [
+                    {
+                      "name": "options",
+                      "value": {
+                        "chart": {
+                          "metrics": [
+                            {
+                              "resourceMetadata": {
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                              },
+                              "name": "availabilityResults/availabilityPercentage",
+                              "aggregationType": 4,
+                              "namespace": "microsoft.insights/components",
+                              "metricVisualization": {
+                                "displayName": "Availability",
+                                "color": "#47BDF5"
+                              }
+                            }
+                          ],
+                          "title": "Average availability",
+                          "visualization": {
+                            "chartType": 3,
+                            "legendVisualization": {
+                              "isVisible": true,
+                              "position": 2,
+                              "hideSubtitle": false
+                            },
+                            "axisVisualization": {
+                              "x": {
+                                "isVisible": true,
+                                "axisType": 2
+                              },
+                              "y": {
+                                "isVisible": true,
+                                "axisType": 1
+                              }
+                            }
+                          },
+                          "openBladeOnClick": {
+                            "openBlade": true,
+                            "destinationBlade": {
+                              "extensionName": "HubsExtension",
+                              "bladeName": "ResourceMenuBlade",
+                              "parameters": {
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                                "menuid": "availability"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "name": "sharedTimeRange",
+                      "isOptional": true
+                    }
+                  ],
+                  "type": "Extension/HubsExtension/PartType/MonitorChartPart",
+                  "settings": {
+                    "content": {
+                      "options": {
+                        "chart": {
+                          "metrics": [
+                            {
+                              "resourceMetadata": {
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                              },
+                              "name": "availabilityResults/availabilityPercentage",
+                              "aggregationType": 4,
+                              "namespace": "microsoft.insights/components",
+                              "metricVisualization": {
+                                "displayName": "Availability",
+                                "color": "#47BDF5"
+                              }
+                            }
+                          ],
+                          "title": "Average availability",
+                          "visualization": {
+                            "chartType": 3,
+                            "legendVisualization": {
+                              "isVisible": true,
+                              "position": 2,
+                              "hideSubtitle": false
+                            },
+                            "axisVisualization": {
+                              "x": {
+                                "isVisible": true,
+                                "axisType": 2
+                              },
+                              "y": {
+                                "isVisible": true,
+                                "axisType": 1
+                              }
+                            },
+                            "disablePinning": true
+                          },
+                          "openBladeOnClick": {
+                            "openBlade": true,
+                            "destinationBlade": {
+                              "extensionName": "HubsExtension",
+                              "bladeName": "ResourceMenuBlade",
+                              "parameters": {
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                                "menuid": "availability"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "position": {
+                  "x": 15,
+                  "y": 7,
+                  "colSpan": 5,
+                  "rowSpan": 4
+                },
+                "metadata": {
+                  "inputs": [
+                    {
+                      "name": "options",
+                      "value": {
+                        "chart": {
+                          "metrics": [
+                            {
+                              "resourceMetadata": {
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                              },
+                              "name": "pageViews/count",
+                              "aggregationType": 7,
+                              "namespace": "microsoft.insights/components",
+                              "metricVisualization": {
+                                "displayName": "Page views"
+                              }
+                            }
+                          ],
+                          "title": "[concat('Count Page views for ', parameters('logicAppName'))]",
+                          "titleKind": 1,
+                          "visualization": {
+                            "chartType": 2,
+                            "legendVisualization": {
+                              "isVisible": true,
+                              "position": 2,
+                              "hideSubtitle": false
+                            },
+                            "axisVisualization": {
+                              "x": {
+                                "isVisible": true,
+                                "axisType": 2
+                              },
+                              "y": {
+                                "isVisible": true,
+                                "axisType": 1
+                              }
+                            }
+                          },
+                          "timespan": {
+                            "relative": {
+                              "duration": 86400000
+                            },
+                            "showUTCTime": false,
+                            "grain": 1
+                          }
+                        }
+                      },
+                      "isOptional": true
+                    },
+                    {
+                      "name": "sharedTimeRange",
+                      "isOptional": true
+                    }
+                  ],
+                  "type": "Extension/HubsExtension/PartType/MonitorChartPart",
+                  "settings": {
+                    "content": {
+                      "options": {
+                        "chart": {
+                          "metrics": [
+                            {
+                              "resourceMetadata": {
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                              },
+                              "name": "pageViews/count",
+                              "aggregationType": 7,
+                              "namespace": "microsoft.insights/components",
+                              "metricVisualization": {
+                                "displayName": "Page views"
+                              }
+                            }
+                          ],
+                          "title": "[concat('Count Page views for ', parameters('logicAppName'))]",
+                          "titleKind": 1,
+                          "visualization": {
+                            "chartType": 2,
+                            "legendVisualization": {
+                              "isVisible": true,
+                              "position": 2,
+                              "hideSubtitle": false
+                            },
+                            "axisVisualization": {
+                              "x": {
+                                "isVisible": true,
+                                "axisType": 2
+                              },
+                              "y": {
+                                "isVisible": true,
+                                "axisType": 1
+                              }
+                            },
+                            "disablePinning": true
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "filters": {
+                    "MsPortalFx_TimeRange": {
+                      "model": {
+                        "format": "local",
+                        "granularity": "auto",
+                        "relative": "1440m"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "position": {
+                  "x": 0,
+                  "y": 11,
+                  "colSpan": 3,
+                  "rowSpan": 9
+                },
+                "metadata": {
+                  "inputs": [],
+                  "type": "Extension/HubsExtension/PartType/MarkdownPart",
+                  "settings": {
+                    "content": {
+                      "settings": {
+                        "content": "# Application map\nSpot performance bottlenecks or failure hotspots across all components of your distributed application.",
+                        "title": "",
+                        "subtitle": "",
+                        "markdownSource": 1,
+                        "markdownUri": null
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "position": {
+                  "x": 3,
+                  "y": 11,
+                  "colSpan": 17,
+                  "rowSpan": 9
+                },
+                "metadata": {
+                  "inputs": [
+                    {
+                      "name": "ComponentId",
+                      "value": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                    },
+                    {
+                      "name": "MainResourceId",
+                      "isOptional": true
+                    },
+                    {
+                      "name": "ResourceIds",
+                      "isOptional": true
+                    },
+                    {
+                      "name": "TimeContext",
+                      "value": {
+                        "durationMs": 3600000,
+                        "createdTime": "Tue Apr 06 2021 14:56:16 GMT-0700 (Pacific Daylight Time)",
+                        "isInitialTime": false,
+                        "grain": 1,
+                        "useDashboardTimeRange": false
+                      },
+                      "isOptional": true
+                    },
+                    {
+                      "name": "ConfigurationId",
+                      "value": "f576321d-1bf0-4340-abc2-125d3a1b016e",
+                      "isOptional": true
+                    },
+                    {
+                      "name": "DataModel",
+                      "value": {
+                        "timeContext": {
+                          "durationMs": 3600000,
+                          "createdTime": "Tue Apr 06 2021 14:56:16 GMT-0700 (Pacific Daylight Time)",
+                          "isInitialTime": false,
+                          "grain": 1,
+                          "useDashboardTimeRange": false
+                        },
+                        "layoutOption": "Organic",
+                        "exclude4xxError": true
+                      },
+                      "isOptional": true
+                    },
+                    {
+                      "name": "UseCallerTimeContext",
+                      "isOptional": true
+                    },
+                    {
+                      "name": "OverrideSettings",
+                      "isOptional": true
+                    },
+                    {
+                      "name": "PartId",
+                      "isOptional": true
+                    }
+                  ],
+                  "type": "Extension/AppInsightsExtension/PartType/ApplicationMapPart",
+                  "settings": {},
+                  "asset": {
+                    "idInputName": "ComponentId",
+                    "type": "ApplicationInsights"
+                  },
+                  "deepLink": "[concat('#@DefraCloudDev.onmicrosoft.com/resource/subscriptions/', parameters('subscriptionId'), '/resourceGroups/', parameters('logicAppResourceGroup'), /providers/microsoft.insights/components/', parameters('logicAppName'), '/applicationMap')]"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

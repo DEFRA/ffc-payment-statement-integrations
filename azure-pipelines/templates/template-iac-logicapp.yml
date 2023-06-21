@@ -89,3 +89,18 @@ jobs:
               az functionapp config appsettings set --name $(LAname) --resource-group  $(resourceGroupName) --settings "SERVICEBUS_CONNECTION_RUNTIMEURL=$(servicebusendpointurl)"
             addSpnToEnvironment: true
             useGlobalConfig: true
+
+        - task: AzureResourceGroupDeployment@2
+          displayName: 'Deploy Dashboard'
+          inputs:
+            azureSubscription: ${{ parameters.serviceConnection }}
+            resourceGroupName: $(resourceGroupName)
+            location: $(resourceGroupLocation)
+            csmFile: './unpacked/templates/dashboard-template.json'
+            overrideParameters:
+              -location $(resourceGroupLocation)
+              -logicAppName $(logicAppName)
+              -logicAppResourceGroup $(resourceGroupName)
+              -dashboardName $(dashboardName)
+              -dashboardDisplayName $(dashboardDisplayName)
+            deploymentMode: $(deploymentMode)
