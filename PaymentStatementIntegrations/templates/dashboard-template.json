@@ -36,18 +36,18 @@
   "resources": [
     {
       "type": "Microsoft.Portal/dashboards",
-      "apiVersion": "2020-09-01-preview",
+      "apiVersion": "2015-08-01-preview",
       "name": "[parameters('dashboardName')]",
       "location": "[parameters('location')]",
       "tags": {
         "hidden-title": "[parameters('dashboardDisplayName')]"
       },
       "properties": {
-        "lenses": [
-          {
+        "lenses": {
+          "0": {
             "order": 0,
-            "parts": [
-              {
+            "parts": {
+              "0": {
                 "position": {
                   "x": 0,
                   "y": 0,
@@ -70,7 +70,7 @@
                   }
                 }
               },
-              {
+              "1": {
                 "position": {
                   "x": 3,
                   "y": 0,
@@ -196,7 +196,7 @@
                   }
                 }
               },
-              {
+              "2": {
                 "position": {
                   "x": 8,
                   "y": 0,
@@ -303,7 +303,7 @@
                   }
                 }
               },
-              {
+              "3": {
                 "position": {
                   "x": 12,
                   "y": 0,
@@ -409,7 +409,7 @@
                   }
                 }
               },
-              {
+              "4": {
                 "position": {
                   "x": 16,
                   "y": 0,
@@ -515,7 +515,7 @@
                   }
                 }
               },
-              {
+              "5": {
                 "position": {
                   "x": 0,
                   "y": 3,
@@ -538,7 +538,7 @@
                   }
                 }
               },
-              {
+              "6": {
                 "position": {
                   "x": 3,
                   "y": 3,
@@ -644,7 +644,7 @@
                   }
                 }
               },
-              {
+              "7": {
                 "position": {
                   "x": 9,
                   "y": 3,
@@ -706,7 +706,7 @@
                   }
                 }
               },
-              {
+              "8": {
                 "position": {
                   "x": 15,
                   "y": 3,
@@ -813,7 +813,7 @@
                   }
                 }
               },
-              {
+              "9": {
                 "position": {
                   "x": 0,
                   "y": 7,
@@ -836,7 +836,7 @@
                   }
                 }
               },
-              {
+              "10": {
                 "position": {
                   "x": 3,
                   "y": 7,
@@ -981,7 +981,7 @@
                   }
                 }
               },
-              {
+              "11": {
                 "position": {
                   "x": 9,
                   "y": 7,
@@ -1102,7 +1102,7 @@
                   }
                 }
               },
-              {
+              "12": {
                 "position": {
                   "x": 15,
                   "y": 7,
@@ -1218,7 +1218,7 @@
                   }
                 }
               },
-              {
+              "13": {
                 "position": {
                   "x": 0,
                   "y": 11,
@@ -1241,7 +1241,7 @@
                   }
                 }
               },
-              {
+              "14": {
                 "position": {
                   "x": 3,
                   "y": 11,
@@ -1315,9 +1315,9 @@
                   "deepLink": "[concat('#@DefraCloudDev.onmicrosoft.com/resource', subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'), '/applicationMap')]"
                 }
               }
-            ]
+            }
           }
-        ]
+        }
       }
     }
   ]
