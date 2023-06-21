@@ -655,7 +655,7 @@
                   "inputs": [
                     {
                       "name": "ResourceId",
-                      "value": "/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/resourceGroups/ESTLOGICAPPS-RG2-dev/providers/microsoft.insights/components/la-logicappstdx-dev"
+                      "value": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]"
                     },
                     {
                       "name": "ComponentId",
@@ -664,7 +664,7 @@
                         "ResourceGroup": "ESTLOGICAPPS-RG2-dev",
                         "Name": "la-logicappstdx-dev",
                         "LinkedApplicationType": 0,
-                        "ResourceId": "/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/resourceGroups/ESTLOGICAPPS-RG2-dev/providers/microsoft.insights/components/la-logicappstdx-dev",
+                        "ResourceId": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]",
                         "ResourceType": "microsoft.insights/components",
                         "IsAzureFirst": false
                           }
