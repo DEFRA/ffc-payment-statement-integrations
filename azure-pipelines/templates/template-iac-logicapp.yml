@@ -102,5 +102,5 @@ jobs:
               -logicAppName $(logicAppName)
               -logicAppResourceGroup $(resourceGroupName)
               -dashboardName $(dashboardName)
-              -dashboardDisplayName '$(dashboardDisplayName)'
+              -dashboardDisplayName "$(dashboardDisplayName)"
             deploymentMode: $(deploymentMode)

@@ -18,6 +18,9 @@ variables:
 
   appInsightsName: 'la-$(projectName)-$(envShortName)'
 
+  dashboardName: 'dh-$(projectName)-$(envShortName)'
+  dashboardDisplayName: '$(projectName)-$(envShortName) dashboard'
+
   # Full url is specified here as opposed to just the MI name.
   # This is because the MI may exist in a different resource group than the Logic App and so
   # the normal resource lookup in the template will fail.
