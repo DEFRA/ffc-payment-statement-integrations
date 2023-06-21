@@ -660,7 +660,7 @@
                     {
                       "name": "ComponentId",
                       "value": {
-                        "SubscriptionId": "[parameters('subscriptionId')]",
+                        "SubscriptionId": "[subscription().subscriptionId]",
                         "ResourceGroup": "[parameters('logicAppResourceGroup')]",
                         "Name": "[parameters('logicAppName')]",
                         "LinkedApplicationType": 0,
@@ -1312,7 +1312,7 @@
                     "idInputName": "ComponentId",
                     "type": "ApplicationInsights"
                   },
-                  "deepLink": "[concat('#@DefraCloudDev.onmicrosoft.com/resource/subscriptions/', parameters('subscriptionId'), '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'), '/applicationMap')]"
+                  "deepLink": "[concat('#@DefraCloudDev.onmicrosoft.com/resource', subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'), '/applicationMap')]"
                 }
               }
             ]
