@@ -130,7 +130,11 @@
                         }
                     ]
                 },
-                "runAfter": {}
+                "runAfter": {},
+                "trackedProperties": {
+                    "file_id": "@{trigger().outputs?.queries?.id}",
+                    "pdf_service_url": "@{parameters('PdfServiceUrl')}"
+                }
             }
         },
         "contentVersion": "1.0.0.0",

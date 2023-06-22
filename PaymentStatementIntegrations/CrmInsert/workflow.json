@@ -73,7 +73,7 @@
                                 "inputs": {
                                     "host": {
                                         "connection": {
-                                            "referenceName": "commondataservice"
+                                            "referenceName": "commondataservice-api-raw"
                                         }
                                     },
                                     "method": "post",
@@ -101,7 +101,7 @@
                                 "inputs": {
                                     "host": {
                                         "connection": {
-                                            "referenceName": "servicebus-api"
+                                            "referenceName": "pay-servicebus-api"
                                         }
                                     },
                                     "method": "post",
@@ -167,7 +167,7 @@
                                 "inputs": {
                                     "host": {
                                         "connection": {
-                                            "referenceName": "servicebus-api"
+                                            "referenceName": "pay-servicebus-api"
                                         }
                                     },
                                     "method": "delete",
@@ -194,7 +194,7 @@
                             "inputs": {
                                 "host": {
                                     "connection": {
-                                        "referenceName": "servicebus-api"
+                                        "referenceName": "pay-servicebus-api"
                                     }
                                 },
                                 "method": "post",
@@ -243,7 +243,7 @@
                         "isSessionsEnabled": false
                     },
                     "serviceProviderConfiguration": {
-                        "connectionName": "servicebus-sp",
+                        "connectionName": "servicebus-raw-sp",
                         "operationId": "peekLockTopicMessages",
                         "serviceProviderId": "/serviceProviders/serviceBus"
                     }
