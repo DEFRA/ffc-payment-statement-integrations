@@ -1,9 +1,12 @@
 {
   "serviceProviderConnections": {
     "servicebus-mi-sp": {
-      "displayName": "servicebus-raw-sp",
+      "displayName": "servicebus-mi-sp",
       "parameterValues": {
-        "connectionString": "@appsetting('ServiceBusRaw-ConnectionString')"
+        "authProvider": {
+            "Type": "ManagedServiceIdentity"
+        },
+        "fullyQualifiedNamespace": "SNDFFCINFSB1001.servicebus.windows.net"
       },
       "serviceProvider": {
         "id": "/serviceProviders/serviceBus"

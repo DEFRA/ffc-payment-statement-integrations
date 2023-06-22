@@ -1,10 +1,5 @@
 [
   {
-    "name": "ServiceBusRaw-ConnectionString",
-    "value": "@Microsoft.KeyVault(VaultName=SNDESTLOGICAPPKV1;SecretName=ffcServiceBusConnStringDev)",
-    "slotSetting": false
-    },
-  {
     "name": "commondataservice-connectionKey",
     "value": "@Microsoft.KeyVault(VaultName=SNDESTLOGICAPPKV1;SecretName=CommonDataServiceConnStringDev)",
     "slotSetting": false
