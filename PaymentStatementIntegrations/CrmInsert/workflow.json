@@ -234,21 +234,25 @@
         "contentVersion": "1.0.0.0",
         "outputs": {},
         "triggers": {
-            "When_messages_are_available_in_a_topic_subscription_(peek-lock)": {
-                "type": "ServiceProvider",
+            "When_a_message_is_received_in_a_topic_subscription_(peek-lock)": {
+                "type": "ApiConnection",
                 "inputs": {
-                    "parameters": {
-                        "topicName": "ffc-pay-statement-crm-snd",
-                        "subscriptionName": "crm",
-                        "isSessionsEnabled": false
+                    "host": {
+                        "connection": {
+                            "referenceName": "pay-servicebus-api"
+                        }
                     },
-                    "serviceProviderConfiguration": {
-                        "connectionName": "servicebus-mi-sp",
-                        "operationId": "peekLockTopicMessages",
-                        "serviceProviderId": "/serviceProviders/serviceBus"
+                    "method": "get",
+                    "path": "/@{encodeURIComponent(encodeURIComponent('ffc-pay-statement-crm-snd'))}/subscriptions/@{encodeURIComponent('crm')}/messages/head/peek",
+                    "queries": {
+                        "subscriptionType": "Main",
+                        "sessionId": "None"
                     }
                 },
-                "splitOn": "@triggerOutputs()?['body']"
+                "recurrence": {
+                    "interval": 15,
+                    "frequency": "Minute"
+                }
             }
         }
     },

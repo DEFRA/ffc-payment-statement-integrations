@@ -1,17 +1,5 @@
 {
   "serviceProviderConnections": {
-    "servicebus-mi-sp": {
-      "displayName": "servicebus-mi-sp",
-      "parameterValues": {
-        "authProvider": {
-            "Type": "ManagedServiceIdentity"
-        },
-        "fullyQualifiedNamespace": "SNDFFCINFSB1001.servicebus.windows.net"
-      },
-      "serviceProvider": {
-        "id": "/serviceProviders/serviceBus"
-      }
-    },
     "sql": {
       "parameterValues": {
         "connectionString": "@appsetting('Sql-ConnectionString')"
