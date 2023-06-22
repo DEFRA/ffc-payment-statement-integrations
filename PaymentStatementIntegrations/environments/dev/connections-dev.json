@@ -29,20 +29,6 @@
     }
   },
   "managedApiConnections": {
-    "commondataservice-api-raw": {
-      "api": {
-        "id": "/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/providers/Microsoft.Web/locations/uksouth/managedApis/commondataservice"
-      },
-      "connection": {
-        "id": "/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/resourceGroups/SNDESTLOGICAPPS-RG/providers/Microsoft.Web/connections/commondataservice-2"
-      },
-      "connectionRuntimeUrl": "@appsetting('COMMONDATASERVICE_CONNECTION_RUNTIMEURL')",
-      "authentication": {
-        "type": "Raw",
-        "scheme": "Key",
-        "parameter": "@appsetting('commondataservice-connectionKey')"
-      }
-    },
     "pay-servicebus-api": {
       "api": {
         "id": "/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/providers/Microsoft.Web/locations/uksouth/managedApis/servicebus"
