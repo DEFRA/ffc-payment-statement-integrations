@@ -6,12 +6,12 @@
   },
   {
     "name": "ServiceBus-ConnectionKey",
-    "value": "@Microsoft.KeyVault(VaultName=SNDESTLOGICAPPKV1;SecretName=ServiceBusConnStringDev)",
+    "value": "@Microsoft.KeyVault(VaultName=SNDESTLOGICAPPKV1;SecretName=ServiceBusConnectionStringDev)",
     "slotSetting": false
   },
   {
     "name": "ServiceBus-ConnectionString",
-    "value": "@Microsoft.KeyVault(VaultName=SNDESTLOGICAPPKV1;SecretName=ServiceBusConnKeyDev)",
+    "value": "@Microsoft.KeyVault(VaultName=SNDESTLOGICAPPKV1;SecretName=ServiceBusConnectionKeyDev)",
     "slotSetting": false
   },
   {

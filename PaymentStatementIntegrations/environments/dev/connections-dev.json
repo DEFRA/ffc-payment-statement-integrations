@@ -2,7 +2,7 @@
   "serviceProviderConnections": {
     "serviceBus": {
       "parameterValues": {
-        "connectionString": "@appsetting('ServiceBus_ConnectionString')"
+        "connectionString": "@appsetting('ServiceBus-ConnectionString')"
       },
       "parameterSetName": "connectionString",
       "serviceProvider": {
