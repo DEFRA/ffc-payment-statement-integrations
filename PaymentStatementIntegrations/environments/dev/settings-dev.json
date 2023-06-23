@@ -6,12 +6,12 @@
   },
   {
     "name": "ServiceBus-ConnectionKey",
-    "value": "@Microsoft.KeyVault(SecretUri=https://sndestlogicappkv1.vault.azure.net/secrets/ServiceBusConnectionStringDev/121fa4c998944cf2831c2825e01b472e)",
+    "value": "@Microsoft.KeyVault(SecretUri=https://sndestlogicappkv1.vault.azure.net/secrets/ServiceBusConnectionKeyDev/345fe05dcd134cb2ae25cf5310b20bd1",
     "slotSetting": false
   },
   {
     "name": "ServiceBus-ConnectionString",
-    "value": "@Microsoft.KeyVault(VaultName=SNDESTLOGICAPPKV1;SecretName=ServiceBusConnectionKeyDev)",
+    "value": "@Microsoft.KeyVault(SecretUri=https://sndestlogicappkv1.vault.azure.net/secrets/ServiceBusConnectionStringDev/121fa4c998944cf2831c2825e01b472e)",
     "slotSetting": false
   },
   {
