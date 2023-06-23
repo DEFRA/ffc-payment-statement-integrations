@@ -1,13 +1,14 @@
 {
   "serviceProviderConnections": {
-    "servicebus-sp": {
+    "serviceBus": {
       "parameterValues": {
-        "connectionString": "@appsetting('ServiceBus-ConnectionString')"
+        "connectionString": "@appsetting('serviceBus_connectionString')"
       },
+      "parameterSetName": "connectionString",
       "serviceProvider": {
         "id": "/serviceProviders/serviceBus"
       },
-      "displayName": "serviceBusConnection"
+      "displayName": "serviceBusRawAuth"
     },
     "sql": {
       "parameterValues": {
@@ -57,9 +58,9 @@
         "id": "/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/providers/Microsoft.Web/locations/uksouth/managedApis/servicebus"
       },
       "connection": {
-        "id": "/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/resourceGroups/SNDESTLOGICAPPS-RG/providers/Microsoft.Web/connections/servicebus-2"
+        "id": "/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/resourceGroups/SNDESTLOGICAPPS-RG/providers/Microsoft.Web/connections/servicebus-3"
       },
-      "connectionRuntimeUrl": "https://eca9b9c6c62075fe.03.common.logic-uksouth.azure-apihub.net/apim/servicebus/75f0dd467fb7452f81fc343503f99b24/",
+      "connectionRuntimeUrl": "https://eca9b9c6c62075fe.03.common.logic-uksouth.azure-apihub.net/apim/servicebus/4dc7f60cb1a4415ab0a402310348dee6/",
       "authentication": {
         "type": "Raw",
         "scheme": "Key",

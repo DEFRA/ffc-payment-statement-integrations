@@ -1,5 +1,15 @@
 {
   "serviceProviderConnections": {
+    "serviceBus": {
+      "parameterValues": {
+        "connectionString": "@appsetting('ServiceBus_ConnectionString')"
+      },
+      "parameterSetName": "connectionString",
+      "serviceProvider": {
+        "id": "/serviceProviders/serviceBus"
+      },
+      "displayName": "serviceBusRawAuth"
+    },
     "sql": {
       "parameterValues": {
         "connectionString": "@appsetting('Sql-ConnectionString')"
@@ -33,18 +43,13 @@
       "api": {
         "id": "/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/providers/Microsoft.Web/locations/uksouth/managedApis/servicebus"
       },
-      "authentication": {
-          "type": "ManagedServiceIdentity"
-      },
       "connection": {
-          "id": "/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/resourceGroups/ESTLOGICAPPS-RG2-dev/providers/Microsoft.Web/connections/pay-servicebus-api"
+        "id": "/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/resourceGroups/SNDESTLOGICAPPS-RG/providers/Microsoft.Web/connections/servicebus-3"
       },
-      "connectionProperties": {
-          "authentication": {
-              "audience": "https://servicebus.azure.net",
-              "identity": "/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/resourcegroups/SNDESTLOGICAPPS-RG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MILOGICAPPSDEV",
-              "type": "ManagedServiceIdentity"
-          }
+      "authentication": {
+        "type": "Raw",
+        "scheme": "Key",
+        "parameter": "@appsetting('ServiceBus-ConnectionKey')"
       },
       "connectionRuntimeUrl": "@appsetting('SERVICEBUS_CONNECTION_RUNTIMEURL')"
     }
