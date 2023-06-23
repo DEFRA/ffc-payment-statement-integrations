@@ -1,12 +1,12 @@
 [
   {
     "name": "commondataservice-connectionKey",
-    "value": "@Microsoft.KeyVault(VaultName=SNDESTLOGICAPPKV1;SecretName=CommonDataServiceConnStringDev)",
+    "value": "@Microsoft.KeyVault(SecretUri=https://sndestlogicappkv1.vault.azure.net/secrets/CommonDataServiceConnStringDev/fa3fd22160744f21a753c538a056710a)",
     "slotSetting": false
   },
   {
     "name": "ServiceBus-ConnectionKey",
-    "value": "@Microsoft.KeyVault(SecretUri=https://sndestlogicappkv1.vault.azure.net/secrets/ServiceBusConnectionKeyDev/345fe05dcd134cb2ae25cf5310b20bd1",
+    "value": "@Microsoft.KeyVault(SecretUri=https://sndestlogicappkv1.vault.azure.net/secrets/ServiceBusConnectionKeyDev/345fe05dcd134cb2ae25cf5310b20bd1)",
     "slotSetting": false
   },
   {
