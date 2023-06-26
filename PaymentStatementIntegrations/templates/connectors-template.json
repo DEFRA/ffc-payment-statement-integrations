@@ -28,10 +28,16 @@
         "userAssignedIdentityObjectId": {
             "type": "string"
         },
-        "connections_servicebus_name": {
+        "connections_servicebus_name_sp": {
             "type": "string"
         },
-        "servicebus_namespace": {
+        "connections_servicebus_name_api": {
+            "type": "string"
+        },
+        "servicebus_connection_string_sp": {
+            "type": "string"
+        },
+        "servicebus_connection_string_api": {
             "type": "string"
         }
     },
@@ -108,16 +114,37 @@
         {
             "type": "Microsoft.Web/connections",
             "apiVersion": "2018-07-01-preview",
-            "name": "[parameters('connections_servicebus_name')]",
+            "name": "[parameters('connections_servicebus_name_sp')]",
             "location": "[parameters('location')]",
             "kind": "V2",
             "properties": {
-                "displayName": "[parameters('connections_servicebus_name')]",
+                "displayName": "[parameters('connections_servicebus_name_sp')]",
                 "parameterValueSet":{
-                    "name": "managedIdentityAuth",
+                    "name": "connectionstringauth",
                     "values": {
-                        "namespaceEndpoint": {
-                            "value": "[concat('sb://', parameters('servicebus_namespace'))]"
+                        "connectionString": {
+                            "value": "[parameters('servicebus_connection_string_sp')]"
+                          }
+                    }
+                },
+                "api": {
+                    "id": "[concat('/subscriptions/',subscription().subscriptionId,'/providers/Microsoft.Web/locations/',parameters('location'),'/managedApis/servicebus')]"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Web/connections",
+            "apiVersion": "2018-07-01-preview",
+            "name": "[parameters('connections_servicebus_name_api')]",
+            "location": "[parameters('location')]",
+            "kind": "V2",
+            "properties": {
+                "displayName": "[parameters('connections_servicebus_name_api')]",
+                "parameterValueSet":{
+                    "name": "connectionstringauth",
+                    "values": {
+                        "connectionString": {
+                            "value": "[parameters('servicebus_connection_string_api')]"
                           }
                     }
                 },
@@ -147,10 +174,28 @@
         {
             "type": "Microsoft.Web/connections/accessPolicies",
             "apiVersion": "2016-06-01",
-            "name": "[concat(parameters('connections_servicebus_name'),'/',parameters('userAssignedIdentityObjectId'))]",
+            "name": "[concat(parameters('connections_servicebus_name_sp'),'/',parameters('userAssignedIdentityObjectId'))]",
             "location": "[parameters('location')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/connections', parameters('connections_servicebus_name'))]"
+                "[resourceId('Microsoft.Web/connections', parameters('connections_servicebus_name_sp'))]"
+            ],
+            "properties": {
+                "principal": {
+                    "type": "ActiveDirectory",
+                    "identity": {
+                        "tenantId": "[parameters('userAssignedIdentityTenantId')]",
+                        "objectId": "[parameters('userAssignedIdentityObjectId')]"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Web/connections/accessPolicies",
+            "apiVersion": "2016-06-01",
+            "name": "[concat(parameters('connections_servicebus_name_api'),'/',parameters('userAssignedIdentityObjectId'))]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/connections', parameters('connections_servicebus_name_api'))]"
             ],
             "properties": {
                 "principal": {
@@ -169,9 +214,13 @@
         "type": "string",
         "value": "[reference(resourceId('Microsoft.Web/connections', parameters('connections_azureblob_name')),'2016-06-01', 'full').properties.connectionRuntimeUrl]"
       },
-      "servicebusendpointurl": {
+      "servicebusendpointurlsp": {
         "type": "string",
-        "value": "[reference(resourceId('Microsoft.Web/connections', parameters('connections_servicebus_name')),'2016-06-01', 'full').properties.connectionRuntimeUrl]"
+        "value": "[reference(resourceId('Microsoft.Web/connections', parameters('connections_servicebus_name_sp')),'2016-06-01', 'full').properties.connectionRuntimeUrl]"
+      },
+      "servicebusendpointurlapi": {
+        "type": "string",
+        "value": "[reference(resourceId('Microsoft.Web/connections', parameters('connections_servicebus_name_api')),'2016-06-01', 'full').properties.connectionRuntimeUrl]"
       }
     }
   }
