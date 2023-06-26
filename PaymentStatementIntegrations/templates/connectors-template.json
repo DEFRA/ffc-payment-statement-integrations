@@ -33,6 +33,9 @@
         },
         "servicebus_namespace": {
             "type": "string"
+        },
+        "servicebus_connection_string": {
+            "type": "string"
         }
     },
     "variables": {
@@ -114,10 +117,10 @@
             "properties": {
                 "displayName": "[parameters('connections_servicebus_name')]",
                 "parameterValueSet":{
-                    "name": "managedIdentityAuth",
+                    "name": "connectionstringauth",
                     "values": {
-                        "namespaceEndpoint": {
-                            "value": "[concat('sb://', parameters('servicebus_namespace'))]"
+                        "connectionString": {
+                            "value": "[parameters('servicebus_connection_string')]"
                           }
                     }
                 },

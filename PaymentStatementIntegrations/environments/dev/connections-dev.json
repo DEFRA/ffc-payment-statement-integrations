@@ -50,8 +50,7 @@
         "type": "Raw",
         "scheme": "Key",
         "parameter": "@appsetting('ServiceBus-ConnectionKey')"
-      },
-      "connectionRuntimeUrl": "@appsetting('SERVICEBUS_CONNECTION_RUNTIMEURL')"
+      }
     }
   }
 }

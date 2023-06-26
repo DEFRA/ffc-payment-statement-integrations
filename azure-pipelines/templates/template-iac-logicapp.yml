@@ -52,6 +52,16 @@ jobs:
             resourceGroupName: $(resourceGroupName)
             whenLastDeploymentIsFailed: 'fail'
 
+        - task: AzureKeyVault@2
+          inputs:
+            azureSubscription: ${{ parameters.serviceConnection }}
+            KeyVaultName: 'SNDESTLOGICAPPKV1'
+            SecretsFilter: '*'
+            RunAsPreJob: false
+
+        - bash: |
+            'echo $(ServiceBusConnectionStringDev)'
+
         - task: AzureResourceGroupDeployment@2
           displayName: 'Deploy Connectors'
           inputs:
@@ -64,6 +74,7 @@ jobs:
               -connections_azureblob_name $(blobConnectionName)
               -connections_servicebus_name $(servicebusConnectionName)
               -servicebus_namespace $(servicebusNamespace)
+              -servicebus_connection_string $(ServiceBusConnectionStringDev)
               -logicAppSystemAssignedIdentityTenantId $(logicAppSystemAssignedIdentityTenantId)
               -logicAppSystemAssignedIdentityObjectId $(logicAppSystemAssignedIdentityObjectId)
               -userAssignedIdentityTenantId $(userAssignedIdentityTenantId)

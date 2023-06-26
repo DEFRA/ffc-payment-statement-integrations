@@ -35,3 +35,4 @@ variables:
 
   servicebusConnectionName: 'pay-servicebus-api'
   servicebusNamespace: 'SNDFFCINFSB1001.servicebus.windows.net'
+  servicebusConnectionString: 'pay-servicebus-api'
