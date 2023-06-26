@@ -8,7 +8,8 @@
       "serviceProvider": {
         "id": "/serviceProviders/serviceBus"
       },
-      "displayName": "serviceBusRawAuth"
+      "displayName": "serviceBusRawAuth",
+      "connectionRuntimeUrl": "@appsetting('SERVICEBUS_CONNECTION_SP_RUNTIMEURL')"
     },
     "sql": {
       "parameterValues": {
@@ -50,7 +51,8 @@
         "type": "Raw",
         "scheme": "Key",
         "parameter": "@appsetting('ServiceBus-ConnectionKey')"
-      }
+      },
+      "connectionRuntimeUrl": "@appsetting('SERVICEBUS_CONNECTION_API_RUNTIMEURL')"
     }
   }
 }

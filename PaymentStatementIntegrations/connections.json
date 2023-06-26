@@ -66,6 +66,20 @@
         "scheme": "Key",
         "parameter": "@appsetting('servicebus-connectionKey')"
       }
+    },
+    "servicebus": {
+      "api": {
+        "id": "/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/providers/Microsoft.Web/locations/uksouth/managedApis/servicebus"
+      },
+      "connection": {
+        "id": "/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/resourceGroups/SNDESTLOGICAPPS-RG/providers/Microsoft.Web/connections/servicebus-4"
+      },
+      "connectionRuntimeUrl": "https://eca9b9c6c62075fe.03.common.logic-uksouth.azure-apihub.net/apim/servicebus/84a90dff21eb46c4b468f25eae5168a5/",
+      "authentication": {
+        "type": "Raw",
+        "scheme": "Key",
+        "parameter": "@appsetting('servicebus-connectionKey')"
+      }
     }
   }
 }
