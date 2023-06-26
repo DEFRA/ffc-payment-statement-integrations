@@ -2,7 +2,7 @@
   "serviceProviderConnections": {
     "serviceBus": {
       "parameterValues": {
-        "connectionString": "@appsetting('ServiceBus-ConnectionKey')"
+        "connectionString": "@appsetting('ServiceBus-ConnectionString')"
       },
       "parameterSetName": "connectionString",
       "serviceProvider": {
@@ -50,7 +50,7 @@
       "authentication": {
         "type": "Raw",
         "scheme": "Key",
-        "parameter": "@appsetting('ServiceBus-ConnectionKey')"
+        "parameter": "@appsetting('ServiceBus-ConnectionString')"
       },
       "connectionRuntimeUrl": "@appsetting('SERVICEBUS_CONNECTION_API_RUNTIMEURL')"
     }
