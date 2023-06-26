@@ -52,6 +52,13 @@ jobs:
             resourceGroupName: $(resourceGroupName)
             whenLastDeploymentIsFailed: 'fail'
 
+        - task: AzureKeyVault@2
+          inputs:
+            azureSubscription: ${{ parameters.serviceConnection }}
+            KeyVaultName: 'SNDESTLOGICAPPKV1'
+            SecretsFilter: '*'
+            RunAsPreJob: false
+
         - task: AzureResourceGroupDeployment@2
           displayName: 'Deploy Connectors'
           inputs:
@@ -62,8 +69,10 @@ jobs:
             overrideParameters:
               -location $(resourceGroupLocation)
               -connections_azureblob_name $(blobConnectionName)
-              -connections_servicebus_name $(servicebusConnectionName)
-              -servicebus_namespace $(servicebusNamespace)
+              -connections_servicebus_name_sp $(servicebusConnectionNameSP)
+              -servicebus_connection_string_sp $(ServiceBusConnectionStringDev)
+              -connections_servicebus_name_api $(servicebusConnectionNameAPI)
+              -servicebus_connection_string_api $(ServiceBusConnectionStringDev)
               -logicAppSystemAssignedIdentityTenantId $(logicAppSystemAssignedIdentityTenantId)
               -logicAppSystemAssignedIdentityObjectId $(logicAppSystemAssignedIdentityObjectId)
               -userAssignedIdentityTenantId $(userAssignedIdentityTenantId)
@@ -86,7 +95,8 @@ jobs:
             inlineScript: |
               az functionapp config appsettings set --name $(LAname) --resource-group  $(resourceGroupName) --settings "BLOB_CONNECTION_RUNTIMEURL=$(blobendpointurl)"
               az functionapp config appsettings set --name $(LAname) --resource-group  $(resourceGroupName) --settings "WORKFLOWS_RESOURCE_GROUP_NAME=$(resourceGroupName)"
-              az functionapp config appsettings set --name $(LAname) --resource-group  $(resourceGroupName) --settings "SERVICEBUS_CONNECTION_RUNTIMEURL=$(servicebusendpointurl)"
+              az functionapp config appsettings set --name $(LAname) --resource-group  $(resourceGroupName) --settings "SERVICEBUS_CONNECTION_SP_RUNTIMEURL=$(servicebusendpointurlsp)"
+              az functionapp config appsettings set --name $(LAname) --resource-group  $(resourceGroupName) --settings "SERVICEBUS_CONNECTION_API_RUNTIMEURL=$(servicebusendpointurlapi)"
             addSpnToEnvironment: true
             useGlobalConfig: true
 
