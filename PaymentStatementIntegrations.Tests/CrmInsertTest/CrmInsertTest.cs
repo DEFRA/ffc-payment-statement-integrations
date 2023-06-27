@@ -240,11 +240,16 @@ namespace PaymentStatementIntegrations.Tests.CrmInsertTest
                 //var crmRequest = testRunner.MockRequests.First(r => r.RequestUri.AbsolutePath.Contains("/api/data/v9.1"));
                 //Assert.AreEqual(HttpMethod.Post, crmRequest.Method);
                 //Assert.IsTrue(crmRequest.Content.Contains("FFC_PaymentStatement_SFI_2022_1234567890_2022090615023001.pdf"));
+                //var crmRequest = testRunner.MockRequests.First(r => r.RequestUri.AbsolutePath.Contains("/api/data/v9.1"));
+                //Assert.AreEqual(HttpMethod.Post, crmRequest.Method);
+                //Assert.IsTrue(crmRequest.Content.Contains("FFC_PaymentStatement_SFI_2022_1234567890_2022090615023001.pdf"));
 
                 // Check tracked properties
                 var trackedProps = testRunner.GetWorkflowActionTrackedProperties("Parse_JSON");
                 var expectedBody = "{\"sbi\":12345678,\"frn\":123456789,\"apiLink\":\"https://myStatementRetrievalApiEndpoint/statement-receiver/statement/v1/FFC_PaymentStatement_SFI_2022_1234567890_2022090615023001.pdf\",\"documentType\":\"Payment statement\",\"scheme\":\"SFI\"}";
                 Assert.AreEqual(expectedBody, trackedProps["messageBody"]);
+                //var trackedPropsError = testRunner.GetWorkflowActionTrackedProperties("Compose_for_logging");
+                //Assert.IsTrue(trackedPropsError["ErrorText"].Contains("BadRequest"));
                 //var trackedPropsError = testRunner.GetWorkflowActionTrackedProperties("Compose_for_logging");
                 //Assert.IsTrue(trackedPropsError["ErrorText"].Contains("BadRequest"));
             }
