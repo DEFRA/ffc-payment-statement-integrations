@@ -10,6 +10,8 @@
     "builtInConnectorsToMock": [
       "executeQuery",
       "sendMessage",
+      "completeMessage",
+      "deadLetterMessage",
       "uploadBlob",
       "deleteBlob",
       "putMessage",
