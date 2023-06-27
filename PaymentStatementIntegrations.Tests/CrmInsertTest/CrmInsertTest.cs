@@ -66,9 +66,9 @@ namespace PaymentStatementIntegrations.Tests.CrmInsertTest
                 // Check action result
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Parse_JSON"));
                 //Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Add_a_row_to_CRM"));
-                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Dead-letter_the_message_in_a_topic_subscription_failed_CRM"));
-                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Dead-letter_the_message_in_a_topic_subscription_invalid_JSON"));
-                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Complete_the_message_in_a_topic_subscription"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Dead-letter_the_message_failed_CRM"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Dead-letter_the_message_invalid_JSON"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Complete_the_message"));
 
                 // Check request to CRM via Dataserve connector
                 //var crmRequest = testRunner.MockRequests.First(r => r.RequestUri.AbsolutePath.Contains("/api/data/v9.1"));
@@ -121,9 +121,9 @@ namespace PaymentStatementIntegrations.Tests.CrmInsertTest
                 // Check action result
                 Assert.AreEqual(ActionStatus.Failed, testRunner.GetWorkflowActionStatus("Parse_JSON"));
                 //Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Add_a_row_to_CRM"));
-                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Dead-letter_the_message_in_a_topic_subscription_failed_CRM"));
-                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Dead-letter_the_message_in_a_topic_subscription_invalid_JSON"));
-                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Complete_the_message_in_a_topic_subscription"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Dead-letter_the_message_failed_CRM"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Dead-letter_the_message_invalid_JSON"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Complete_the_message"));
 
                 // Check request to CRM via Dataserve connector never happened
                 var crmRequest = testRunner.MockRequests.FirstOrDefault(r => r.RequestUri.AbsolutePath.Contains("/api/data/v9.1"));
@@ -175,9 +175,9 @@ namespace PaymentStatementIntegrations.Tests.CrmInsertTest
                 // Check action result
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Parse_JSON"));
                 //Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Add_a_row_to_CRM"));
-                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Dead-letter_the_message_in_a_topic_subscription_failed_CRM"));
-                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Dead-letter_the_message_in_a_topic_subscription_invalid_JSON"));
-                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Complete_the_message_in_a_topic_subscription"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Dead-letter_the_message_failed_CRM"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Dead-letter_the_message_invalid_JSON"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Complete_the_message"));
 
                 // Check request to CRM via Dataserve connector never happened
                 var crmRequest = testRunner.MockRequests.FirstOrDefault(r => r.RequestUri.AbsolutePath.Contains("/api/data/v9.1"));
@@ -232,9 +232,9 @@ namespace PaymentStatementIntegrations.Tests.CrmInsertTest
                 // Check action result
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Parse_JSON"));
                 //Assert.AreEqual(ActionStatus.Failed, testRunner.GetWorkflowActionStatus("Add_a_row_to_CRM"));
-                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Dead-letter_the_message_in_a_topic_subscription_invalid_JSON"));
-                //Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Dead-letter_the_message_in_a_topic_subscription_failed_CRM"));
-                //Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Complete_the_message_in_a_topic_subscription"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Dead-letter_the_message_invalid_JSON"));
+                //Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Dead-letter_the_message_failed_CRM"));
+                //Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Complete_the_message"));
 
                 // Check request to CRM via Dataserve connector
                 //var crmRequest = testRunner.MockRequests.First(r => r.RequestUri.AbsolutePath.Contains("/api/data/v9.1"));

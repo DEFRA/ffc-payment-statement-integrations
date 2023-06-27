@@ -73,21 +73,17 @@
                     "Catch_Scope": {
                         "type": "Scope",
                         "actions": {
-                            "Dead-letter_the_message_in_a_topic_subscription_failed_CRM": {
-                                "type": "ApiConnection",
+                            "Dead-letter_the_message_failed_CRM": {
+                                "type": "ServiceProvider",
                                 "inputs": {
-                                    "host": {
-                                        "connection": {
-                                            "referenceName": "pay-servicebus-api"
-                                        }
+                                    "parameters": {
+                                        "messageId": "@triggerBody()?['messageId']",
+                                        "deadLetterReason": "Failed CRM: @{variables('ErrorText')}"
                                     },
-                                    "method": "post",
-                                    "path": "/@{encodeURIComponent(encodeURIComponent('ffc-pay-statement-crm-snd'))}/subscriptions/@{encodeURIComponent('crm')}/messages/deadletter",
-                                    "queries": {
-                                        "lockToken": "@triggerBody()?['lockToken']",
-                                        "sessionId": "",
-                                        "deadLetterReason": "Failed CRM: @{variables('ErrorText')}",
-                                        "deadLetterErrorDescription": ""
+                                    "serviceProviderConfiguration": {
+                                        "connectionName": "serviceBus",
+                                        "operationId": "deadLetterMessage",
+                                        "serviceProviderId": "/serviceProviders/serviceBus"
                                     }
                                 },
                                 "runAfter": {
@@ -134,53 +130,48 @@
                                 "FAILED",
                                 "SKIPPED"
                             ]
-                        }
+                        },
+                        "trackedProperties": {}
                     },
                     "Success_Scope": {
                         "type": "Scope",
                         "actions": {
-                            "Complete_the_message_in_a_topic_subscription": {
-                                "type": "ApiConnection",
+                            "Complete_the_message": {
+                                "type": "ServiceProvider",
                                 "inputs": {
-                                    "host": {
-                                        "connection": {
-                                            "referenceName": "pay-servicebus-api"
-                                        }
+                                    "parameters": {
+                                        "messageId": "@triggerBody()?['messageId']"
                                     },
-                                    "method": "delete",
-                                    "path": "/@{encodeURIComponent(encodeURIComponent('ffc-pay-statement-crm-snd'))}/subscriptions/@{encodeURIComponent('crm')}/messages/complete",
-                                    "queries": {
-                                        "lockToken": "@triggerBody()?['lockToken']",
-                                        "subscriptionType": "Main",
-                                        "sessionId": ""
+                                    "serviceProviderConfiguration": {
+                                        "connectionName": "serviceBus",
+                                        "operationId": "completeMessage",
+                                        "serviceProviderId": "/serviceProviders/serviceBus"
                                     }
-                                }
+                                },
+                                "trackedProperties": {}
                             }
                         },
                         "runAfter": {
                             "Catch_Scope": [
                                 "SKIPPED"
                             ]
-                        }
+                        },
+                        "trackedProperties": {}
                     }
                 },
                 "else": {
                     "actions": {
-                        "Dead-letter_the_message_in_a_topic_subscription_invalid_JSON": {
-                            "type": "ApiConnection",
+                        "Dead-letter_the_message_invalid_JSON": {
+                            "type": "ServiceProvider",
                             "inputs": {
-                                "host": {
-                                    "connection": {
-                                        "referenceName": "pay-servicebus-api"
-                                    }
+                                "parameters": {
+                                    "messageId": "@triggerBody()?['messageId']",
+                                    "deadLetterReason": "Invalid JSON: @{triggerBody()?['contentData']}"
                                 },
-                                "method": "post",
-                                "path": "/@{encodeURIComponent(encodeURIComponent('ffc-pay-statement-crm-snd'))}/subscriptions/@{encodeURIComponent('crm')}/messages/deadletter",
-                                "queries": {
-                                    "lockToken": "@triggerBody()?['lockToken']",
-                                    "sessionId": "",
-                                    "deadLetterReason": "Invalid JSON @{triggerBody()?['contentData']}",
-                                    "deadLetterErrorDescription": ""
+                                "serviceProviderConfiguration": {
+                                    "connectionName": "serviceBus",
+                                    "operationId": "deadLetterMessage",
+                                    "serviceProviderId": "/serviceProviders/serviceBus"
                                 }
                             }
                         }
