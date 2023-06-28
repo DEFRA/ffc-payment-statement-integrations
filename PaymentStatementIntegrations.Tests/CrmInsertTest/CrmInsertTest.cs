@@ -2,6 +2,7 @@
 using LogicAppUnit.Helper;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
+using PaymentStatementIntegrations.Tests.Helpers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -257,7 +258,7 @@ namespace PaymentStatementIntegrations.Tests.CrmInsertTest
 
         private static StringContent GetServiceBusMessage()
         {
-            return ContentHelper.CreateJsonStringContent(new
+            var json = new
             {
                 // The JSON must match the data structure used by the Service Bus trigger, this includes 'contentData' to represent the message content
                 contentData = new
@@ -280,12 +281,14 @@ namespace PaymentStatementIntegrations.Tests.CrmInsertTest
                 lockedUntilUtc = "9999-12-31T23:59:59.9999999Z",
                 lockToken = "056bb9fa-9b8f-4d93-874b-7e78e71a588d",
                 sequenceNumber = 980
-            });
+            };
+
+            return UnitTestHelper.EncodeAsStringContent(json);
         }
 
         private static StringContent GetServiceBusMessageInvalidSchemaJson()
         {
-            return ContentHelper.CreateJsonStringContent(new
+            var json = new
             {
                 // The JSON must match the data structure used by the Service Bus trigger, this includes 'contentData' to represent the message content
                 contentData = new
@@ -309,12 +312,14 @@ namespace PaymentStatementIntegrations.Tests.CrmInsertTest
                 lockedUntilUtc = "9999-12-31T23:59:59.9999999Z",
                 lockToken = "056bb9fa-9b8f-4d93-874b-7e78e71a588d",
                 sequenceNumber = 980
-            });
+            };
+
+            return UnitTestHelper.EncodeAsStringContent(json);
         }
 
         private static StringContent GetServiceBusMessageValidButMissingItemsJson()
         {
-            return ContentHelper.CreateJsonStringContent(new
+            var json = new
             {
                 // The JSON must match the data structure used by the Service Bus trigger, this includes 'contentData' to represent the message content
                 contentData = new
@@ -334,7 +339,9 @@ namespace PaymentStatementIntegrations.Tests.CrmInsertTest
                 lockedUntilUtc = "9999-12-31T23:59:59.9999999Z",
                 lockToken = "056bb9fa-9b8f-4d93-874b-7e78e71a588d",
                 sequenceNumber = 980
-            });
+            };
+
+            return UnitTestHelper.EncodeAsStringContent(json);
         }
     }
 }
