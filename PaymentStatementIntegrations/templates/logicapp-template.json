@@ -421,7 +421,7 @@
       "identity": {
         "type": "SystemAssigned, UserAssigned",
         "userAssignedIdentities": {
-            "[concat('/subscriptions/',subscription().subscriptionId,'/resourcegroups/',parameters('userManagedIdentityResourceGroupName'),'/providers/Microsoft.ManagedIdentity/userAssignedIdentities/',parameters('userManagedIdentityName')]": {}
+            "[concat('/subscriptions/',subscription().subscriptionId,'/resourcegroups/',parameters('userManagedIdentityResourceGroupName'),'/providers/Microsoft.ManagedIdentity/userAssignedIdentities/',parameters('userManagedIdentityName'))]": {}
         }
       },
       "tags": {
