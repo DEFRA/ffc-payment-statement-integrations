@@ -23,7 +23,10 @@
     "appInsightsName": {
       "type": "string"
     },
-    "userManagedIdentityUrl": {
+    "userManagedIdentityName": {
+      "type": "string"
+    },
+    "userManagedIdentityResourceGroupName": {
       "type": "string"
     },
     "storageName": {
@@ -418,7 +421,7 @@
       "identity": {
         "type": "SystemAssigned, UserAssigned",
         "userAssignedIdentities": {
-            "[parameters('userManagedIdentityUrl')]": {}
+            "[concat('/subscriptions/',subscription().subscriptionId,'/resourcegroups/',parameters('userManagedIdentityResourceGroupName'),'/providers/Microsoft.ManagedIdentity/userAssignedIdentities/',parameters('userManagedIdentityName'))]": {}
         }
       },
       "tags": {
