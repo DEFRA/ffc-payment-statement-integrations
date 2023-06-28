@@ -40,7 +40,8 @@ jobs:
               -appServicePlanName $(appServicePlanName)
               -storageName $(storageName)
               -appInsightsName $(appInsightsName)
-              -userManagedIdentityUrl $(userManagedIdentityUrl)
+              -userManagedIdentityName $(userManagedIdentityName)
+              -userManagedIdentityResourceGroupName $(userManagedIdentityResourceGroupName)
             deploymentMode: $(deploymentMode)
             deploymentOutputs: 'LogicAppArmOutputs'
 
@@ -73,10 +74,10 @@ jobs:
               -servicebus_connection_string_sp $(ServiceBusConnectionStringDev)
               -connections_servicebus_name_api $(servicebusConnectionNameAPI)
               -servicebus_connection_string_api $(ServiceBusConnectionStringDev)
+              -serviceBusUserManagedIdentityTenantId $(serviceBusUserManagedIdentityTenantId)
+              -serviceBusUserManagedIdentityObjectId $(serviceBusUserManagedIdentityObjectId)
               -logicAppSystemAssignedIdentityTenantId $(logicAppSystemAssignedIdentityTenantId)
               -logicAppSystemAssignedIdentityObjectId $(logicAppSystemAssignedIdentityObjectId)
-              -userAssignedIdentityTenantId $(userAssignedIdentityTenantId)
-              -userAssignedIdentityObjectId $(userAssignedIdentityObjectId)
             deploymentMode: $(deploymentMode)
 
         - task: ARM Outputs@6

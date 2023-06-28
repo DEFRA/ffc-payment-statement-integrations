@@ -22,10 +22,10 @@
             "defaultValue": "azureblob",
             "type": "string"
         },
-        "userAssignedIdentityTenantId": {
+        "serviceBusUserManagedIdentityTenantId": {
             "type": "string"
         },
-        "userAssignedIdentityObjectId": {
+        "serviceBusUserManagedIdentityObjectId": {
             "type": "string"
         },
         "connections_servicebus_name_sp": {
@@ -174,7 +174,7 @@
         {
             "type": "Microsoft.Web/connections/accessPolicies",
             "apiVersion": "2016-06-01",
-            "name": "[concat(parameters('connections_servicebus_name_sp'),'/',parameters('userAssignedIdentityObjectId'))]",
+            "name": "[concat(parameters('connections_servicebus_name_sp'),'/',parameters('serviceBusUserManagedIdentityObjectId'))]",
             "location": "[parameters('location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Web/connections', parameters('connections_servicebus_name_sp'))]"
@@ -183,8 +183,8 @@
                 "principal": {
                     "type": "ActiveDirectory",
                     "identity": {
-                        "tenantId": "[parameters('userAssignedIdentityTenantId')]",
-                        "objectId": "[parameters('userAssignedIdentityObjectId')]"
+                        "tenantId": "[parameters('serviceBusUserManagedIdentityTenantId')]",
+                        "objectId": "[parameters('serviceBusUserManagedIdentityObjectId')]"
                     }
                 }
             }
@@ -192,7 +192,7 @@
         {
             "type": "Microsoft.Web/connections/accessPolicies",
             "apiVersion": "2016-06-01",
-            "name": "[concat(parameters('connections_servicebus_name_api'),'/',parameters('userAssignedIdentityObjectId'))]",
+            "name": "[concat(parameters('connections_servicebus_name_api'),'/',parameters('serviceBusUserManagedIdentityObjectId'))]",
             "location": "[parameters('location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Web/connections', parameters('connections_servicebus_name_api'))]"
@@ -201,8 +201,8 @@
                 "principal": {
                     "type": "ActiveDirectory",
                     "identity": {
-                        "tenantId": "[parameters('userAssignedIdentityTenantId')]",
-                        "objectId": "[parameters('userAssignedIdentityObjectId')]"
+                        "tenantId": "[parameters('serviceBusUserManagedIdentityTenantId')]",
+                        "objectId": "[parameters('serviceBusUserManagedIdentityObjectId')]"
                     }
                 }
             }
