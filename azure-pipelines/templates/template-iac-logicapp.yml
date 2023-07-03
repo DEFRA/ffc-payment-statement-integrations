@@ -7,6 +7,8 @@ parameters:
   type: string
 - name: runId
   type: string
+- name: keyVaultName
+  type: string
 
 jobs:
 - deployment: deploy_logicapp_resources
@@ -56,7 +58,7 @@ jobs:
         - task: AzureKeyVault@2
           inputs:
             azureSubscription: ${{ parameters.serviceConnection }}
-            KeyVaultName: 'SNDESTLOGICAPPKV1'
+            KeyVaultName: ${{ parameters.keyVaultName }}
             SecretsFilter: '*'
             RunAsPreJob: false
 

@@ -7,9 +7,11 @@ variables:
   logicAppName: 'la-$(projectName)-$(envShortName)'
  
   resourceGroupLocation: 'uksouth'
-  resourceGroupName: 'ESTLOGICAPPS-RG2-$(envShortName)'
+  resourceGroupName: 'DEVRLEINFRG1401'
   
-  serviceConnection: 'AZD-EST-SND1'
+  serviceConnection: 'AZD-RLE-DEV1'
+
+  keyVaultName: 'DEVRLEINFKV1401'
 
   appServicePlanName: 'asp-$(projectName)-$(envShortName)'
 
@@ -25,19 +27,19 @@ variables:
   # User-assigned Managed Identity to be attributed to the Logic App.
   # Resource Group is supplied in case it is in a different resource group to the Logic App.
   userManagedIdentityName: 'MILOGICAPPSDEV'
-  userManagedIdentityResourceGroupName: 'SNDESTLOGICAPPS-RG'
+  userManagedIdentityResourceGroupName: 'DEVRLEINFRG1401'
 
   # Connector details
   # Although MID details are specified, the tenantId should be the one where the service bus exists and, if this
   # is cross-tenant, will be different to the tenant that the Logic App sits in.
   
-  # ***Now moved to KeyVault secrets
-  #serviceBusUserManagedIdentityTenantId: 'c9d7*****'
-  #serviceBusUserManagedIdentityObjectId: 'd1fd*****'
-
   servicebusConnectionNameSP: 'serviceBus'
   servicebusNamespaceSP: 'SNDFFCINFSB1001.servicebus.windows.net'
 
-  servicebusConnectionNameAPI: 'pay-servicebus-api'
-  servicebusNamespaceAPI: 'SNDFFCINFSB1001.servicebus.windows.net'
+  # The following are in KeyVault secrets
+  # - serviceBusUserManagedIdentityTenantId
+  # - serviceBusUserManagedIdentityObjectId
+
+  #servicebusConnectionNameAPI: 'pay-servicebus-api'
+  #servicebusNamespaceAPI: 'SNDFFCINFSB1001.servicebus.windows.net'
   
