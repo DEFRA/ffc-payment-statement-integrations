@@ -17,7 +17,7 @@ variables:
   appServicePlanName: 'ASP-$(logicAppName)'
 
    # MUST BE LOWERCASE. No spaces or hyphens allowed
-  storageName: 'sa$(envShortName)$(projectNameLower)'
+  storageName: '$(envShortName)$(projectNameLower)sa'
 
   appInsightsName: '$(logicAppName)AI'
 
@@ -28,7 +28,7 @@ variables:
   # User-assigned Managed Identity to be attributed to the Logic App.
   # Resource Group is supplied in case it is in a different resource group to the Logic App.
   userManagedIdentityName: 'MILOGICAPPSDEV'
-  userManagedIdentityResourceGroupName: 'DEVRLEINFRG1401'
+  userManagedIdentityResourceGroupName: '$(resourceGroupName)'
 
   # Connector details
   # Although MID details are specified, the tenantId should be the one where the service bus exists and, if this
