@@ -10,7 +10,10 @@ variables:
   resourceGroupLocation: 'uksouth'
   resourceGroupName: 'TSTRLEINFRG1401'
 
-  serviceConnection: 'AZD-RLE-TST1'
+  #
+  # CHANGE when TST is set up
+  #
+  serviceConnection: 'AZD-RLE-DEV1'
 
   keyVaultName: 'TSTRLEINFKV1401'
 
