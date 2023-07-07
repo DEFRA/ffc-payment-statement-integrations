@@ -37,7 +37,7 @@ jobs:
             overrideParameters:
               -location $(resourceGroupLocation)
               -environmentName ${{ parameters.environment }}
-              -projectName $(projectName)
+              -projectName $(projectNameUpper)
               -logicAppName $(logicAppName)
               -appServicePlanName $(appServicePlanName)
               -storageName $(storageName)
