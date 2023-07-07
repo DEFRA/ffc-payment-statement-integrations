@@ -12,7 +12,7 @@ variables:
 resources:
   pipelines:
   - pipeline: cipipeline
-    source: payment-statement-integrations-ci
+    source: rle-payment-statement-integrations-ci
 
 stages:
 - stage: DEV
