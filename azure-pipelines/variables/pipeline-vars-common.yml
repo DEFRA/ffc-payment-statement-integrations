@@ -2,8 +2,10 @@
 
 variables:
 
+  # Use uppercase, with no hyphens or spaces
+  projectNameUpper: 'RLEINFLA1402STD'
   # Use lowercase, with no hyphens or spaces
-  projectName: 'logicapp'
+  projectNameLower: 'rleinfla1402std'
 
   artifactName: 'deploy_artifacts'
 

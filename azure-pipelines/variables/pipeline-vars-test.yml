@@ -3,9 +3,10 @@
 variables:
 
   envShortName: 'test'
+  envShortNameUpper: 'TEST'
 
-  logicAppName: 'la-$(projectName)-$(envShortName)'
- 
+  logicAppName: '$(envShortNameUpper)$(projectNameUpper)'
+  
   resourceGroupLocation: 'uksouth'
   resourceGroupName: 'TSTRLEINFRG1401'
 
@@ -13,15 +14,15 @@ variables:
 
   keyVaultName: 'TSTRLEINFKV1401'
 
-  appServicePlanName: 'asp-$(projectName)-$(envShortName)'
+  appServicePlanName: 'ASP-$(logicAppName)'
 
    # MUST BE LOWERCASE. No spaces or hyphens allowed
-  storageName: 'sa$(projectName)$(envShortName)'
+  storageName: 'sa$(envShortName)$(projectNameLower)'
 
-  appInsightsName: 'la-$(projectName)-$(envShortName)'
+  appInsightsName: '$(logicAppName)AI'
 
-  dashboardName: 'dh-$(projectName)-$(envShortName)'
-  dashboardDisplayName: '$(projectName)-$(envShortName) dashboard'
+  dashboardName: '$(logicAppName)DH'
+  dashboardDisplayName: '$(logicAppName) dashboard'
 
   # Full url is specified here as opposed to just the MI name.
   # User-assigned Managed Identity to be attributed to the Logic App.
