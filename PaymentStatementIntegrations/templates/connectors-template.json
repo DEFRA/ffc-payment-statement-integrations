@@ -14,10 +14,6 @@
         "logicAppSystemAssignedIdentityObjectId": {
             "type": "string"
         },
-        "connections_azureblob_name": {
-            "defaultValue": "azureblob",
-            "type": "string"
-        },
         "serviceBusUserManagedIdentityTenantId": {
             "type": "string"
         },
@@ -83,24 +79,6 @@
         {
             "type": "Microsoft.Web/connections/accessPolicies",
             "apiVersion": "2016-06-01",
-            "name": "[concat(parameters('connections_azureblob_name'),'/',parameters('logicAppSystemAssignedIdentityObjectId'))]",
-            "location": "[parameters('location')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Web/connections', parameters('connections_azureblob_name'))]"
-            ],
-            "properties": {
-                "principal": {
-                    "type": "ActiveDirectory",
-                    "identity": {
-                        "tenantId": "[parameters('logicAppSystemAssignedIdentityTenantId')]",
-                        "objectId": "[parameters('logicAppSystemAssignedIdentityObjectId')]"
-                    }
-                }
-            }
-        },
-        {
-            "type": "Microsoft.Web/connections/accessPolicies",
-            "apiVersion": "2016-06-01",
             "name": "[concat(parameters('connections_servicebus_name_sp'),'/',parameters('serviceBusUserManagedIdentityObjectId'))]",
             "location": "[parameters('location')]",
             "dependsOn": [
@@ -137,10 +115,6 @@
  
     ],
     "outputs": {
-      "blobendpointurl": {
-        "type": "string",
-        "value": "[reference(resourceId('Microsoft.Web/connections', parameters('connections_azureblob_name')),'2016-06-01', 'full').properties.connectionRuntimeUrl]"
-      },
       "servicebusendpointurlsp": {
         "type": "string",
         "value": "[reference(resourceId('Microsoft.Web/connections', parameters('connections_servicebus_name_sp')),'2016-06-01', 'full').properties.connectionRuntimeUrl]"

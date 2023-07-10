@@ -71,7 +71,6 @@ jobs:
             csmFile: './unpacked/templates/connectors-template.json'
             overrideParameters:
               -location $(resourceGroupLocation)
-              -connections_azureblob_name $(blobConnectionName)
               -connections_servicebus_name_sp $(servicebusConnectionNameSP)
               -servicebus_connection_string_sp $(ServiceBusConnectionStringDev)
               -connections_servicebus_name_api $(servicebusConnectionNameAPI)
