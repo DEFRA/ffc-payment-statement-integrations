@@ -2,37 +2,35 @@
 
 variables:
 
-  envShortName: 'test'
-  envShortNameUpper: 'TEST'
+  # MUST BE UPPERCASE
+  envShortName: 'TST'
 
-  logicAppName: '$(envShortNameUpper)$(projectNameUpper)'
-  logicAppNameLower: '$(envShortName)$(projectNameLower)'
+  resourcePrefix: '$(envShortName)$(projectNameUpper)$(functionCode)'
+  
+  logicAppName: '$(resourcePrefix)LA1402'
   
   resourceGroupLocation: 'uksouth'
-  resourceGroupName: 'TSTRLEINFRG1401'
+  resourceGroupName: '$(resourcePrefix)RG1401'
+  
+  serviceConnection: 'AZD-RLE-TST1'
 
-  #
-  # CHANGE when TST is set up
-  #
-  serviceConnection: 'AZD-RLE-DEV1'
+  keyVaultName: '$(resourcePrefix)KV1401'
 
-  keyVaultName: 'TSTRLEINFKV1401'
+  appServicePlanName: '$(resourcePrefix)ASP1401'
 
-  appServicePlanName: 'ASP-$(logicAppName)'
+   # Gets converted to lowercase later in the pipeline. No spaces or hyphens allowed
+  storageName: '$(resourcePrefix)SA1402'
 
-   # MUST BE LOWERCASE. No spaces or hyphens allowed
-  storageName: 'sa$(envShortName)$(projectNameLower)'
+  appInsightsName: '$(resourcePrefix)AIS1402'
 
-  appInsightsName: '$(logicAppName)AI'
-
-  dashboardName: '$(logicAppName)DH'
+  dashboardName: '$(resourcePrefix)DSH1402'
   dashboardDisplayName: '$(logicAppName) dashboard'
 
   # Full url is specified here as opposed to just the MI name.
   # User-assigned Managed Identity to be attributed to the Logic App.
   # Resource Group is supplied in case it is in a different resource group to the Logic App.
-  userManagedIdentityName: 'MILOGICAPPSTST'
-  userManagedIdentityResourceGroupName: 'TSTRLEINFRG1401'
+  userManagedIdentityName: '$(resourcePrefix)MI1401'
+  userManagedIdentityResourceGroupName: '$(resourceGroupName)'
 
   # Connector details
   # Although MID details are specified, the tenantId should be the one where the service bus exists and, if this

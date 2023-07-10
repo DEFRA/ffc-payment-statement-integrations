@@ -17,9 +17,6 @@
     "logicAppName": {
       "type": "string"
     },
-    "logicAppNameLower": {
-      "type": "string"
-    },
     "appServicePlanName": {
       "type": "string"
     },
@@ -388,7 +385,7 @@
       "tier": "[parameters('skuTier')]"
     },
     "kind": "[parameters('kind')]",
-    "name": "[parameters('storageName')]",
+    "name": "[toLower(parameters('storageName'))]",
     "location": "[parameters('location')]",
     "tags": {
       "Environment": "[parameters('environmentName')]",
@@ -417,7 +414,7 @@
       "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
-        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts', toLower(parameters('storageName')))]",
         "[resourceId('microsoft.insights/components/', parameters('appInsightsName'))]"
       ],
       "kind": "workflowapp,functionapp",
@@ -499,7 +496,7 @@
             },
             {
               "name": "AzureWebJobsStorage",
-              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageName'),';AccountKey=',concat(listKeys(concat(resourceGroup().id,'/providers/Microsoft.Storage/storageAccounts/', parameters('storageName')),'2019-06-01').keys[0].value),';EndpointSuffix=core.windows.net')]"
+              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',toLower(parameters('storageName')),';AccountKey=',concat(listKeys(concat(resourceGroup().id,'/providers/Microsoft.Storage/storageAccounts/', toLower(parameters('storageName'))),'2019-06-01').keys[0].value),';EndpointSuffix=core.windows.net')]"
             },
             {
               "name": "FUNCTIONS_EXTENSION_VERSION",
@@ -515,11 +512,11 @@
             },
             {
               "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
-              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageName'),';AccountKey=',concat(listKeys(concat(resourceGroup().id,'/providers/Microsoft.Storage/storageAccounts/', parameters('storageName')),'2019-06-01').keys[0].value),';EndpointSuffix=core.windows.net')]"
+              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',toLower(parameters('storageName')),';AccountKey=',concat(listKeys(concat(resourceGroup().id,'/providers/Microsoft.Storage/storageAccounts/', toLower(parameters('storageName'))),'2019-06-01').keys[0].value),';EndpointSuffix=core.windows.net')]"
             },
             {
               "name": "WEBSITE_CONTENTSHARE",
-              "value": "[parameters('logicAppNameLower')]"
+              "value": "[toLower(parameters('logicAppName'))]"
             },
             {
               "name": "WEBSITE_NODE_DEFAULT_VERSION",

@@ -3,10 +3,10 @@
 variables:
 
   # Use uppercase, with no hyphens or spaces
-  projectNameUpper: 'RLEINFLA1402STD'
-  # Use lowercase, with no hyphens or spaces
-  projectNameLower: 'rleinfla1402std'
+  projectNameUpper: 'RLE'
 
+  functionCode: 'INF'
+  
   artifactName: 'deploy_artifacts'
 
   # API Connections - if you change this name, you must change the reference in workflow.json

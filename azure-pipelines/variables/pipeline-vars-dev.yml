@@ -2,33 +2,34 @@
 
 variables:
 
-  envShortName: 'dev'
-  envShortNameUpper: 'DEV'
+  # MUST BE UPPERCASE
+  envShortName: 'DEV'
 
-  logicAppName: '$(envShortNameUpper)$(projectNameUpper)'
-  logicAppNameLower: '$(envShortName)$(projectNameLower)'
+  resourcePrefix: '$(envShortName)$(projectNameUpper)$(functionCode)'
+  
+  logicAppName: '$(resourcePrefix)LA1402'
   
   resourceGroupLocation: 'uksouth'
-  resourceGroupName: 'DEVRLEINFRG1401'
+  resourceGroupName: '$(resourcePrefix)RG1401'
   
   serviceConnection: 'AZD-RLE-DEV1'
 
-  keyVaultName: 'DEVRLEINFKV1401'
+  keyVaultName: '$(resourcePrefix)KV1401'
 
-  appServicePlanName: 'ASP-$(logicAppName)'
+  appServicePlanName: '$(resourcePrefix)ASP1401'
 
-   # MUST BE LOWERCASE. No spaces or hyphens allowed
-  storageName: '$(envShortName)$(projectNameLower)sa'
+   # Gets converted to lowercase later in the pipeline. No spaces or hyphens allowed
+  storageName: '$(resourcePrefix)SA1402'
 
-  appInsightsName: '$(logicAppName)AI'
+  appInsightsName: '$(resourcePrefix)AIS1402'
 
-  dashboardName: '$(logicAppName)DH'
+  dashboardName: '$(resourcePrefix)DSH1402'
   dashboardDisplayName: '$(logicAppName) dashboard'
 
   # Full url is specified here as opposed to just the MI name.
   # User-assigned Managed Identity to be attributed to the Logic App.
   # Resource Group is supplied in case it is in a different resource group to the Logic App.
-  userManagedIdentityName: 'MILOGICAPPSDEV'
+  userManagedIdentityName: '$(resourcePrefix)MI1401'
   userManagedIdentityResourceGroupName: '$(resourceGroupName)'
 
   # Connector details
