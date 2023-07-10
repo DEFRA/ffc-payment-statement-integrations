@@ -12,7 +12,8 @@ variables:
   resourceGroupLocation: 'uksouth'
   resourceGroupName: '$(resourcePrefix)RG1401'
   
-  serviceConnection: 'AZD-RLE-TST1'
+  #####Currently set to DEV as TST does not yet exist and fails parsing the pipeline
+  serviceConnection: 'AZD-RLE-DEV1'
 
   keyVaultName: '$(resourcePrefix)KV1401'
 
