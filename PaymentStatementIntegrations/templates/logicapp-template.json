@@ -419,10 +419,7 @@
       ],
       "kind": "workflowapp,functionapp",
       "identity": {
-        "type": "SystemAssigned, UserAssigned",
-        "userAssignedIdentities": {
-            "[parameters('userManagedIdentityUrl')]": {}
-        }
+        "type": "SystemAssigned"
       },
       "tags": {
         "Environment": "[parameters('environmentName')]",
