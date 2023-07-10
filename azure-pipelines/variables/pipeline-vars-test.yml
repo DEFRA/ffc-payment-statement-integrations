@@ -38,7 +38,7 @@ variables:
   # is cross-tenant, will be different to the tenant that the Logic App sits in.
 
   # The following are in KeyVault secrets
-  # - serviceBusUserManagedIdentityTenantId
+  # - serviceBusUserManagedIdentityTenantId - may be in a different tenant to the Logic App
   # - serviceBusUserManagedIdentityObjectId
 
   servicebusConnectionNameSP: 'serviceBus'

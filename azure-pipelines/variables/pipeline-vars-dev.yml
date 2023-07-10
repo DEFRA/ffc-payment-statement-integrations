@@ -40,7 +40,7 @@ variables:
   servicebusNamespaceSP: 'SNDFFCINFSB1001.servicebus.windows.net'
 
   # The following are in KeyVault secrets
-  # - serviceBusUserManagedIdentityTenantId
+  # - serviceBusUserManagedIdentityTenantId - may be in a different tenant to the Logic App
   # - serviceBusUserManagedIdentityObjectId
 
   servicebusConnectionNameAPI: 'pay-servicebus-api'
