@@ -6,7 +6,7 @@ variables:
   envShortName: 'DEV'
 
   resourcePrefix: '$(envShortName)$(projectNameUpper)$(functionCode)'
-  
+
   logicAppName: '$(resourcePrefix)LA1402'
   
   resourceGroupLocation: 'uksouth'
@@ -19,7 +19,7 @@ variables:
   appServicePlanName: '$(resourcePrefix)ASP1401'
 
    # Gets converted to lowercase later in the pipeline. No spaces or hyphens allowed
-  storageName: '$(resourcePrefix)SA1402'
+  storageName: '$(resourcePrefix)ST1402'
 
   appInsightsName: '$(resourcePrefix)AIS1402'
 
@@ -43,6 +43,6 @@ variables:
   # - serviceBusUserManagedIdentityTenantId
   # - serviceBusUserManagedIdentityObjectId
 
-  #servicebusConnectionNameAPI: 'pay-servicebus-api'
-  #servicebusNamespaceAPI: 'SNDFFCINFSB1001.servicebus.windows.net'
+  servicebusConnectionNameAPI: 'pay-servicebus-api'
+  servicebusNamespaceAPI: 'SNDFFCINFSB1001.servicebus.windows.net'
   
