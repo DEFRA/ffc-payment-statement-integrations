@@ -6,6 +6,7 @@ variables:
   envShortNameUpper: 'TEST'
 
   logicAppName: '$(envShortNameUpper)$(projectNameUpper)'
+  logicAppNameLower: '$(envShortName)$(projectNameLower)'
   
   resourceGroupLocation: 'uksouth'
   resourceGroupName: 'TSTRLEINFRG1401'

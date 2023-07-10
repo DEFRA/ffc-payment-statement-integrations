@@ -17,6 +17,9 @@
     "logicAppName": {
       "type": "string"
     },
+    "logicAppNameLower": {
+      "type": "string"
+    },
     "appServicePlanName": {
       "type": "string"
     },
@@ -516,7 +519,7 @@
             },
             {
               "name": "WEBSITE_CONTENTSHARE",
-              "value": "[parameters('logicAppName')]"
+              "value": "[parameters('logicAppNameLower')]"
             },
             {
               "name": "WEBSITE_NODE_DEFAULT_VERSION",

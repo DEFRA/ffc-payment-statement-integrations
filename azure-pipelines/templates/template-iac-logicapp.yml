@@ -39,6 +39,7 @@ jobs:
               -environmentName ${{ parameters.environment }}
               -projectName $(projectNameUpper)
               -logicAppName $(logicAppName)
+              -logicAppNameLower $(logicAppNameLower)
               -appServicePlanName $(appServicePlanName)
               -storageName $(storageName)
               -appInsightsName $(appInsightsName)
