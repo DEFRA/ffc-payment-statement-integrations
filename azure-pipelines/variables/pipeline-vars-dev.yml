@@ -26,6 +26,12 @@ variables:
   dashboardName: '$(resourcePrefix)DSH1402'
   dashboardDisplayName: '$(logicAppName) dashboard'
 
+  # VNET integration is required for Private Endpoint blob storage
+  subnetResourceId: '/resourceGroups/DEVRLENETRG1401/providers/Microsoft.Network/virtualNetworks/DEVRLENETVN1401/subnets/DEVRLENETSU1402'
+  # Subnet resource ID excluding '/subscription/<subscriptionId>', for example: /resourceGroups/<RGname>/providers/Microsoft.Network/virtualNetworks/<VnetName>/subnets/subnetName>
+  dnsServer: '10.178.0.4'
+  dnsAltServer: '10.178.0.5'
+
   # Full url is specified here as opposed to just the MI name.
   # User-assigned Managed Identity to be attributed to the Logic App.
   # Resource Group is supplied in case it is in a different resource group to the Logic App.

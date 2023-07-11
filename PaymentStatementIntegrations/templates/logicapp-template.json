@@ -34,6 +34,15 @@
       "minLength": 3,
       "maxLength": 24
     },
+    "subnetResourceId": {
+      "type": "string"
+    },
+    "dnsServer": {
+      "type": "string"
+    },
+    "dnsAltServer": {
+      "type": "string"
+    },
     "kind": {
       "type": "string",
       "defaultValue": "StorageV2"
@@ -537,11 +546,42 @@
             {
               "name": "BLOB_CONNECTION_RUNTIMEURL", 
               "value": ""
-            }              
+            },              
+            {
+              "name": "WEBSITE_VNET_ROUTE_ALL", 
+              "value": "1"
+            },
+            {
+              "name": "WEBSITE_CONTENTOVERVNET", 
+              "value": "1"
+            },
+            {
+              "name": "WEBSITE_DNS_SERVER", 
+              "value": "[parameters('dnsServer')]"
+            },
+            {
+              "name": "WEBSITE_DNS_ALT_SERVER", 
+              "value": "[parameters('dnsAltServer')]"
+            }
           ]
         },
         "clientAffinityEnabled": false
-      }
+      },
+      "resources": [
+        {
+            "type": "networkConfig",
+            "apiVersion": "2018-11-01",
+            "name": "virtualNetwork",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+              "[parameters('logicAppName')]"
+            ],
+            "properties": {
+                "subnetResourceId": "[concat('/subscription/', subscription().subscriptionId, parameters('subnetResourceId'))]",
+                "swiftSupported": true
+            }
+        }
+      ]
     }
   ],
   "outputs": {
