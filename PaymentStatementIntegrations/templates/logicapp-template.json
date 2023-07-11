@@ -577,7 +577,7 @@
               "[parameters('logicAppName')]"
             ],
             "properties": {
-                "subnetResourceId": "[concat('/subscription/', subscription().subscriptionId, parameters('subnetResourceId'))]",
+                "subnetResourceId": "[concat('/subscriptions/', subscription().subscriptionId, parameters('subnetResourceId'))]",
                 "swiftSupported": true
             }
         }

@@ -28,7 +28,7 @@ variables:
 
   # VNET integration is required for Private Endpoint blob storage
   subnetResourceId: '/resourceGroups/DEVRLENETRG1401/providers/Microsoft.Network/virtualNetworks/DEVRLENETVN1401/subnets/DEVRLENETSU1402'
-  # Subnet resource ID excluding '/subscription/<subscriptionId>', for example: /resourceGroups/<RGname>/providers/Microsoft.Network/virtualNetworks/<VnetName>/subnets/subnetName>
+  # Subnet resource ID excluding '/subscriptions/<subscriptionId>', for example: /resourceGroups/<RGname>/providers/Microsoft.Network/virtualNetworks/<VnetName>/subnets/subnetName>
   dnsServer: '10.178.0.4'
   dnsAltServer: '10.178.0.5'
 
