@@ -34,6 +34,15 @@
       "minLength": 3,
       "maxLength": 24
     },
+    "subnetResourceId": {
+      "type": "string"
+    },
+    "dnsServer": {
+      "type": "string"
+    },
+    "dnsAltServer": {
+      "type": "string"
+    },
     "kind": {
       "type": "string",
       "defaultValue": "StorageV2"
@@ -378,19 +387,22 @@
         }
     },
     {
-    "type": "Microsoft.Storage/storageAccounts",
-    "apiVersion": "2019-06-01",
-    "sku": {
-      "name": "[parameters('skuName')]",
-      "tier": "[parameters('skuTier')]"
-    },
-    "kind": "[parameters('kind')]",
-    "name": "[parameters('storageName')]",
-    "location": "[parameters('location')]",
-    "tags": {
-      "Environment": "[parameters('environmentName')]",
-      "Project": "[parameters('projectName')]"
-    }
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2019-06-01",
+      "sku": {
+        "name": "[parameters('skuName')]",
+        "tier": "[parameters('skuTier')]"
+      },
+      "kind": "[parameters('kind')]",
+      "name": "[toLower(parameters('storageName'))]",
+      "location": "[parameters('location')]",
+      "tags": {
+        "Environment": "[parameters('environmentName')]",
+        "Project": "[parameters('projectName')]"
+      },
+      "properties": {
+        "publicNetworkAccess": "Disabled"
+      }
     },
     {
       "type": "Microsoft.Web/serverfarms",
@@ -409,74 +421,170 @@
     },
     {
       "type": "Microsoft.Web/sites",
-      "apiVersion": "2019-08-01",
+      "apiVersion": "2018-11-01",
       "name": "[parameters('logicAppName')]",
       "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
-        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts', toLower(parameters('storageName')))]",
         "[resourceId('microsoft.insights/components/', parameters('appInsightsName'))]"
       ],
       "kind": "workflowapp,functionapp",
       "identity": {
-        "type": "SystemAssigned, UserAssigned",
-        "userAssignedIdentities": {
-            "[concat('/subscriptions/',subscription().subscriptionId,'/resourcegroups/',parameters('userManagedIdentityResourceGroupName'),'/providers/Microsoft.ManagedIdentity/userAssignedIdentities/',parameters('userManagedIdentityName'))]": {}
-        }
+        "type": "SystemAssigned"
       },
       "tags": {
         "Environment": "[parameters('environmentName')]",
         "Project": "[parameters('projectName')]"
       },
       "properties": {
-        "name": "[parameters('logicAppName')]",
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
-        "clientAffinityEnabled": false,
         "siteConfig": {
-          "netFrameworkVersion": "v4.6"
+          "netFrameworkVersion": "v4.6",
+          "appSettings": [
+            {
+              "name": "APP_KIND",
+              "value": "workflowApp"
+            },
+            {
+              "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+              "value": "[reference(concat('microsoft.insights/components/', parameters('appInsightsName'))).InstrumentationKey]"
+            },
+            {
+              "name": "APPINSIGHTS_PROFILEFEATURE_VERSION",
+              "value": "disabled"
+            },
+            {
+              "name": "APPINSIGHTS_SNAPSHOTFEATURE_VERSION",
+              "value": "disabled"
+            },
+            {
+              "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+              "value": "[reference(resourceid('microsoft.insights/components/', parameters('appInsightsName')), '2020-02-02').ConnectionString]"
+            },
+            {
+              "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
+              "value": "disabled"
+            },
+            {
+              "name": "DiagnosticServices_EXTENSION_VERSION",
+              "value": "disabled"
+            },
+            {
+              "name": "InstrumentationEngine_EXTENSION_VERSION",
+              "value": "disabled"
+            },
+            {
+              "name": "SnapshotDebugger_EXTENSION_VERSION",
+              "value": "disabled"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_BaseExtensions",
+              "value": "disabled"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_Java",
+              "value": "disabled"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_Mode",
+              "value": "default"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_NodeJS",
+              "value": "disabled"
+            },
+            {
+              "name": "XDT_MicrosoftApplicationInsights_PreemptSdk",
+              "value": "disabled"
+            },
+            {
+              "name": "AzureFunctionsJobHost__extensionBundle__id",
+              "value": "Microsoft.Azure.Functions.ExtensionBundle.Workflows"
+            },
+            {
+              "name": "AzureFunctionsJobHost__extensionBundle__version",
+              "value": "[1.*, 2.0.0)"
+            },
+            {
+              "name": "AzureWebJobsStorage",
+              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',toLower(parameters('storageName')),';AccountKey=',concat(listKeys(concat(resourceGroup().id,'/providers/Microsoft.Storage/storageAccounts/', toLower(parameters('storageName'))),'2019-06-01').keys[0].value),';EndpointSuffix=core.windows.net')]"
+            },
+            {
+              "name": "FUNCTIONS_EXTENSION_VERSION",
+              "value": "~4"
+            },
+            {
+              "name": "FUNCTIONS_V2_COMPATIBILITY_MODE",
+              "value": "false"
+            },
+            {
+              "name": "FUNCTIONS_WORKER_RUNTIME",
+              "value": "node"
+            },
+            {
+              "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',toLower(parameters('storageName')),';AccountKey=',concat(listKeys(concat(resourceGroup().id,'/providers/Microsoft.Storage/storageAccounts/', toLower(parameters('storageName'))),'2019-06-01').keys[0].value),';EndpointSuffix=core.windows.net')]"
+            },
+            {
+              "name": "WEBSITE_CONTENTSHARE",
+              "value": "[toLower(parameters('logicAppName'))]"
+            },
+            {
+              "name": "WEBSITE_NODE_DEFAULT_VERSION",
+              "value": "~14"
+            }, 
+            {
+              "name": "WORKFLOWS_SUBSCRIPTION_ID", 
+              "value": "[subscription().subscriptionId]"
+            },
+            {
+              "name": "WORKFLOWS_LOCATION_NAME", 
+              "value": "[parameters('location')]"
+            },
+            {
+              "name": "WORKFLOWS_RESOURCE_GROUP_NAME", 
+              "value": ""
+            },
+            {
+              "name": "BLOB_CONNECTION_RUNTIMEURL", 
+              "value": ""
+            },              
+            {
+              "name": "WEBSITE_VNET_ROUTE_ALL", 
+              "value": "1"
+            },
+            {
+              "name": "WEBSITE_CONTENTOVERVNET", 
+              "value": "1"
+            },
+            {
+              "name": "WEBSITE_DNS_SERVER", 
+              "value": "[parameters('dnsServer')]"
+            },
+            {
+              "name": "WEBSITE_DNS_ALT_SERVER", 
+              "value": "[parameters('dnsAltServer')]"
+            }
+          ]
+        },
+        "clientAffinityEnabled": false
+      },
+      "resources": [
+        {
+            "type": "networkConfig",
+            "apiVersion": "2018-11-01",
+            "name": "virtualNetwork",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+              "[parameters('logicAppName')]"
+            ],
+            "properties": {
+                "subnetResourceId": "[concat('/subscriptions/', subscription().subscriptionId, parameters('subnetResourceId'))]",
+                "swiftSupported": true
+            }
         }
-      }
-    },
-    {
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
-      "name": "GetAppSettings",
-      "dependsOn": [ "[parameters('logicAppName')]" ],
-      "properties": {
-          "mode": "Incremental",
-          "expressionEvaluationOptions": {
-              "scope": "Inner"
-          },
-          "parameters": {
-              "LogicAppNameInner": {
-                  "value": "[parameters('logicAppName')]"
-              }
-          },
-          "template": {
-              "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-              "contentVersion": "1.0.0.0",
-              "parameters": {
-                  "LogicAppNameInner": {
-                      "type": "string"
-                  }
-              },
-              "resources": [],
-              "outputs": {
-                  "AppSettings": {
-                      "type": "object",
-                      "value": "[list(format('{0}/config/appsettings', resourceId('Microsoft.Web/sites', parameters('LogicAppNameInner'))), '2020-12-01').properties]"
-                  }
-              }
-          }
-      }
-    },
-    {
-      "type": "Microsoft.Web/sites/config",
-      "name": "[concat(parameters('logicAppName'), '/appsettings')]",
-      "apiVersion": "2019-08-01",
-      "dependsOn": [ "GetAppSettings" ],
-      "properties": 
-      "[union(reference('GetAppSettings').outputs.AppSettings.value, createObject('APP_KIND','workflowApp',  'APPINSIGHTS_INSTRUMENTATIONKEY',reference(concat('microsoft.insights/components/', parameters('appInsightsName'))).InstrumentationKey,  'APPINSIGHTS_PROFILEFEATURE_VERSION','disabled',  'APPINSIGHTS_SNAPSHOTFEATURE_VERSION','disabled',  'APPLICATIONINSIGHTS_CONNECTION_STRING',reference(resourceid('microsoft.insights/components/', parameters('appInsightsName')), '2020-02-02').ConnectionString,  'ApplicationInsightsAgent_EXTENSION_VERSION','disabled',  'DiagnosticServices_EXTENSION_VERSION','disabled',  'InstrumentationEngine_EXTENSION_VERSION','disabled',  'SnapshotDebugger_EXTENSION_VERSION','disabled',  'XDT_MicrosoftApplicationInsights_BaseExtensions','disabled',  'XDT_MicrosoftApplicationInsights_Java','disabled',  'XDT_MicrosoftApplicationInsights_Mode','default',  'XDT_MicrosoftApplicationInsights_NodeJS','disabled',  'XDT_MicrosoftApplicationInsights_PreemptSdk','disabled',  'AzureFunctionsJobHost__extensionBundle__id','Microsoft.Azure.Functions.ExtensionBundle.Workflows',  'AzureFunctionsJobHost__extensionBundle__version','[1.*, 2.0.0)',  'AzureWebJobsStorage',concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageName'),';AccountKey=',concat(listKeys(concat(resourceGroup().id,'/providers/Microsoft.Storage/storageAccounts/', parameters('storageName')),'2019-06-01').keys[0].value),';EndpointSuffix=core.windows.net'),  'FUNCTIONS_EXTENSION_VERSION','~4',  'FUNCTIONS_V2_COMPATIBILITY_MODE','false',  'FUNCTIONS_WORKER_RUNTIME','node',  'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING',concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageName'),';AccountKey=',concat(listKeys(concat(resourceGroup().id,'/providers/Microsoft.Storage/storageAccounts/', parameters('storageName')),'2019-06-01').keys[0].value),';EndpointSuffix=core.windows.net'),  'WEBSITE_CONTENTSHARE',parameters('logicAppName'),  'WEBSITE_NODE_DEFAULT_VERSION','~14',  'WORKFLOWS_SUBSCRIPTION_ID',subscription().subscriptionId,  'WORKFLOWS_LOCATION_NAME',parameters('location')  ))]"
+      ]
     }
   ],
   "outputs": {

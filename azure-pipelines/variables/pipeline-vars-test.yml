@@ -2,36 +2,50 @@
 
 variables:
 
-  envShortName: 'test'
+  # MUST BE UPPERCASE
+  envShortName: 'TST'
 
-  logicAppName: 'la-$(projectName)-$(envShortName)'
- 
+  resourcePrefix: '$(envShortName)$(projectNameUpper)$(functionCode)'
+  
+  logicAppName: '$(resourcePrefix)LA1402'
+  
   resourceGroupLocation: 'uksouth'
-  resourceGroupName: 'ESTLOGICAPPS-RG2-$(envShortName)'
+  resourceGroupName: '$(resourcePrefix)RG1401'
+  
+  #####Currently set to DEV as TST does not yet exist and fails parsing the pipeline
+  serviceConnection: 'AZD-RLE-DEV1'
 
-  serviceConnection: 'AZD-EST-SND1'
+  keyVaultName: '$(resourcePrefix)KV1401'
 
-  appServicePlanName: 'asp-$(projectName)-$(envShortName)'
+  appServicePlanName: '$(resourcePrefix)ASP1401'
 
-   # MUST BE LOWERCASE. No spaces or hyphens allowed
-  storageName: 'sa$(projectName)$(envShortName)'
+   # Gets converted to lowercase later in the pipeline. No spaces or hyphens allowed
+  storageName: '$(resourcePrefix)ST1402'
 
-  appInsightsName: 'la-$(projectName)-$(envShortName)'
+  appInsightsName: '$(resourcePrefix)AIS1402'
 
-  dashboardName: 'dh-$(projectName)-$(envShortName)'
-  dashboardDisplayName: '$(projectName)-$(envShortName) dashboard'
+  dashboardName: '$(resourcePrefix)DSH1402'
+  dashboardDisplayName: '$(logicAppName) dashboard'
+
+  # VNET integration is required for Private Endpoint blob storage
+  subnetResourceId: '/resourceGroups/TSTRLENETRG1401/providers/Microsoft.Network/virtualNetworks/TSTRLENETVN1401/subnets/TSTRLENETSU1402'
+  # Subnet resource ID excluding '/subscriptions/<subscriptionId>', for example: /resourceGroups/<RGname>/providers/Microsoft.Network/virtualNetworks/<VnetName>/subnets/subnetName>
+  dnsServer: '10.178.0.4'
+  dnsAltServer: '10.178.0.5'
 
   # Full url is specified here as opposed to just the MI name.
   # User-assigned Managed Identity to be attributed to the Logic App.
   # Resource Group is supplied in case it is in a different resource group to the Logic App.
-  userManagedIdentityName: 'MILOGICAPPSDEV'
-  userManagedIdentityResourceGroupName: 'SNDESTLOGICAPPS-RG'
+  userManagedIdentityName: '$(resourcePrefix)MI1401'
+  userManagedIdentityResourceGroupName: '$(resourceGroupName)'
 
   # Connector details
   # Although MID details are specified, the tenantId should be the one where the service bus exists and, if this
   # is cross-tenant, will be different to the tenant that the Logic App sits in.
-  userManagedIdentityTenantId: 'c9d74090-b4e6-4b04-981d-e6757a160812'
-  userManagedIdentityObjectId: 'd1fd46e8-9d18-47d4-afab-b63513cb5098'
+
+  # The following are in KeyVault secrets
+  # - serviceBusUserManagedIdentityTenantId - may be in a different tenant to the Logic App
+  # - serviceBusUserManagedIdentityObjectId
 
   servicebusConnectionNameSP: 'serviceBus'
   servicebusNamespaceSP: 'SNDFFCINFSB1001.servicebus.windows.net'

@@ -2,9 +2,11 @@
 
 variables:
 
-  # Use lowercase, with no hyphens or spaces
-  projectName: 'logicappstdx'
+  # Use uppercase, with no hyphens or spaces
+  projectNameUpper: 'RLE'
 
+  functionCode: 'INF'
+  
   artifactName: 'deploy_artifacts'
 
   # API Connections - if you change this name, you must change the reference in workflow.json
