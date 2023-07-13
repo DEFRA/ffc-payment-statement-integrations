@@ -387,19 +387,22 @@
         }
     },
     {
-    "type": "Microsoft.Storage/storageAccounts",
-    "apiVersion": "2019-06-01",
-    "sku": {
-      "name": "[parameters('skuName')]",
-      "tier": "[parameters('skuTier')]"
-    },
-    "kind": "[parameters('kind')]",
-    "name": "[toLower(parameters('storageName'))]",
-    "location": "[parameters('location')]",
-    "tags": {
-      "Environment": "[parameters('environmentName')]",
-      "Project": "[parameters('projectName')]"
-    }
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2019-06-01",
+      "sku": {
+        "name": "[parameters('skuName')]",
+        "tier": "[parameters('skuTier')]"
+      },
+      "kind": "[parameters('kind')]",
+      "name": "[toLower(parameters('storageName'))]",
+      "location": "[parameters('location')]",
+      "tags": {
+        "Environment": "[parameters('environmentName')]",
+        "Project": "[parameters('projectName')]"
+      },
+      "properties": {
+        "publicNetworkAccess": "Disabled"
+      }
     },
     {
       "type": "Microsoft.Web/serverfarms",
