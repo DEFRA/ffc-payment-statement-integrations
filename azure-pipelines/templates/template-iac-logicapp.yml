@@ -7,6 +7,8 @@ parameters:
   type: string
 - name: runId
   type: string
+- name: keyVaultName
+  type: string
 
 jobs:
 - deployment: deploy_logicapp_resources
@@ -35,13 +37,16 @@ jobs:
             overrideParameters:
               -location $(resourceGroupLocation)
               -environmentName ${{ parameters.environment }}
-              -projectName $(projectName)
+              -projectName $(projectNameUpper)
               -logicAppName $(logicAppName)
               -appServicePlanName $(appServicePlanName)
               -storageName $(storageName)
               -appInsightsName $(appInsightsName)
               -userManagedIdentityName $(userManagedIdentityName)
               -userManagedIdentityResourceGroupName $(userManagedIdentityResourceGroupName)
+              -subnetResourceId $(subnetResourceId)
+              -dnsServer $(dnsServer)
+              -dnsAltServer $(dnsAltServer)
             deploymentMode: $(deploymentMode)
             deploymentOutputs: 'LogicAppArmOutputs'
 
@@ -56,7 +61,7 @@ jobs:
         - task: AzureKeyVault@2
           inputs:
             azureSubscription: ${{ parameters.serviceConnection }}
-            KeyVaultName: 'SNDESTLOGICAPPKV1'
+            KeyVaultName: ${{ parameters.keyVaultName }}
             SecretsFilter: '*'
             RunAsPreJob: false
 
@@ -69,7 +74,6 @@ jobs:
             csmFile: './unpacked/templates/connectors-template.json'
             overrideParameters:
               -location $(resourceGroupLocation)
-              -connections_azureblob_name $(blobConnectionName)
               -connections_servicebus_name_sp $(servicebusConnectionNameSP)
               -servicebus_connection_string_sp $(ServiceBusConnectionStringDev)
               -connections_servicebus_name_api $(servicebusConnectionNameAPI)

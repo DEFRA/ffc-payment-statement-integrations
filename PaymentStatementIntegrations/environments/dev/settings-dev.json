@@ -1,17 +1,7 @@
 [
   {
-    "name": "commondataservice-connectionKey",
-    "value": "@Microsoft.KeyVault(SecretUri=https://sndestlogicappkv1.vault.azure.net/secrets/CommonDataServiceConnStringDev/fa3fd22160744f21a753c538a056710a)",
-    "slotSetting": false
-  },
-  {
-    "name": "ServiceBus-ConnectionKey",
-    "value": "@Microsoft.KeyVault(SecretUri=https://sndestlogicappkv1.vault.azure.net/secrets/ServiceBusConnectionKeyDev/345fe05dcd134cb2ae25cf5310b20bd1)",
-    "slotSetting": false
-  },
-  {
     "name": "ServiceBus-ConnectionString",
-    "value": "@Microsoft.KeyVault(SecretUri=https://sndestlogicappkv1.vault.azure.net/secrets/ServiceBusConnectionStringDev/121fa4c998944cf2831c2825e01b472e)",
+    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/ServiceBusConnectionStringDev/6b685b987b6144918bf46424a18a1e29)",
     "slotSetting": false
   },
   {
