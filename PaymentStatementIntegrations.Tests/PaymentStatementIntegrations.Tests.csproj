@@ -20,8 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="CrmInsertTest\" />
-    <None Remove="CrmRetrievalTest\" />
+    <None Remove="FfcCrmInsertTest\" />
+    <None Remove="FfcCrmRetrievalTest\" />
     <None Remove="Helpers\" />
   </ItemGroup>
 <ItemGroup>
@@ -31,8 +31,8 @@
 </ItemGroup>
 
 <ItemGroup>
-  <Folder Include="CrmInsertTest\" />
-  <Folder Include="CrmRetrievalTest\" />
+  <Folder Include="FfcCrmInsertTest\" />
+  <Folder Include="FfcCrmRetrievalTest\" />
   <Folder Include="Helpers\" />
 </ItemGroup>
 </Project>

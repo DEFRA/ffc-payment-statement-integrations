@@ -5,8 +5,23 @@
     "slotSetting": false
   },
   {
-  "name": "PdfServiceUrl",
-  "value": "https://ffc-pay-statement-receiver.ffc.snd.azure.defra.cloud/v1",
-  "slotSetting": false
+    "name": "PdfServiceUrl",
+    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/ServiceBusConnectionStringDev/6b685b987b6144918bf46424a18a1e29)",
+    "slotSetting": false
+  },
+  {
+    "name": "ClientId",
+    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/ServicePrincipalClientId/f86ba51f3a494d26bf43046597685f42)",
+    "slotSetting": false
+  },
+  {
+    "name": "TenantId",
+    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/ServicePrincipalTenantId/097cf1a829e14471ad073104f501ecad)",
+    "slotSetting": false
+  },
+  {
+    "name": "ClientSecret",
+    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/ServicePrincipalClientSecret/b12fc9032c984f4da55619f5f604972f)",
+    "slotSetting": false
   }
 ]
