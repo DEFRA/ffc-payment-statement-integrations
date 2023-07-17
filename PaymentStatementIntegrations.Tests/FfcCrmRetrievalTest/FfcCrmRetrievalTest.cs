@@ -7,20 +7,20 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 
-namespace PaymentStatementIntegrations.Tests.CrmRetrievalTest
+namespace PaymentStatementIntegrations.Tests.FfcCrmRetrievalTest
 {
     /// <summary>
     /// Test cases for the <i>CrmRetrieval</i> workflow.
     /// </summary>
     [TestClass]
-    public class CrmRetrievalTest : WorkflowTestBase
+    public class FfcCrmRetrievalTest : WorkflowTestBase
     {
         private const string _ExamplePdfFile = "FFC_PaymentStatement_SFI_2022_1234567890_2023020911105608.pdf";
 
         [TestInitialize]
         public void TestInitialize()
         {
-            Initialize(Constants.LOGIC_APP_BASE_PATH, "CrmRetrieval");
+            Initialize(Constants.LOGIC_APP_BASE_PATH, "FfcCrmRetrieval");
         }
 
         [ClassCleanup]
