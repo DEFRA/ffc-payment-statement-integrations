@@ -32,6 +32,9 @@ variables:
   dnsServer: '10.178.0.4'
   dnsAltServer: '10.178.0.5'
 
+  # CSV list of any additional trusted CA certificate roots thumbprints
+  trustedRootThumbprints: 'BDB406F8EB50F8A56FCC8B1F95624B84A8A5E607'
+
   # Full url is specified here as opposed to just the MI name.
   # User-assigned Managed Identity to be attributed to the Logic App.
   # Resource Group is supplied in case it is in a different resource group to the Logic App.

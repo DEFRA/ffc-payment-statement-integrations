@@ -561,6 +561,10 @@
             {
               "name": "WEBSITE_DNS_ALT_SERVER", 
               "value": "[parameters('dnsAltServer')]"
+            },
+            {
+              "name:": "WEBSITE_LOAD_ROOT_CERTIFICATES",
+              "value": "[parameters('trustedRootThumbprints')]"
             }
           ]
         },
