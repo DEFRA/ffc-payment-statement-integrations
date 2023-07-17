@@ -25,6 +25,7 @@ jobs:
         steps:
         - bash: |
             unzip -q '${{ variables.artifactPath}}/${{ parameters.runID }}.zip' -d ./unpacked
+            echo 'trustedRootThumbprints = $(trustedRootThumbprints)'
           displayName: Unzip artifact
 
         - task: AzureResourceGroupDeployment@2
