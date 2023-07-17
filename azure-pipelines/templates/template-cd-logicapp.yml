@@ -74,8 +74,8 @@ jobs:
                 az functionapp config appsettings list --name $(logicAppName) --resource-group  $(resourceGroupName) > tempconfig.json
                 logicAppSystemAssignedIdentityTenantId=`cat tempconfig.json | grep -A 2 "SYSTEM_ASSIGNED_MID_TENANT_ID" | grep "\"value\":" | awk '{ print $2; }' | tr -d '"'`
                 logicAppSystemAssignedIdentityObjectId=`cat tempconfig.json | grep -A 2 "SYSTEM_ASSIGNED_MID_OBJECT_ID" | grep "\"value\":" | awk '{ print $2; }' | tr -d '"'`
-                echo 'logicAppSystemAssignedIdentityTenantId: $(logicAppSystemAssignedIdentityTenantId)'
-                echo 'logicAppSystemAssignedIdentityObjectId: $(logicAppSystemAssignedIdentityObjectId)'
+                echo "logicAppSystemAssignedIdentityTenantId: $(logicAppSystemAssignedIdentityTenantId)"
+                echo "logicAppSystemAssignedIdentityObjectId: $(logicAppSystemAssignedIdentityObjectId)"
                 rm tempconfig.json
               addSpnToEnvironment: true
               useGlobalConfig: true
