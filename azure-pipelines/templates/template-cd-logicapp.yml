@@ -72,14 +72,17 @@ jobs:
               scriptLocation: 'inlineScript'
               inlineScript: |
                 az functionapp config appsettings list --name $(logicAppName) --resource-group  $(resourceGroupName) > tempconfig.json
-                logicAppSystemAssignedIdentityTenantId=`cat tempconfig.json | grep -A 2 "SYSTEM_ASSIGNED_MID_TENANT_ID" | grep "\"value\":" | awk '{ print $2; }' | tr -d '"'`
-                logicAppSystemAssignedIdentityObjectId=`cat tempconfig.json | grep -A 2 "SYSTEM_ASSIGNED_MID_OBJECT_ID" | grep "\"value\":" | awk '{ print $2; }' | tr -d '"'`
-                echo "logicAppSystemAssignedIdentityTenantId: $(logicAppSystemAssignedIdentityTenantId)"
-                echo "logicAppSystemAssignedIdentityObjectId: $(logicAppSystemAssignedIdentityObjectId)"
+                echo "##vso[task.setvariable variable=logicAppSystemAssignedIdentityTenantId=$(cat tempconfig.json | grep -A 2 'SYSTEM_ASSIGNED_MID_TENANT_ID' | grep '"value":' | awk '{ print $2; }' | tr -d '"')"
+                echo "##vso[task.setvariable variable=logicAppSystemAssignedIdentityObjectId=$(cat tempconfig.json | grep -A 2 'SYSTEM_ASSIGNED_MID_OBJECT_ID' | grep '"value":' | awk '{ print $2; }' | tr -d '"')"
                 rm tempconfig.json
               addSpnToEnvironment: true
               useGlobalConfig: true
             displayName: 'Read System-Assigned Manged Identity from config'
+
+          - bash: |
+              echo "var1=$(logicAppSystemAssignedIdentityTenantId)"
+              echo "var2=$(logicAppSystemAssignedIdentityObjectId)"
+            displayName: 'Display vars'
 
           - task: AzureResourceGroupDeployment@2
             displayName: 'Deploy Connectors'
