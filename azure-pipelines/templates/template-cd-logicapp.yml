@@ -55,3 +55,62 @@ jobs:
               appName: $(logicAppName)
               package: './unpacked/newArtifact.zip'
               deploymentMethod: 'zipDeploy'
+
+          - task: AzureKeyVault@2
+            inputs:
+              azureSubscription: ${{ parameters.serviceConnection }}
+              KeyVaultName: ${{ parameters.keyVaultName }}
+              SecretsFilter: '*'
+              RunAsPreJob: false
+
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: ${{ parameters.serviceConnection }}
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                az functionapp config appsettings list --name $(LAname) --resource-group  $(resourceGroupName) > tempconfig.json
+                logicAppSystemAssignedIdentityTenantId=`cat tempconfig.json | grep -A 2 "SYSTEM_ASSIGNED_MID_TENANT_ID" | GREP "\"value\":" | awk '{ print $2; }' | tr -d '"'`
+                logicAppSystemAssignedIdentityObjectId=`cat tempconfig.json | grep -A 2 "SYSTEM_ASSIGNED_MID_OBJECT_ID" | GREP "\"value\":" | awk '{ print $2; }' | tr -d '"'`
+              addSpnToEnvironment: true
+              useGlobalConfig: true
+            displayName: 'Read System-Assigned Manged Identity from config'
+
+          - task: AzureResourceGroupDeployment@2
+            displayName: 'Deploy Connectors'
+            inputs:
+              azureSubscription: ${{ parameters.serviceConnection }}
+              resourceGroupName: $(resourceGroupName)
+              location: $(resourceGroupLocation)
+              csmFile: './unpacked/templates/connectors-template.json'
+              overrideParameters:
+                -location $(resourceGroupLocation)
+                -connections_servicebus_name_sp $(servicebusConnectionNameSP)
+                -servicebus_connection_string_sp $(ServiceBusConnectionStringDev)
+                -connections_servicebus_name_api $(servicebusConnectionNameAPI)
+                -servicebus_connection_string_api $(ServiceBusConnectionStringDev)
+                -serviceBusUserManagedIdentityTenantId $(ServiceBusUserManagedIdentityTenantIdDev)
+                -serviceBusUserManagedIdentityObjectId $(ServiceBusUserManagedIdentityObjectIdDev)
+                -logicAppSystemAssignedIdentityTenantId $(logicAppSystemAssignedIdentityTenantId)
+                -logicAppSystemAssignedIdentityObjectId $(logicAppSystemAssignedIdentityObjectId)
+              deploymentMode: $(deploymentMode)
+
+          - task: ARM Outputs@6
+            displayName: 'ARM Outputs Connections'
+            inputs:
+              ConnectedServiceNameSelector: 'ConnectedServiceNameARM'
+              ConnectedServiceNameARM: ${{ parameters.serviceConnection }}
+              resourceGroupName: $(resourceGroupName)
+              whenLastDeploymentIsFailed: 'fail'
+
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: ${{ parameters.serviceConnection }}
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                az functionapp config appsettings set --name $(LAname) --resource-group  $(resourceGroupName) --settings "BLOB_CONNECTION_RUNTIMEURL=$(blobendpointurl)"
+                az functionapp config appsettings set --name $(LAname) --resource-group  $(resourceGroupName) --settings "SERVICEBUS_CONNECTION_SP_RUNTIMEURL=$(servicebusendpointurlsp)"
+                az functionapp config appsettings set --name $(LAname) --resource-group  $(resourceGroupName) --settings "SERVICEBUS_CONNECTION_API_RUNTIMEURL=$(servicebusendpointurlapi)"
+              addSpnToEnvironment: true
+              useGlobalConfig: true

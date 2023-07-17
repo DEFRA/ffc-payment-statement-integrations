@@ -11,7 +11,7 @@
   },
   {
     "name": "ClientId",
-    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/ServicePrincipalClientId/f86ba51f3a494d26bf43046597685f42)",
+    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/ServicePrincipalClientId/f72a69bc85ae4f7a863fb398cd53c916)",
     "slotSetting": false
   },
   {
@@ -21,7 +21,7 @@
   },
   {
     "name": "ClientSecret",
-    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/ServicePrincipalClientSecret/b12fc9032c984f4da55619f5f604972f)",
+    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/ServicePrincipalClientSecret/071a9f703dc949fc8bf3a3041de557ea)",
     "slotSetting": false
   }
 ]

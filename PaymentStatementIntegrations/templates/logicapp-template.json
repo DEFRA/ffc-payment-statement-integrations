@@ -43,6 +43,9 @@
     "dnsAltServer": {
       "type": "string"
     },
+    "trustedRootThumbprints": {
+      "type": "string"
+    },
     "kind": {
       "type": "string",
       "defaultValue": "StorageV2"
@@ -547,10 +550,6 @@
               "value": ""
             },
             {
-              "name": "BLOB_CONNECTION_RUNTIMEURL", 
-              "value": ""
-            },              
-            {
               "name": "WEBSITE_VNET_ROUTE_ALL", 
               "value": "1"
             },
@@ -565,6 +564,10 @@
             {
               "name": "WEBSITE_DNS_ALT_SERVER", 
               "value": "[parameters('dnsAltServer')]"
+            },
+            {
+              "name:": "WEBSITE_LOAD_ROOT_CERTIFICATES",
+              "value": "[parameters('trustedRootThumbprints')]"
             }
           ]
         },

@@ -58,50 +58,15 @@ jobs:
             resourceGroupName: $(resourceGroupName)
             whenLastDeploymentIsFailed: 'fail'
 
-        - task: AzureKeyVault@2
-          inputs:
-            azureSubscription: ${{ parameters.serviceConnection }}
-            KeyVaultName: ${{ parameters.keyVaultName }}
-            SecretsFilter: '*'
-            RunAsPreJob: false
-
-        - task: AzureResourceGroupDeployment@2
-          displayName: 'Deploy Connectors'
-          inputs:
-            azureSubscription: ${{ parameters.serviceConnection }}
-            resourceGroupName: $(resourceGroupName)
-            location: $(resourceGroupLocation)
-            csmFile: './unpacked/templates/connectors-template.json'
-            overrideParameters:
-              -location $(resourceGroupLocation)
-              -connections_servicebus_name_sp $(servicebusConnectionNameSP)
-              -servicebus_connection_string_sp $(ServiceBusConnectionStringDev)
-              -connections_servicebus_name_api $(servicebusConnectionNameAPI)
-              -servicebus_connection_string_api $(ServiceBusConnectionStringDev)
-              -serviceBusUserManagedIdentityTenantId $(ServiceBusUserManagedIdentityTenantIdDev)
-              -serviceBusUserManagedIdentityObjectId $(ServiceBusUserManagedIdentityObjectIdDev)
-              -logicAppSystemAssignedIdentityTenantId $(logicAppSystemAssignedIdentityTenantId)
-              -logicAppSystemAssignedIdentityObjectId $(logicAppSystemAssignedIdentityObjectId)
-            deploymentMode: $(deploymentMode)
-
-        - task: ARM Outputs@6
-          displayName: 'ARM Outputs Connections'
-          inputs:
-            ConnectedServiceNameSelector: 'ConnectedServiceNameARM'
-            ConnectedServiceNameARM: ${{ parameters.serviceConnection }}
-            resourceGroupName: $(resourceGroupName)
-            whenLastDeploymentIsFailed: 'fail'
-
         - task: AzureCLI@2
           inputs:
             azureSubscription: ${{ parameters.serviceConnection }}
             scriptType: 'bash'
             scriptLocation: 'inlineScript'
             inlineScript: |
-              az functionapp config appsettings set --name $(LAname) --resource-group  $(resourceGroupName) --settings "BLOB_CONNECTION_RUNTIMEURL=$(blobendpointurl)"
               az functionapp config appsettings set --name $(LAname) --resource-group  $(resourceGroupName) --settings "WORKFLOWS_RESOURCE_GROUP_NAME=$(resourceGroupName)"
-              az functionapp config appsettings set --name $(LAname) --resource-group  $(resourceGroupName) --settings "SERVICEBUS_CONNECTION_SP_RUNTIMEURL=$(servicebusendpointurlsp)"
-              az functionapp config appsettings set --name $(LAname) --resource-group  $(resourceGroupName) --settings "SERVICEBUS_CONNECTION_API_RUNTIMEURL=$(servicebusendpointurlapi)"
+              az functionapp config appsettings set --name $(LAname) --resource-group  $(resourceGroupName) --settings "SYSTEM_ASSIGNED_MID_TENANT_ID=$(logicAppSystemAssignedIdentityTenantId)"
+              az functionapp config appsettings set --name $(LAname) --resource-group  $(resourceGroupName) --settings "SYSTEM_ASSIGNED_MID_OBJECT_ID=$(logicAppSystemAssignedIdentityObjectId)"
             addSpnToEnvironment: true
             useGlobalConfig: true
 
