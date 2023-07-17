@@ -48,7 +48,7 @@ jobs:
               -subnetResourceId $(subnetResourceId)
               -dnsServer $(dnsServer)
               -dnsAltServer $(dnsAltServer)
-              -trustedRootThumbprints $(trustedRootThumbprints)
+              -trustedRootThumbprints "$(trustedRootThumbprints)"
             deploymentMode: $(deploymentMode)
             deploymentOutputs: 'LogicAppArmOutputs'
 
