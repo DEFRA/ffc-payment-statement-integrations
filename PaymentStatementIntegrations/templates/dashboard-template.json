@@ -668,7 +668,7 @@
                       "value": {
                         "SubscriptionId": "[subscription().subscriptionId]",
                         "ResourceGroup": "[parameters('logicAppResourceGroup')]",
-                        "Name": "[parameters('logicAppName')]",
+                        "Name": "[parameters('appInsightsName')]",
                         "LinkedApplicationType": 0,
                         "ResourceId": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]",
                         "ResourceType": "microsoft.insights/components",
