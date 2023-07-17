@@ -71,11 +71,12 @@ jobs:
               scriptType: 'bash'
               scriptLocation: 'inlineScript'
               inlineScript: |
-                az functionapp config appsettings list --name $(LAname) --resource-group  $(resourceGroupName) > tempconfig.json
+                az functionapp config appsettings list --name $(logicAppName) --resource-group  $(resourceGroupName) > tempconfig.json
                 logicAppSystemAssignedIdentityTenantId=`cat tempconfig.json | grep -A 2 "SYSTEM_ASSIGNED_MID_TENANT_ID" | grep "\"value\":" | awk '{ print $2; }' | tr -d '"'`
                 logicAppSystemAssignedIdentityObjectId=`cat tempconfig.json | grep -A 2 "SYSTEM_ASSIGNED_MID_OBJECT_ID" | grep "\"value\":" | awk '{ print $2; }' | tr -d '"'`
                 echo 'logicAppSystemAssignedIdentityTenantId: $(logicAppSystemAssignedIdentityTenantId)'
                 echo 'logicAppSystemAssignedIdentityObjectId: $(logicAppSystemAssignedIdentityObjectId)'
+                rm tempconfig.json
               addSpnToEnvironment: true
               useGlobalConfig: true
             displayName: 'Read System-Assigned Manged Identity from config'
@@ -113,8 +114,8 @@ jobs:
               scriptType: 'bash'
               scriptLocation: 'inlineScript'
               inlineScript: |
-                az functionapp config appsettings set --name $(LAname) --resource-group  $(resourceGroupName) --settings "BLOB_CONNECTION_RUNTIMEURL=$(blobendpointurl)"
-                az functionapp config appsettings set --name $(LAname) --resource-group  $(resourceGroupName) --settings "SERVICEBUS_CONNECTION_SP_RUNTIMEURL=$(servicebusendpointurlsp)"
-                az functionapp config appsettings set --name $(LAname) --resource-group  $(resourceGroupName) --settings "SERVICEBUS_CONNECTION_API_RUNTIMEURL=$(servicebusendpointurlapi)"
+                az functionapp config appsettings set --name $(logicAppName) --resource-group  $(resourceGroupName) --settings "BLOB_CONNECTION_RUNTIMEURL=$(blobendpointurl)"
+                az functionapp config appsettings set --name $(logicAppName) --resource-group  $(resourceGroupName) --settings "SERVICEBUS_CONNECTION_SP_RUNTIMEURL=$(servicebusendpointurlsp)"
+                az functionapp config appsettings set --name $(logicAppName) --resource-group  $(resourceGroupName) --settings "SERVICEBUS_CONNECTION_API_RUNTIMEURL=$(servicebusendpointurlapi)"
               addSpnToEnvironment: true
               useGlobalConfig: true
