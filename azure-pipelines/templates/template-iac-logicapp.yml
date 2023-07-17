@@ -23,7 +23,6 @@ jobs:
         steps:
         - bash: |
             unzip -q '${{ variables.artifactPath}}/${{ parameters.runID }}.zip' -d ./unpacked
-            echo 'trustedRootThumbprints = $(trustedRootThumbprints)'
           displayName: Unzip artifact
 
         - task: AzureResourceGroupDeployment@2
@@ -63,10 +62,10 @@ jobs:
             scriptType: 'bash'
             scriptLocation: 'inlineScript'
             inlineScript: |
-              az functionapp config appsettings set --name $(LAname) --resource-group  $(resourceGroupName) --settings "WEBSITE_LOAD_ROOT_CERTIFICATES=$(trustedRootThumbprints)"
               az functionapp config appsettings set --name $(LAname) --resource-group  $(resourceGroupName) --settings "WORKFLOWS_RESOURCE_GROUP_NAME=$(resourceGroupName)"
               az functionapp config appsettings set --name $(LAname) --resource-group  $(resourceGroupName) --settings "SYSTEM_ASSIGNED_MID_TENANT_ID=$(logicAppSystemAssignedIdentityTenantId)"
               az functionapp config appsettings set --name $(LAname) --resource-group  $(resourceGroupName) --settings "SYSTEM_ASSIGNED_MID_OBJECT_ID=$(logicAppSystemAssignedIdentityObjectId)"
+              az functionapp config appsettings set --name $(LAname) --resource-group  $(resourceGroupName) --settings "WEBSITE_LOAD_ROOT_CERTIFICATES=$(trustedRootThumbprints)"
             addSpnToEnvironment: true
             useGlobalConfig: true
 

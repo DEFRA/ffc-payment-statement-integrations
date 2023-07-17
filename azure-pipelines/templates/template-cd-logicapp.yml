@@ -72,8 +72,10 @@ jobs:
               scriptLocation: 'inlineScript'
               inlineScript: |
                 az functionapp config appsettings list --name $(LAname) --resource-group  $(resourceGroupName) > tempconfig.json
-                logicAppSystemAssignedIdentityTenantId=`cat tempconfig.json | grep -A 2 "SYSTEM_ASSIGNED_MID_TENANT_ID" | GREP "\"value\":" | awk '{ print $2; }' | tr -d '"'`
-                logicAppSystemAssignedIdentityObjectId=`cat tempconfig.json | grep -A 2 "SYSTEM_ASSIGNED_MID_OBJECT_ID" | GREP "\"value\":" | awk '{ print $2; }' | tr -d '"'`
+                logicAppSystemAssignedIdentityTenantId=`cat tempconfig.json | grep -A 2 "SYSTEM_ASSIGNED_MID_TENANT_ID" | grep "\"value\":" | awk '{ print $2; }' | tr -d '"'`
+                logicAppSystemAssignedIdentityObjectId=`cat tempconfig.json | grep -A 2 "SYSTEM_ASSIGNED_MID_OBJECT_ID" | grep "\"value\":" | awk '{ print $2; }' | tr -d '"'`
+                echo 'logicAppSystemAssignedIdentityTenantId: $(logicAppSystemAssignedIdentityTenantId)'
+                echo 'logicAppSystemAssignedIdentityObjectId: $(logicAppSystemAssignedIdentityObjectId)'
               addSpnToEnvironment: true
               useGlobalConfig: true
             displayName: 'Read System-Assigned Manged Identity from config'
