@@ -11,6 +11,8 @@ parameters:
   type: string
 - name: connectionsFile
   type: string
+- name: keyVaultName
+  type: string
 
 jobs:
   - deployment: deploy_logicapp_resources

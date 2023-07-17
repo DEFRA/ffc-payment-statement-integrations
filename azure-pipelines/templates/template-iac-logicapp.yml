@@ -7,8 +7,6 @@ parameters:
   type: string
 - name: runId
   type: string
-- name: keyVaultName
-  type: string
 
 jobs:
 - deployment: deploy_logicapp_resources
