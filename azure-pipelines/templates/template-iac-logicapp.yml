@@ -115,6 +115,7 @@ jobs:
             overrideParameters:
               -location $(resourceGroupLocation)
               -logicAppName $(logicAppName)
+              -appInsightsName $(appInsightsName)
               -logicAppResourceGroup $(resourceGroupName)
               -dashboardName $(dashboardName)
               -dashboardDisplayName "$(dashboardDisplayName)"

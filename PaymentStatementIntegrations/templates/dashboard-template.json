@@ -8,6 +8,12 @@
         "description": "Name of the Logic App to show in the dashboard"
       }
     },
+    "appInsightsName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the App Insights instance"
+      }
+    },
     "logicAppResourceGroup": {
       "type": "string",
       "metadata": {
@@ -86,7 +92,7 @@
                           "metrics": [
                             {
                               "resourceMetadata": {
-                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]"
                               },
                               "name": "availabilityResults/availabilityPercentage",
                               "aggregationType": 4,
@@ -117,13 +123,13 @@
                             "destinationBlade": {
                               "bladeName": "ResourceMenuBlade",
                               "parameters": {
-                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]",
                                 "menuid": "availability"
                               },
                               "extensionName": "HubsExtension",
                               "options": {
                                 "parameters": {
-                                  "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                                  "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]",
                                   "menuid": "availability"
                                 }
                               }
@@ -146,7 +152,7 @@
                           "metrics": [
                             {
                               "resourceMetadata": {
-                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]"
                               },
                               "name": "availabilityResults/availabilityPercentage",
                               "aggregationType": 4,
@@ -178,13 +184,13 @@
                             "destinationBlade": {
                               "bladeName": "ResourceMenuBlade",
                               "parameters": {
-                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]",
                                 "menuid": "availability"
                               },
                               "extensionName": "HubsExtension",
                               "options": {
                                 "parameters": {
-                                  "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                                  "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]",
                                   "menuid": "availability"
                                 }
                               }
@@ -212,7 +218,7 @@
                           "metrics": [
                             {
                               "resourceMetadata": {
-                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]"
                               },
                               "name": "performanceCounters/requestExecutionTime",
                               "aggregationType": 4,
@@ -266,7 +272,7 @@
                           "metrics": [
                             {
                               "resourceMetadata": {
-                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]"
                               },
                               "name": "performanceCounters/requestExecutionTime",
                               "aggregationType": 4,
@@ -319,7 +325,7 @@
                           "metrics": [
                             {
                               "resourceMetadata": {
-                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]"
                               },
                               "name": "requests/count",
                               "aggregationType": 7,
@@ -340,13 +346,13 @@
                             "destinationBlade": {
                               "bladeName": "ResourceMenuBlade",
                               "parameters": {
-                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]",
                                 "menuid": "performance"
                               },
                               "extensionName": "HubsExtension",
                               "options": {
                                 "parameters": {
-                                  "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                                  "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]",
                                   "menuid": "performance"
                                 }
                               }
@@ -369,7 +375,7 @@
                           "metrics": [
                             {
                               "resourceMetadata": {
-                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]"
                               },
                               "name": "requests/count",
                               "aggregationType": 7,
@@ -391,13 +397,13 @@
                             "destinationBlade": {
                               "bladeName": "ResourceMenuBlade",
                               "parameters": {
-                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]",
                                 "menuid": "performance"
                               },
                               "extensionName": "HubsExtension",
                               "options": {
                                 "parameters": {
-                                  "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                                  "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]",
                                   "menuid": "performance"
                                 }
                               }
@@ -425,7 +431,7 @@
                           "metrics": [
                             {
                               "resourceMetadata": {
-                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]"
                               },
                               "name": "requests/duration",
                               "aggregationType": 4,
@@ -446,13 +452,13 @@
                             "destinationBlade": {
                               "bladeName": "ResourceMenuBlade",
                               "parameters": {
-                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]",
                                 "menuid": "performance"
                               },
                               "extensionName": "HubsExtension",
                               "options": {
                                 "parameters": {
-                                  "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                                  "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]",
                                   "menuid": "performance"
                                 }
                               }
@@ -475,7 +481,7 @@
                           "metrics": [
                             {
                               "resourceMetadata": {
-                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]"
                               },
                               "name": "requests/duration",
                               "aggregationType": 4,
@@ -497,13 +503,13 @@
                             "destinationBlade": {
                               "bladeName": "ResourceMenuBlade",
                               "parameters": {
-                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]",
                                 "menuid": "performance"
                               },
                               "extensionName": "HubsExtension",
                               "options": {
                                 "parameters": {
-                                  "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                                  "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]",
                                   "menuid": "performance"
                                 }
                               }
@@ -554,7 +560,7 @@
                           "metrics": [
                             {
                               "resourceMetadata": {
-                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]"
                               },
                               "name": "requests/failed",
                               "aggregationType": 7,
@@ -575,13 +581,13 @@
                             "destinationBlade": {
                               "bladeName": "ResourceMenuBlade",
                               "parameters": {
-                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]",
                                 "menuid": "failures"
                               },
                               "extensionName": "HubsExtension",
                               "options": {
                                 "parameters": {
-                                  "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                                  "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]",
                                   "menuid": "failures"
                                 }
                               }
@@ -604,7 +610,7 @@
                           "metrics": [
                             {
                               "resourceMetadata": {
-                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]"
                               },
                               "name": "requests/failed",
                               "aggregationType": 7,
@@ -626,13 +632,13 @@
                             "destinationBlade": {
                               "bladeName": "ResourceMenuBlade",
                               "parameters": {
-                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]",
                                 "menuid": "failures"
                               },
                               "extensionName": "HubsExtension",
                               "options": {
                                 "parameters": {
-                                  "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                                  "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]",
                                   "menuid": "failures"
                                 }
                               }
@@ -655,7 +661,7 @@
                   "inputs": [
                     {
                       "name": "ResourceId",
-                      "value": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                      "value": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]"
                     },
                     {
                       "name": "ComponentId",
@@ -664,7 +670,7 @@
                         "ResourceGroup": "[parameters('logicAppResourceGroup')]",
                         "Name": "[parameters('logicAppName')]",
                         "LinkedApplicationType": 0,
-                        "ResourceId": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                        "ResourceId": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]",
                         "ResourceType": "microsoft.insights/components",
                         "IsAzureFirst": false
                           }
@@ -722,7 +728,7 @@
                           "metrics": [
                             {
                               "resourceMetadata": {
-                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]"
                               },
                               "name": "requests/failed",
                               "aggregationType": 7,
@@ -776,7 +782,7 @@
                           "metrics": [
                             {
                               "resourceMetadata": {
-                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]"
                               },
                               "name": "requests/failed",
                               "aggregationType": 7,
@@ -852,7 +858,7 @@
                           "metrics": [
                             {
                               "resourceMetadata": {
-                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]"
                               },
                               "name": "sessions/count",
                               "aggregationType": 5,
@@ -864,7 +870,7 @@
                             },
                             {
                               "resourceMetadata": {
-                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]"
                               },
                               "name": "users/count",
                               "aggregationType": 5,
@@ -900,7 +906,7 @@
                               "extensionName": "HubsExtension",
                               "bladeName": "ResourceMenuBlade",
                               "parameters": {
-                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]",
                                 "menuid": "segmentationUsers"
                               }
                             }
@@ -921,7 +927,7 @@
                           "metrics": [
                             {
                               "resourceMetadata": {
-                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]"
                               },
                               "name": "sessions/count",
                               "aggregationType": 5,
@@ -933,7 +939,7 @@
                             },
                             {
                               "resourceMetadata": {
-                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]"
                               },
                               "name": "users/count",
                               "aggregationType": 5,
@@ -970,7 +976,7 @@
                               "extensionName": "HubsExtension",
                               "bladeName": "ResourceMenuBlade",
                               "parameters": {
-                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]",
                                 "menuid": "segmentationUsers"
                               }
                             }
@@ -997,7 +1003,7 @@
                           "metrics": [
                             {
                               "resourceMetadata": {
-                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]"
                               },
                               "name": "availabilityResults/availabilityPercentage",
                               "aggregationType": 4,
@@ -1033,7 +1039,7 @@
                               "extensionName": "HubsExtension",
                               "bladeName": "ResourceMenuBlade",
                               "parameters": {
-                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]",
                                 "menuid": "availability"
                               }
                             }
@@ -1054,7 +1060,7 @@
                           "metrics": [
                             {
                               "resourceMetadata": {
-                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]"
                               },
                               "name": "availabilityResults/availabilityPercentage",
                               "aggregationType": 4,
@@ -1091,7 +1097,7 @@
                               "extensionName": "HubsExtension",
                               "bladeName": "ResourceMenuBlade",
                               "parameters": {
-                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]",
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]",
                                 "menuid": "availability"
                               }
                             }
@@ -1118,7 +1124,7 @@
                           "metrics": [
                             {
                               "resourceMetadata": {
-                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]"
                               },
                               "name": "pageViews/count",
                               "aggregationType": 7,
@@ -1172,7 +1178,7 @@
                           "metrics": [
                             {
                               "resourceMetadata": {
-                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                                "id": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]"
                               },
                               "name": "pageViews/count",
                               "aggregationType": 7,
@@ -1252,7 +1258,7 @@
                   "inputs": [
                     {
                       "name": "ComponentId",
-                      "value": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'))]"
+                      "value": "[concat(subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'))]"
                     },
                     {
                       "name": "MainResourceId",
@@ -1312,7 +1318,7 @@
                     "idInputName": "ComponentId",
                     "type": "ApplicationInsights"
                   },
-                  "deepLink": "[concat('#@DefraCloudDev.onmicrosoft.com/resource', subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('logicAppName'), '/applicationMap')]"
+                  "deepLink": "[concat('#@DefraCloudDev.onmicrosoft.com/resource', subscription().id, '/resourceGroups/', parameters('logicAppResourceGroup'), '/providers/microsoft.insights/components/', parameters('appInsightsName'), '/applicationMap')]"
                 }
               }
             ]
