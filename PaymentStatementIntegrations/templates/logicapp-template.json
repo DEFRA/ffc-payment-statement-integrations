@@ -3,10 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "location": {
-      "type": "string",
-      "metadata": {
-        "description": "The datacenter to use for the deployment."
-      }
+      "type": "string"
     },
     "environmentName": {
       "type": "string"
@@ -564,10 +561,6 @@
             {
               "name": "WEBSITE_DNS_ALT_SERVER", 
               "value": "[parameters('dnsAltServer')]"
-            },
-            {
-              "name:": "WEBSITE_LOAD_ROOT_CERTIFICATES",
-              "value": "[parameters('trustedRootThumbprints')]"
             }
           ]
         },
