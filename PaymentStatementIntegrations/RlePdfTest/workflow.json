@@ -1,0 +1,52 @@
+{
+    "definition": {
+        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+        "actions": {
+            "Compose": {
+                "inputs": "@result('Try_Scope')",
+                "runAfter": {
+                    "Try_Scope": [
+                        "SUCCEEDED",
+                        "TIMEDOUT",
+                        "SKIPPED",
+                        "FAILED"
+                    ]
+                },
+                "trackedProperties": {},
+                "type": "Compose"
+            },
+            "Try_Scope": {
+                "actions": {
+                    "HTTP": {
+                        "inputs": {
+                            "method": "GET",
+                            "retryPolicy": {
+                                "type": "none"
+                            },
+                            "uri": "https://ffc-pay-statement-receiver.ffc.snd.azure.defra.cloud/v1/statements/statement/FFC_PaymentStatement_SFI_2022_1234567890_2023020911105608.pdf"
+                        },
+                        "runtimeConfiguration": {
+                            "contentTransfer": {
+                                "transferMode": "Chunked"
+                            }
+                        },
+                        "trackedProperties": {},
+                        "type": "Http"
+                    }
+                },
+                "runAfter": {},
+                "trackedProperties": {},
+                "type": "Scope"
+            }
+        },
+        "contentVersion": "1.0.0.0",
+        "outputs": {},
+        "triggers": {
+            "When_a_HTTP_request_is_received": {
+                "kind": "Http",
+                "type": "Request"
+            }
+        }
+    },
+    "kind": "Stateful"
+}

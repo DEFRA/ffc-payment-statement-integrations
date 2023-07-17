@@ -8,18 +8,18 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 
-namespace PaymentStatementIntegrations.Tests.CrmInsertTest
+namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
 {
     /// <summary>
     /// Test cases for the <i>CrmInsert</i> workflow.
     /// </summary>
     [TestClass]
-    public class CrmInsertTest : WorkflowTestBase
+    public class FfcCrmInsertTest : WorkflowTestBase
     {
         [TestInitialize]
         public void TestInitialize()
         {
-            Initialize(Constants.LOGIC_APP_BASE_PATH, "CrmInsert");
+            Initialize(Constants.LOGIC_APP_BASE_PATH, "FfcCrmInsert");
         }
 
         [ClassCleanup]
