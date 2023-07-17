@@ -6,7 +6,7 @@
   },
   {
     "name": "PdfServiceUrl",
-    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/ServiceBusConnectionStringDev/6b685b987b6144918bf46424a18a1e29)",
+    "value": "https://ffc-pay-statement-receiver.ffc.snd.azure.defra.cloud/v1",
     "slotSetting": false
   },
   {
