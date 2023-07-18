@@ -40,6 +40,9 @@
         },
         "service_principal_tenant_id": {
             "type": "securestring"
+        },
+        "service_principal_object_id": {
+            "type": "securestring"
         }
     },
     "resources": [
@@ -139,8 +142,25 @@
                     }
                 }
             }
+        },
+        {
+            "type": "Microsoft.Web/connections/accessPolicies",
+            "apiVersion": "2016-06-01",
+            "name": "[concat(parameters('connections_dataverse_name_api'),'/',parameters('serviceBusUserManagedIdentityObjectId'))]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/connections', parameters('connections_dataverse_name_api'))]"
+            ],
+            "properties": {
+                "principal": {
+                    "type": "ActiveDirectory",
+                    "identity": {
+                        "tenantId": "[parameters('service_principal_tenant_id')]",
+                        "objectId": "[parameters('service_principal_object_id')]"
+                    }
+                }
+            }
         }
- 
     ],
     "outputs": {
       "servicebusendpointurlsp": {
