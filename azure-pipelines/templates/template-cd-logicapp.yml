@@ -120,6 +120,5 @@ jobs:
                 az functionapp config appsettings set --name $(logicAppName) --resource-group  $(resourceGroupName) --settings "BLOB_CONNECTION_RUNTIMEURL=$(blobendpointurl)"
                 az functionapp config appsettings set --name $(logicAppName) --resource-group  $(resourceGroupName) --settings "SERVICEBUS_CONNECTION_SP_RUNTIMEURL=$(servicebusendpointurlsp)"
                 az functionapp config appsettings set --name $(logicAppName) --resource-group  $(resourceGroupName) --settings "SERVICEBUS_CONNECTION_API_RUNTIMEURL=$(servicebusendpointurlapi)"
-                az functionapp config appsettings set --name $(logicAppName) --resource-group  $(resourceGroupName) --settings "DATAVERSE_CONNECTION_API_RUNTIMEURL=$(dataverseendpointurlapi)"
               addSpnToEnvironment: true
               useGlobalConfig: true
