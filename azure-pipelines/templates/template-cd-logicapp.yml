@@ -71,22 +71,13 @@ jobs:
               scriptType: 'bash'
               scriptLocation: 'inlineScript'
               inlineScript: |
-                az functionapp config appsettings list --name $(logicAppName) --resource-group  $(resourceGroupName) > tempconfig.json
-                cat tempconfig.json | grep -A 2 'SYSTEM_ASSIGNED_MID_TENANT_ID' | grep '"value":' | awk '{ print $2; }' | tr -d '"' > varMidTenantId.txt
-                cat tempconfig.json | grep -A 2 'SYSTEM_ASSIGNED_MID_OBJECT_ID' | grep '"value":' | awk '{ print $2; }' | tr -d '"' > varMidObjectId.txt
-                rm tempconfig.json
+                az resource show --name $(logicAppName) --resource-group  $(resourceGroupName) --resource-type "Microsoft.Web/sites" --query "identity" > tempId.json
+                echo "##vso[task.setvariable variable=logicAppSystemAssignedIdentityObjectId]$(cat tempId.json | grep 'principalId' | awk '{ print $2; }' | tr -d '"')"
+                echo "##vso[task.setvariable variable=logicAppSystemAssignedIdentityTenantId]$(cat tempId.json | grep 'tenantId' | awk '{ print $2; }' | tr -d '"')"
+                rm tempId.json
               addSpnToEnvironment: true
               useGlobalConfig: true
-            displayName: 'Read System-Assigned Manged Identity from config'
-
-          - bash: |
-              cat varMidTenantId.txt
-              cat varMidTenantId.txt
-              echo "##vso[task.setvariable variable=logicAppSystemAssignedIdentityTenantId]$(cat varMidTenantId.txt)"
-              echo "##vso[task.setvariable variable=logicAppSystemAssignedIdentityObjectId]$(cat varMidObjectId.txt)"
-              rm varMidTenantId.txt
-              rm varMidObjectId.txt
-            displayName: 'Set vars'
+            displayName: 'Read System-Assigned Managed Identity from config'
 
           - bash: |
               echo "var1 $(logicAppSystemAssignedIdentityTenantId)"
