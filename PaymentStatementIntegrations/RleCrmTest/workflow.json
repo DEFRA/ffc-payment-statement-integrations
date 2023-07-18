@@ -11,7 +11,7 @@
                     },
                     "host": {
                         "connection": {
-                            "referenceName": "commondataservice-api-raw"
+                            "referenceName": "commondataservice-svcprinc"
                         }
                     },
                     "method": "get",
