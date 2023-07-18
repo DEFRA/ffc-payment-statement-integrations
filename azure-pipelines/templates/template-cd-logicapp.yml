@@ -72,8 +72,8 @@ jobs:
               scriptLocation: 'inlineScript'
               inlineScript: |
                 az resource show --name $(logicAppName) --resource-group  $(resourceGroupName) --resource-type "Microsoft.Web/sites" --query "identity" > tempId.json
-                echo "##vso[task.setvariable variable=logicAppSystemAssignedIdentityObjectId]$(cat tempId.json | grep 'principalId' | awk '{ print $2; }' | tr -d '"')"
-                echo "##vso[task.setvariable variable=logicAppSystemAssignedIdentityTenantId]$(cat tempId.json | grep 'tenantId' | awk '{ print $2; }' | tr -d '"')"
+                echo "##vso[task.setvariable variable=logicAppSystemAssignedIdentityObjectId]$(cat tempId.json | grep 'principalId' | tr -d ',' | awk '{ print $2; }' | tr -d '"')"
+                echo "##vso[task.setvariable variable=logicAppSystemAssignedIdentityTenantId]$(cat tempId.json | grep 'tenantId' | tr -d ',' | awk '{ print $2; }' | tr -d '"')"
                 rm tempId.json
               addSpnToEnvironment: true
               useGlobalConfig: true
@@ -104,7 +104,7 @@ jobs:
               deploymentMode: $(deploymentMode)
 
           - task: ARM Outputs@6
-            displayName: 'ARM Outputs Connections'
+            displayName: 'ARM Outputs Connectors'
             inputs:
               ConnectedServiceNameSelector: 'ConnectedServiceNameARM'
               ConnectedServiceNameARM: ${{ parameters.serviceConnection }}
@@ -112,6 +112,7 @@ jobs:
               whenLastDeploymentIsFailed: 'fail'
 
           - task: AzureCLI@2
+            displayName: 'App Settings for Connectors'
             inputs:
               azureSubscription: ${{ parameters.serviceConnection }}
               scriptType: 'bash'
