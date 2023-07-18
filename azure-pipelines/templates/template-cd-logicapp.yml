@@ -96,7 +96,7 @@ jobs:
                 -serviceBusUserManagedIdentityObjectId $(ServiceBusUserManagedIdentityObjectIdDev)
                 -logicAppSystemAssignedIdentityTenantId $(logicAppSystemAssignedIdentityTenantId)
                 -logicAppSystemAssignedIdentityObjectId $(logicAppSystemAssignedIdentityObjectId)
-                -dataverse_connection_name_api $(dataverseConnectionNameAPI)
+                -connections_dataverse_name_api $(dataverseConnectionNameAPI)
                 -service_principal_client_id $(ServicePrincipalClientId)
                 -service_principal_client_secret $(ServicePrincipalClientSecret)
                 -service_principal_tenant_id $(ServicePrincipalTenantId)
