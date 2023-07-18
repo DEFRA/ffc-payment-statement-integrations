@@ -56,6 +56,7 @@ jobs:
             resourceGroupName: $(resourceGroupName)
             whenLastDeploymentIsFailed: 'fail'
 
+        # These settings cannot be applied as part of the Logic App template (for some reason) so have to be applied afterwards here
         - task: AzureCLI@2
           inputs:
             azureSubscription: ${{ parameters.serviceConnection }}

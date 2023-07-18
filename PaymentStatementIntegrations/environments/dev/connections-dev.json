@@ -48,7 +48,7 @@
           "type": "ManagedServiceIdentity"
       },
       "connection": {
-          "id": "/subscriptions/e5d5cac9-0dba-40df-9670-dabd4c9ad2fd/resourceGroups/DEVRLEINFRG1401/providers/Microsoft.Web/connections/commondataservice"
+          "id": "/subscriptions/e5d5cac9-0dba-40df-9670-dabd4c9ad2fd/resourceGroups/DEVRLEINFRG1401/providers/Microsoft.Web/connections/commondataservice-10"
       },
       "connectionRuntimeUrl": "@appsetting('DATAVERSE_CONNECTION_API_RUNTIMEURL')"
     },
