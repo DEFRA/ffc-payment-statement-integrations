@@ -8,7 +8,7 @@
       "serviceProvider": {
         "id": "/serviceProviders/serviceBus"
       },
-      "displayName": "serviceBusRawAuth",
+      "displayName": "pay-servicebus-sp-raw",
       "connectionRuntimeUrl": "@appsetting('SERVICEBUS_CONNECTION_SP_RUNTIMEURL')"
     },
     "sql": {
@@ -40,6 +40,18 @@
     }
   },
   "managedApiConnections": {
+    "commondataservice": {
+      "api": {
+          "id": "/subscriptions/e5d5cac9-0dba-40df-9670-dabd4c9ad2fd/providers/Microsoft.Web/locations/uksouth/managedApis/commondataservice"
+      },
+      "authentication": {
+          "type": "ManagedServiceIdentity"
+      },
+      "connection": {
+          "id": "/subscriptions/e5d5cac9-0dba-40df-9670-dabd4c9ad2fd/resourceGroups/DEVRLEINFRG1401/providers/Microsoft.Web/connections/commondataservice-1"
+      },
+      "connectionRuntimeUrl": "@appsetting('DATAVERSE_CONNECTION_API_RUNTIMEURL')"
+    },
     "pay-servicebus-api": {
       "api": {
         "id": "/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/providers/Microsoft.Web/locations/uksouth/managedApis/servicebus"

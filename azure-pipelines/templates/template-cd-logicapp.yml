@@ -79,11 +79,6 @@ jobs:
               useGlobalConfig: true
             displayName: 'Read System-Assigned Managed Identity from config'
 
-          - bash: |
-              echo "var1 $(logicAppSystemAssignedIdentityTenantId)"
-              echo "var2 $(logicAppSystemAssignedIdentityObjectId)"
-            displayName: 'Display vars'
-
           - task: AzureResourceGroupDeployment@2
             displayName: 'Deploy Connectors'
             inputs:
@@ -101,6 +96,10 @@ jobs:
                 -serviceBusUserManagedIdentityObjectId $(ServiceBusUserManagedIdentityObjectIdDev)
                 -logicAppSystemAssignedIdentityTenantId $(logicAppSystemAssignedIdentityTenantId)
                 -logicAppSystemAssignedIdentityObjectId $(logicAppSystemAssignedIdentityObjectId)
+                -dataverse_connection_name_api $(dataverseConnectionNameAPI)
+                -service_principal_client_id $(ServicePrincipalClientId)
+                -service_principal_client_secret $(ServicePrincipalClientSecret)
+                -service_principal_tenant_id $(ServicePrincipalTenantId)
               deploymentMode: $(deploymentMode)
 
           - task: ARM Outputs@6
