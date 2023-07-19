@@ -77,7 +77,7 @@ jobs:
                 rm tempId.json
               addSpnToEnvironment: true
               useGlobalConfig: true
-            displayName: 'Read System-Assigned Managed Identity from config'
+            displayName: 'Read System-Assigned Managed Identity'
 
           - task: AzureResourceGroupDeployment@2
             displayName: 'Deploy Connectors'
