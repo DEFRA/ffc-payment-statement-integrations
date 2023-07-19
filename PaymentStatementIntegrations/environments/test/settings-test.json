@@ -40,8 +40,8 @@
     "slotSetting": false
   },
   {
-    "name": "AzureBlob-ConnectionString",
-    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/BlobConnectionStringRLE/2307d444683a445fab0fa600d1d0ef17)",
+    "name": "AzureBlob-rleEndpoint",
+    "value": "https://devrleinfst1401.blob.core.windows.net",
     "slotSetting": false
   }
 ]
