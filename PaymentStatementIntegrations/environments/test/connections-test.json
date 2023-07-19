@@ -4,10 +4,12 @@
       "parameterValues": {
         "connectionString": "@appsetting('ServiceBus-ConnectionString')"
       },
+      "parameterSetName": "connectionString",
       "serviceProvider": {
         "id": "/serviceProviders/serviceBus"
       },
-      "displayName": "serviceBusConnection"
+      "displayName": "pay-servicebus-sp-raw",
+      "connectionRuntimeUrl": "@appsetting('SERVICEBUS_CONNECTION_SP_RUNTIMEURL')"
     },
     "sql": {
       "parameterValues": {
@@ -35,58 +37,32 @@
         "id": "/serviceProviders/azurequeues"
       },
       "displayName": "storageQueueConnection"
-    },
-    "ffcServiceBus": {
-      "parameterValues": {
-        "connectionString": "@appsetting('ffcServiceBus-connectionString')"
-      },
-      "parameterSetName": "connectionString",
-      "serviceProvider": {
-        "id": "/serviceProviders/serviceBus"
-      },
-      "displayName": "ffcServiceBus"
     }
   },
   "managedApiConnections": {
-    "outlook-test": {
+    "dataverse-crm-svcprinc": {
       "api": {
-        "id": "/subscriptions/c1661296-a732-44b9-8458-d1a0dd19815e/providers/Microsoft.Web/locations/uksouth/managedApis/outlook"
+          "id": "/subscriptions/e5d5cac9-0dba-40df-9670-dabd4c9ad2fd/providers/Microsoft.Web/locations/uksouth/managedApis/commondataservice"
+      },
+      "authentication": {
+          "type": "ManagedServiceIdentity"
       },
       "connection": {
-        "id": "/subscriptions/c1661296-a732-44b9-8458-d1a0dd19815e/resourceGroups/rg-uks-01/providers/Microsoft.Web/connections/outlook01"
+          "id": "/subscriptions/e5d5cac9-0dba-40df-9670-dabd4c9ad2fd/resourceGroups/DEVRLEINFRG1401/providers/Microsoft.Web/connections/dataverse-crm-svcprinc"
       },
-      "connectionRuntimeUrl": "@appsetting('Outlook-ManagedConnectionRuntimeUrl')",
-      "authentication": {
-        "type": "Raw",
-        "scheme": "Key",
-        "parameter": "@appsetting('Outlook-ConnectionKey')"
-      }
+      "connectionRuntimeUrl": "@appsetting('DATAVERSE_CONNECTION_API_RUNTIMEURL')"
     },
-    "commondataservice": {
-      "api": {
-        "id": "/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/providers/Microsoft.Web/locations/uksouth/managedApis/commondataservice"
-      },
-      "connection": {
-        "id": "/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/resourceGroups/SNDESTLOGICAPPS-RG/providers/Microsoft.Web/connections/commondataservice-2"
-      },
-      "connectionRuntimeUrl": "https://eca9b9c6c62075fe.03.common.logic-uksouth.azure-apihub.net/apim/commondataservice/a02fe7ab888a411b9c627145835c0e05/",
-      "authentication": {
-        "type": "Raw",
-        "scheme": "Key",
-        "parameter": "@appsetting('commondataservice-connectionKey')"
-      }
-    },
-    "servicebus": {
+    "pay-servicebus-api": {
       "api": {
         "id": "/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/providers/Microsoft.Web/locations/uksouth/managedApis/servicebus"
       },
       "connection": {
-        "id": "/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/resourceGroups/SNDESTLOGICAPPS-RG/providers/Microsoft.Web/connections/servicebus"
+        "id": "/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/resourceGroups/SNDESTLOGICAPPS-RG/providers/Microsoft.Web/connections/servicebus-3"
       },
-      "connectionRuntimeUrl": "https://eca9b9c6c62075fe.03.common.logic-uksouth.azure-apihub.net/apim/servicebus/39c9c857ec114a248441333c62edb3e3/",
       "authentication": {
         "type": "ManagedServiceIdentity"
-      }
+      },
+      "connectionRuntimeUrl": "@appsetting('SERVICEBUS_CONNECTION_API_RUNTIMEURL')"
     }
   }
 }

@@ -9,5 +9,6 @@ variables:
   
   artifactName: 'deploy_artifacts'
 
-  # API Connections - if you change this name, you must change the reference in workflow.json
-  blobConnectionName: 'azureblob'
+  # CSV list of any additional trusted CA certificate roots thumbprints
+  # Palo Alto CSC Root CA, and *.defra.azure.cloud CA
+  trustedRootThumbprints: 'BDB406F8EB50F8A56FCC8B1F95624B84A8A5E607,A8985D3A65E5E5C4B2D7D66D40C6DD2FB19C5436'

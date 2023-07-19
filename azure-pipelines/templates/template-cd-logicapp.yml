@@ -11,6 +11,8 @@ parameters:
   type: string
 - name: connectionsFile
   type: string
+- name: keyVaultName
+  type: string
 
 jobs:
   - deployment: deploy_logicapp_resources
@@ -55,3 +57,71 @@ jobs:
               appName: $(logicAppName)
               package: './unpacked/newArtifact.zip'
               deploymentMethod: 'zipDeploy'
+
+          - task: AzureKeyVault@2
+            inputs:
+              azureSubscription: ${{ parameters.serviceConnection }}
+              KeyVaultName: ${{ parameters.keyVaultName }}
+              SecretsFilter: '*'
+              RunAsPreJob: false
+
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: ${{ parameters.serviceConnection }}
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                az resource show --name $(logicAppName) --resource-group  $(resourceGroupName) --resource-type "Microsoft.Web/sites" --query "identity" > tempId.json
+                echo "##vso[task.setvariable variable=logicAppSystemAssignedIdentityObjectId]$(cat tempId.json | grep 'principalId' | tr -d ',' | awk '{ print $2; }' | tr -d '"')"
+                echo "##vso[task.setvariable variable=logicAppSystemAssignedIdentityTenantId]$(cat tempId.json | grep 'tenantId' | tr -d ',' | awk '{ print $2; }' | tr -d '"')"
+                rm tempId.json
+              addSpnToEnvironment: true
+              useGlobalConfig: true
+            displayName: 'Read System-Assigned Managed Identity'
+
+          - task: AzureResourceGroupDeployment@2
+            displayName: 'Deploy Connectors'
+            inputs:
+              azureSubscription: ${{ parameters.serviceConnection }}
+              resourceGroupName: $(resourceGroupName)
+              location: $(resourceGroupLocation)
+              csmFile: './unpacked/templates/connectors-template.json'
+              overrideParameters:
+                -location $(resourceGroupLocation)
+                -connections_servicebus_name_sp $(servicebusConnectionNameSP)
+                -servicebus_connection_string_sp $(ServiceBusConnectionStringDev)
+                -connections_servicebus_name_api $(servicebusConnectionNameAPI)
+                -servicebus_connection_string_api $(ServiceBusConnectionStringDev)
+                -serviceBusUserManagedIdentityTenantId $(ServiceBusUserManagedIdentityTenantIdDev)
+                -serviceBusUserManagedIdentityObjectId $(ServiceBusUserManagedIdentityObjectIdDev)
+                -logicAppSystemAssignedIdentityTenantId $(logicAppSystemAssignedIdentityTenantId)
+                -logicAppSystemAssignedIdentityObjectId $(logicAppSystemAssignedIdentityObjectId)
+                -connections_dataverse_name_api $(dataverseConnectionNameAPI)
+                -portal_client_id $(PortalClientId)
+                -portal_client_secret $(PortalClientSecret)
+                -portal_tenant_id $(PortalTenantId)
+              deploymentMode: $(deploymentMode)
+
+          - task: ARM Outputs@6
+            displayName: 'ARM Outputs Connectors'
+            inputs:
+              ConnectedServiceNameSelector: 'ConnectedServiceNameARM'
+              ConnectedServiceNameARM: ${{ parameters.serviceConnection }}
+              resourceGroupName: $(resourceGroupName)
+              whenLastDeploymentIsFailed: 'fail'
+
+          - task: AzureCLI@2
+            displayName: 'App Settings for Connectors'
+            inputs:
+              azureSubscription: ${{ parameters.serviceConnection }}
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                az functionapp config appsettings set --name $(logicAppName) --resource-group  $(resourceGroupName) --settings \
+                "BLOB_CONNECTION_RUNTIMEURL=$(blobendpointurl)"
+                az functionapp config appsettings set --name $(logicAppName) --resource-group  $(resourceGroupName) --settings \
+                "SERVICEBUS_CONNECTION_SP_RUNTIMEURL=$(servicebusendpointurlsp)" \
+                "SERVICEBUS_CONNECTION_API_RUNTIMEURL=$(servicebusendpointurlapi)" \
+                "DATAVERSE_CONNECTION_API_RUNTIMEURL=$(dataverseendpointurlapi)"
+              addSpnToEnvironment: true
+              useGlobalConfig: true

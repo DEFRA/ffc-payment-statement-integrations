@@ -25,7 +25,6 @@ stages:
       environment: ${{ variables.envShortName }}
       serviceConnection: ${{ variables.serviceConnection }}
       runId: $(resources.pipeline.cipipeline.runID)
-      keyVaultName: ${{ variables.keyVaultName }}
 
 - stage: TEST
   displayName: 'TEST Deployment'
@@ -37,4 +36,3 @@ stages:
       environment: ${{ variables.envShortName }}
       serviceConnection: ${{ variables.serviceConnection }}
       runId: $(resources.pipeline.cipipeline.runID)
-      keyVaultName: ${{ variables.keyVaultName }}
