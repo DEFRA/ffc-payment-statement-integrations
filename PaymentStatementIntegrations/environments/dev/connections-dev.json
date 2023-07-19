@@ -40,7 +40,7 @@
     }
   },
   "managedApiConnections": {
-    "commondataservice-svcprinc": {
+    "dataverse-crm-svcprinc": {
       "api": {
           "id": "/subscriptions/e5d5cac9-0dba-40df-9670-dabd4c9ad2fd/providers/Microsoft.Web/locations/uksouth/managedApis/commondataservice"
       },

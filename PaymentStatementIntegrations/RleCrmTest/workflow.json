@@ -11,7 +11,7 @@
                     },
                     "host": {
                         "connection": {
-                            "referenceName": "commondataservice-svcprinc"
+                            "referenceName": "dataverse-crm-svcprinc"
                         }
                     },
                     "method": "get",

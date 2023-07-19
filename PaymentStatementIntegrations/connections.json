@@ -67,7 +67,7 @@
         "parameter": "@appsetting('servicebus-connectionKey')"
       }
     },
-    "commondataservice-svcprinc": {
+    "dataverse-crm-svcprinc": {
       "api": {
         "id": "/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/providers/Microsoft.Web/locations/uksouth/managedApis/commondataservice"
       },

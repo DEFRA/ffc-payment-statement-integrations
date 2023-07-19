@@ -52,4 +52,4 @@ variables:
   servicebusConnectionNameAPI: 'pay-servicebus-api'
   servicebusNamespaceAPI: 'SNDFFCINFSB1001.servicebus.windows.net'
   
-  dataverseConnectionNameAPI: 'dataverse-crm-sp'
+  dataverseConnectionNameAPI: 'dataverse-crm-svcprinc'
