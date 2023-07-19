@@ -22,9 +22,11 @@
     },
     "azureBlobRle": {
       "displayName": "storageBlobConnectionRle",
-      "parameterSetName": "ManagedServiceIdentity",
       "parameterValues": {
-          "blobStorageEndpoint": "@appsetting('AzureBlob_rleEndpoint')"
+          "blobStorageEndpoint": "@appsetting('AzureBlob_rleEndpoint')",
+          "authProvider": {
+            "Type": "ManagedServiceIdentity"
+          }
       },
       "serviceProvider": {
           "id": "/serviceProviders/AzureBlob"

@@ -40,7 +40,7 @@
     "slotSetting": false
   },
   {
-    "name": "AzureBlob-rleEndpoint",
+    "name": "AzureBlob_rleEndpoint",
     "value": "https://devrleinfst1401.blob.core.windows.net",
     "slotSetting": false
   }
