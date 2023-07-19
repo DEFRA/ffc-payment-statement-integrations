@@ -118,8 +118,6 @@ jobs:
               scriptLocation: 'inlineScript'
               inlineScript: |
                 az functionapp config appsettings set --name $(logicAppName) --resource-group  $(resourceGroupName) --settings \
-                "BLOB_CONNECTION_RUNTIMEURL=$(blobendpointurl)"
-                az functionapp config appsettings set --name $(logicAppName) --resource-group  $(resourceGroupName) --settings \
                 "SERVICEBUS_CONNECTION_SP_RUNTIMEURL=$(servicebusendpointurlsp)" \
                 "SERVICEBUS_CONNECTION_API_RUNTIMEURL=$(servicebusendpointurlapi)" \
                 "DATAVERSE_CONNECTION_API_RUNTIMEURL=$(dataverseendpointurlapi)"
