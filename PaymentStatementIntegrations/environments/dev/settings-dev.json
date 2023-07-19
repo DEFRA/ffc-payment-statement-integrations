@@ -38,5 +38,10 @@
     "name": "SharepointClientSecret",
     "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/SharepointClientSecret/c9f4d737da204ecf8f2d8d39235e0abd)",
     "slotSetting": false
+  },
+  {
+    "name": "AzureBlob-ConnectionString",
+    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/BlobConnectionStringRLE/2307d444683a445fab0fa600d1d0ef17)",
+    "slotSetting": false
   }
 ]
