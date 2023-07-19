@@ -10,18 +10,33 @@
     "slotSetting": false
   },
   {
-    "name": "ClientId",
-    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/ServicePrincipalClientId/f86ba51f3a494d26bf43046597685f42)",
+    "name": "PortalClientId",
+    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/PortalClientId/dfbef37c3c824044a2201543c33dc0fd)",
     "slotSetting": false
   },
   {
-    "name": "TenantId",
-    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/ServicePrincipalTenantId/097cf1a829e14471ad073104f501ecad)",
+    "name": "PortalTenantId",
+    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/PortalTenantId/8d65bddf48314b9ab9a7dfb112fdfe10)",
     "slotSetting": false
   },
   {
-    "name": "ClientSecret",
-    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/ServicePrincipalClientSecret/b12fc9032c984f4da55619f5f604972f)",
+    "name": "PortalClientSecret",
+    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/PortalClientSecret/612179932d9c481aaa7531704488102a)",
+    "slotSetting": false
+  },
+  {
+    "name": "SharepointClientId",
+    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/SharepointClientId/7e38c5976df94e0d80e045db14e30ff9)",
+    "slotSetting": false
+  },
+  {
+    "name": "SharepointTenantId",
+    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/SharepointTenantId/e27fd505f76f44b6b1f98195b68e2c8d)",
+    "slotSetting": false
+  },
+  {
+    "name": "SharepointClientSecret",
+    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/SharepointClientSecret/c9f4d737da204ecf8f2d8d39235e0abd)",
     "slotSetting": false
   }
 ]

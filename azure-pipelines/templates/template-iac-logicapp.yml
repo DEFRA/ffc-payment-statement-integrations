@@ -7,8 +7,6 @@ parameters:
   type: string
 - name: runId
   type: string
-- name: keyVaultName
-  type: string
 
 jobs:
 - deployment: deploy_logicapp_resources
@@ -58,50 +56,16 @@ jobs:
             resourceGroupName: $(resourceGroupName)
             whenLastDeploymentIsFailed: 'fail'
 
-        - task: AzureKeyVault@2
-          inputs:
-            azureSubscription: ${{ parameters.serviceConnection }}
-            KeyVaultName: ${{ parameters.keyVaultName }}
-            SecretsFilter: '*'
-            RunAsPreJob: false
-
-        - task: AzureResourceGroupDeployment@2
-          displayName: 'Deploy Connectors'
-          inputs:
-            azureSubscription: ${{ parameters.serviceConnection }}
-            resourceGroupName: $(resourceGroupName)
-            location: $(resourceGroupLocation)
-            csmFile: './unpacked/templates/connectors-template.json'
-            overrideParameters:
-              -location $(resourceGroupLocation)
-              -connections_servicebus_name_sp $(servicebusConnectionNameSP)
-              -servicebus_connection_string_sp $(ServiceBusConnectionStringDev)
-              -connections_servicebus_name_api $(servicebusConnectionNameAPI)
-              -servicebus_connection_string_api $(ServiceBusConnectionStringDev)
-              -serviceBusUserManagedIdentityTenantId $(ServiceBusUserManagedIdentityTenantIdDev)
-              -serviceBusUserManagedIdentityObjectId $(ServiceBusUserManagedIdentityObjectIdDev)
-              -logicAppSystemAssignedIdentityTenantId $(logicAppSystemAssignedIdentityTenantId)
-              -logicAppSystemAssignedIdentityObjectId $(logicAppSystemAssignedIdentityObjectId)
-            deploymentMode: $(deploymentMode)
-
-        - task: ARM Outputs@6
-          displayName: 'ARM Outputs Connections'
-          inputs:
-            ConnectedServiceNameSelector: 'ConnectedServiceNameARM'
-            ConnectedServiceNameARM: ${{ parameters.serviceConnection }}
-            resourceGroupName: $(resourceGroupName)
-            whenLastDeploymentIsFailed: 'fail'
-
+        # These settings cannot be applied as part of the Logic App template (for some reason) so have to be applied afterwards here
         - task: AzureCLI@2
           inputs:
             azureSubscription: ${{ parameters.serviceConnection }}
             scriptType: 'bash'
             scriptLocation: 'inlineScript'
             inlineScript: |
-              az functionapp config appsettings set --name $(LAname) --resource-group  $(resourceGroupName) --settings "BLOB_CONNECTION_RUNTIMEURL=$(blobendpointurl)"
-              az functionapp config appsettings set --name $(LAname) --resource-group  $(resourceGroupName) --settings "WORKFLOWS_RESOURCE_GROUP_NAME=$(resourceGroupName)"
-              az functionapp config appsettings set --name $(LAname) --resource-group  $(resourceGroupName) --settings "SERVICEBUS_CONNECTION_SP_RUNTIMEURL=$(servicebusendpointurlsp)"
-              az functionapp config appsettings set --name $(LAname) --resource-group  $(resourceGroupName) --settings "SERVICEBUS_CONNECTION_API_RUNTIMEURL=$(servicebusendpointurlapi)"
+              az functionapp config appsettings set --name $(LAname) --resource-group  $(resourceGroupName) --settings \
+              "WORKFLOWS_RESOURCE_GROUP_NAME=$(resourceGroupName)" \
+              "WEBSITE_LOAD_ROOT_CERTIFICATES=$(trustedRootThumbprints)"
             addSpnToEnvironment: true
             useGlobalConfig: true
 

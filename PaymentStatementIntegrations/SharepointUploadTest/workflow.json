@@ -21,12 +21,12 @@
             },
             "HTTP_Get_Token": {
                 "inputs": {
-                    "body": "client_id=@{parameters('ClientId')}%40@{parameters('TenantId')}\n&resource=00000003-0000-0ff1-ce00-000000000000/defradev.sharepoint.com%40@{parameters('TenantId')}\n&grant_type=client_credentials\n&client_secret=@{encodeUriComponent(parameters('ClientSecret'))}",
+                    "body": "client_id=@{parameters('SharepointClientId')}%40@{parameters('SharepointTenantId')}\n&resource=00000003-0000-0ff1-ce00-000000000000/defradev.sharepoint.com%40@{parameters('SharepointTenantId')}\n&grant_type=client_credentials\n&client_secret=@{encodeUriComponent(parameters('SharepointClientSecret'))}",
                     "headers": {
                         "Content-Type": "application/x-www-form-urlencoded"
                     },
                     "method": "POST",
-                    "uri": "https://accounts.accesscontrol.windows.net/@{parameters('TenantId')}/tokens/OAuth/2/"
+                    "uri": "https://accounts.accesscontrol.windows.net/@{parameters('SharepointTenantId')}/tokens/OAuth/2/"
                 },
                 "runAfter": {},
                 "runtimeConfiguration": {

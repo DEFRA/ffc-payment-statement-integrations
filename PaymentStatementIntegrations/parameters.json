@@ -3,16 +3,28 @@
     "type": "String",
     "value": "@appsetting('PdfServiceUrl')"
   },
-  "ClientId": {
+  "PortalClientId": {
     "type": "String",
-    "value": "@appsetting('ClientId')"
+    "value": "@appsetting('PortalClientId')"
   },
-  "TenantId": {
+  "PortalTenantId": {
     "type": "String",
-    "value": "@appsetting('TenantId')"
+    "value": "@appsetting('PortalTenantId')"
   },
-  "ClientSecret": {
+  "PortalClientSecret": {
     "type": "String",
-    "value": "@appsetting('ClientSecret')"
+    "value": "@appsetting('PortalClientSecret')"
+  },
+  "SharepointClientId": {
+    "type": "String",
+    "value": "@appsetting('SharepointClientId')"
+  },
+  "SharepointTenantId": {
+    "type": "String",
+    "value": "@appsetting('SharepointTenantId')"
+  },
+  "SharepointClientSecret": {
+    "type": "String",
+    "value": "@appsetting('SharepointClientSecret')"
   }
 }
