@@ -32,16 +32,13 @@
         "connections_dataverse_name_api": {
             "type": "string"
         },
-        "service_principal_client_id": {
+        "portal_client_id": {
             "type": "securestring"
         },
-        "service_principal_client_secret": {
+        "portal_client_secret": {
             "type": "securestring"
         },
-        "service_principal_tenant_id": {
-            "type": "securestring"
-        },
-        "service_principal_object_id": {
+        "portal_tenant_id": {
             "type": "securestring"
         }
     },
@@ -97,9 +94,9 @@
             "properties": {
                 "displayName": "[parameters('connections_dataverse_name_api')]",
                 "parameterValues": {
-                    "token:clientId": "[parameters('service_principal_client_id')]",
-                    "token:clientSecret": "[parameters('service_principal_client_secret')]",
-                    "token:TenantId": "[parameters('service_principal_tenant_id')]",
+                    "token:clientId": "[parameters('portal_client_id')]",
+                    "token:clientSecret": "[parameters('portal_client_secret')]",
+                    "token:TenantId": "[parameters('portal_tenant_id')]",
                     "token:grantType": "client_credentials"
                 },
                 "api": {

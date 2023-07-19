@@ -63,8 +63,9 @@ jobs:
             scriptType: 'bash'
             scriptLocation: 'inlineScript'
             inlineScript: |
-              az functionapp config appsettings set --name $(LAname) --resource-group  $(resourceGroupName) --settings "WORKFLOWS_RESOURCE_GROUP_NAME=$(resourceGroupName)"
-              az functionapp config appsettings set --name $(LAname) --resource-group  $(resourceGroupName) --settings "WEBSITE_LOAD_ROOT_CERTIFICATES=$(trustedRootThumbprints)"
+              az functionapp config appsettings set --name $(LAname) --resource-group  $(resourceGroupName) --settings \
+              "WORKFLOWS_RESOURCE_GROUP_NAME=$(resourceGroupName)" \
+              "WEBSITE_LOAD_ROOT_CERTIFICATES=$(trustedRootThumbprints)"
             addSpnToEnvironment: true
             useGlobalConfig: true
 
