@@ -93,7 +93,6 @@ jobs:
       uses: azure/CLI@v1
       with:
         inlineScript: |
-          az functionapp config appsettings set --name ${{ steps.ladeploy.outputs.LAname }} --resource-group  ${{ env.RESOURCE_GROUP_NAME }} --settings "BLOB_CONNECTION_RUNTIMEURL=${{ steps.conndeploy.outputs.blobendpointurl }}"
           az functionapp config appsettings set --name ${{ steps.ladeploy.outputs.LAname }} --resource-group  ${{ env.RESOURCE_GROUP_NAME }} --settings "WORKFLOWS_RESOURCE_GROUP_NAME=${{ env.RESOURCE_GROUP_NAME }}"
 
     - name: Logout from Azure

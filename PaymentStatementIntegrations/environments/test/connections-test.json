@@ -20,14 +20,17 @@
       },
       "displayName": "sqlConnection"
     },
-    "azureBlob": {
+    "azureBlobRle": {
+      "displayName": "storageBlobConnectionRle",
       "parameterValues": {
-        "connectionString": "@appsetting('AzureBlob-ConnectionString')"
+          "blobStorageEndpoint": "@appsetting('AzureBlob_rleEndpoint')",
+          "authProvider": {
+            "Type": "ManagedServiceIdentity"
+          }
       },
       "serviceProvider": {
-        "id": "/serviceProviders/AzureBlob"
-      },
-      "displayName": "storageBlobConnection"
+          "id": "/serviceProviders/AzureBlob"
+      }
     },
     "azureQueue": {
       "parameterValues": {

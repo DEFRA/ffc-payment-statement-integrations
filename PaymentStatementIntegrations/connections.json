@@ -19,7 +19,7 @@
       },
       "displayName": "sqlConnection"
     },
-    "azureBlob": {
+    "azureBlobRle": {
       "parameterValues": {
         "connectionString": "@appsetting('AzureBlob-ConnectionString')"
       },
