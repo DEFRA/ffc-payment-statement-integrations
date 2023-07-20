@@ -78,11 +78,10 @@
                 "type": "ParseJson"
             }
         },
-        "contentVersion": "1.0.0.0",
+        "contentVersion": "1.1.0.0",
         "outputs": {},
         "triggers": {
             "When_a_HTTP_request_is_received": {
-                "description": "Version: 0.1.0",
                 "kind": "Http",
                 "type": "Request"
             }
