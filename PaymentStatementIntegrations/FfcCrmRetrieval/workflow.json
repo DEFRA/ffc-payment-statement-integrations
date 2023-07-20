@@ -141,6 +141,7 @@
         "outputs": {},
         "triggers": {
             "HTTP_GET": {
+                "description": "Version: 0.1.0",
                 "type": "Request",
                 "kind": "Http",
                 "inputs": {

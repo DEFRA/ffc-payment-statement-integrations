@@ -203,6 +203,7 @@
         "outputs": {},
         "triggers": {
             "When_messages_are_available_in_a_topic_subscription_(peek-lock)": {
+                "description": "Version: 0.1.0",
                 "type": "ServiceProvider",
                 "inputs": {
                     "parameters": {
