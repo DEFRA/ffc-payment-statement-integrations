@@ -48,5 +48,10 @@
     "name": "AdLoginBaseUrl",
     "value": "https://login.microsoftonline.com",
     "slotSetting": false
+  },
+  {
+    "name": "CrmBaseUrl",
+    "value": "https://rpadevv9.crm4.dynamics.com",
+    "slotSetting": false
   }
 ]
