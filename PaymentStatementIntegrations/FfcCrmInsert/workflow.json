@@ -434,33 +434,11 @@
                                     },
                                     "trackedProperties": {}
                                 },
-                                "Dead-letter_the_message_invalid_year": {
-                                    "type": "ServiceProvider",
-                                    "inputs": {
-                                        "parameters": {
-                                            "messageId": "@triggerBody()?['messageId']",
-                                            "deadLetterReason": "Workflow failed to complete - invalid year",
-                                            "deadLetterErrorDescription": "@variables('ProgressText')"
-                                        },
-                                        "serviceProviderConfiguration": {
-                                            "connectionName": "serviceBus",
-                                            "operationId": "deadLetterMessage",
-                                            "serviceProviderId": "/serviceProviders/serviceBus"
-                                        }
-                                    },
+                                "Throw_error_invalid_year": {
+                                    "type": "Compose",
+                                    "inputs": "@int('__ERROR_INVALID_YEAR__')",
                                     "runAfter": {
                                         "Append_progress_invalid_year": [
-                                            "SUCCEEDED"
-                                        ]
-                                    }
-                                },
-                                "Terminate_invalid_year": {
-                                    "type": "Terminate",
-                                    "inputs": {
-                                        "runStatus": "Succeeded"
-                                    },
-                                    "runAfter": {
-                                        "Dead-letter_the_message_invalid_year": [
                                             "SUCCEEDED"
                                         ]
                                     }
@@ -497,33 +475,11 @@
                                         "value": ": invalid org id"
                                     }
                                 },
-                                "Dead-letter_the_message_invalid_org": {
-                                    "type": "ServiceProvider",
-                                    "inputs": {
-                                        "parameters": {
-                                            "messageId": "@triggerBody()?['messageId']",
-                                            "deadLetterReason": "Workflow failed to complete - invalid org id",
-                                            "deadLetterErrorDescription": "@variables('ProgressText')"
-                                        },
-                                        "serviceProviderConfiguration": {
-                                            "connectionName": "serviceBus",
-                                            "operationId": "deadLetterMessage",
-                                            "serviceProviderId": "/serviceProviders/serviceBus"
-                                        }
-                                    },
+                                "Throw_error_invalid_org": {
+                                    "type": "Compose",
+                                    "inputs": "@int('__ERROR_INVALID_ORG__')",
                                     "runAfter": {
                                         "Append_progress_invalid_org": [
-                                            "SUCCEEDED"
-                                        ]
-                                    }
-                                },
-                                "Terminate_invalid_org": {
-                                    "type": "Terminate",
-                                    "inputs": {
-                                        "runStatus": "Succeeded"
-                                    },
-                                    "runAfter": {
-                                        "Dead-letter_the_message_invalid_org": [
                                             "SUCCEEDED"
                                         ]
                                     }
@@ -590,33 +546,11 @@
                                         "value": ": Invalid JSON: @{triggerBody()?['contentData']}"
                                     }
                                 },
-                                "Dead-letter_the_message_invalid_JSON": {
-                                    "type": "ServiceProvider",
-                                    "inputs": {
-                                        "parameters": {
-                                            "messageId": "@triggerBody()?['messageId']",
-                                            "deadLetterReason": "Workflow failed to complete - invalid JSON",
-                                            "deadLetterErrorDescription": "@variables('ProgressText')"
-                                        },
-                                        "serviceProviderConfiguration": {
-                                            "connectionName": "serviceBus",
-                                            "operationId": "deadLetterMessage",
-                                            "serviceProviderId": "/serviceProviders/serviceBus"
-                                        }
-                                    },
+                                "Throw_error_invalid_JSON": {
+                                    "type": "Compose",
+                                    "inputs": "@int('__ERROR_INVALID_JSON__')",
                                     "runAfter": {
                                         "Append_progress_invalid_JSON": [
-                                            "SUCCEEDED"
-                                        ]
-                                    }
-                                },
-                                "Terminate_invalid_JSON": {
-                                    "type": "Terminate",
-                                    "inputs": {
-                                        "runStatus": "Succeeded"
-                                    },
-                                    "runAfter": {
-                                        "Dead-letter_the_message_invalid_JSON": [
                                             "SUCCEEDED"
                                         ]
                                     }
@@ -767,7 +701,74 @@
                 "trackedProperties": {},
                 "splitOn": "@triggerOutputs()?['body']"
             }
-       }
+        },
+        "parameters": {
+            "PdfServiceUrl": {
+                "type": "String",
+                "value": "@appsetting('PdfServiceUrl')",
+                "defaultValue": "@appsetting('PdfServiceUrl')"
+            },
+            "CrmBaseUrl": {
+                "type": "String",
+                "value": "@appsetting('CrmBaseUrl')",
+                "defaultValue": "@appsetting('CrmBaseUrl')"
+            },
+            "AdLoginBaseUrl": {
+                "type": "String",
+                "value": "@appsetting('AdLoginBaseUrl')",
+                "defaultValue": "@appsetting('AdLoginBaseUrl')"
+            },
+            "SharepointBaseUrl": {
+                "type": "String",
+                "value": "@appsetting('SharepointBaseUrl')",
+                "defaultValue": "@appsetting('SharepointBaseUrl')"
+            },
+            "PortalClientId": {
+                "type": "String",
+                "value": "@appsetting('PortalClientId')",
+                "defaultValue": "@appsetting('PortalClientId')"
+            },
+            "PortalTenantId": {
+                "type": "String",
+                "value": "@appsetting('PortalTenantId')",
+                "defaultValue": "@appsetting('PortalTenantId')"
+            },
+            "PortalClientSecret": {
+                "type": "String",
+                "value": "@appsetting('PortalClientSecret')",
+                "defaultValue": "@appsetting('PortalClientSecret')"
+            },
+            "SharepointClientId": {
+                "type": "String",
+                "value": "@appsetting('SharepointClientId')",
+                "defaultValue": "@appsetting('SharepointClientId')"
+            },
+            "SharepointTenantId": {
+                "type": "String",
+                "value": "@appsetting('SharepointTenantId')",
+                "defaultValue": "@appsetting('SharepointTenantId')"
+            },
+            "SharepointClientSecret": {
+                "type": "String",
+                "value": "@appsetting('SharepointClientSecret')",
+                "defaultValue": "@appsetting('SharepointClientSecret')"
+            },
+            "UnknownContact": {
+                "type": "String",
+                "value": "65879706-0798-e411-9412-00155deb6486",
+                "defaultValue": "65879706-0798-e411-9412-00155deb6486"
+            },
+            "FfcRetrievalWorkflowSasToken": {
+                "type": "String",
+                "value": "@appsetting('FfcRetrievalWorkflowSasToken')",
+                "defaultValue": "@appsetting('FfcRetrievalWorkflowSasToken')"
+            },
+            "FfcRetrievalWorkflowEndpoint": {
+                "type": "String",
+                "value": "@appsetting('FfcRetrievalWorkflowEndpoint')",
+                "defaultValue": "@appsetting('FfcRetrievalWorkflowEndpoint')"
+            }
+        }
     },
     "kind": "Stateful"
 }
