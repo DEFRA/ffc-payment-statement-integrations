@@ -700,38 +700,6 @@
                 },
                 "splitOn": "@triggerOutputs()?['body']"
             }
-        },
-        "parameters": {
-            "CrmBaseUrl": {
-                "type": "String",
-                "value": "@appsetting('CrmBaseUrl')",
-                "defaultValue": "@appsetting('CrmBaseUrl')"
-            },
-            "AdLoginBaseUrl": {
-                "type": "String",
-                "value": "@appsetting('AdLoginBaseUrl')",
-                "defaultValue": "@appsetting('AdLoginBaseUrl')"
-            },
-            "PortalClientId": {
-                "type": "String",
-                "value": "@appsetting('PortalClientId')",
-                "defaultValue": "@appsetting('PortalClientId')"
-            },
-            "PortalTenantId": {
-                "type": "String",
-                "value": "@appsetting('PortalTenantId')",
-                "defaultValue": "@appsetting('PortalTenantId')"
-            },
-            "PortalClientSecret": {
-                "type": "String",
-                "value": "@appsetting('PortalClientSecret')",
-                "defaultValue": "@appsetting('PortalClientSecret')"
-            },
-            "UnknownContact": {
-                "type": "String",
-                "value": "65879706-0798-e411-9412-00155deb6486",
-                "defaultValue": "65879706-0798-e411-9412-00155deb6486"
-            }
         }
     },
     "kind": "Stateful"
