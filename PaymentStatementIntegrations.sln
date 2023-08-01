@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentStatementIntegration
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentStatementIntegrations.Tests", "PaymentStatementIntegrations.Tests\PaymentStatementIntegrations.Tests.csproj", "{86D141CA-C870-4D7A-AF7D-3CA2A6A8031A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureFunctionGovNotify", "AzureFunctionGovNotify\AzureFunctionGovNotify.csproj", "{1C760BD1-3D43-4E13-910B-18D1ED710944}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{86D141CA-C870-4D7A-AF7D-3CA2A6A8031A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{86D141CA-C870-4D7A-AF7D-3CA2A6A8031A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{86D141CA-C870-4D7A-AF7D-3CA2A6A8031A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C760BD1-3D43-4E13-910B-18D1ED710944}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C760BD1-3D43-4E13-910B-18D1ED710944}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C760BD1-3D43-4E13-910B-18D1ED710944}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C760BD1-3D43-4E13-910B-18D1ED710944}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
