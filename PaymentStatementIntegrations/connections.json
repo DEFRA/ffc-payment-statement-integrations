@@ -66,20 +66,6 @@
         "scheme": "Key",
         "parameter": "@appsetting('servicebus-connectionKey')"
       }
-    },
-    "dataverse-crm-svcprinc": {
-      "api": {
-        "id": "/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/providers/Microsoft.Web/locations/uksouth/managedApis/commondataservice"
-      },
-      "connection": {
-        "id": "/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/resourceGroups/SNDESTLOGICAPPS-RG/providers/Microsoft.Web/connections/commondataservice"
-      },
-      "connectionRuntimeUrl": "https://eca9b9c6c62075fe.03.common.logic-uksouth.azure-apihub.net/apim/commondataservice/fa5896d15096490ba94414bf55d86b31/",
-      "authentication": {
-        "type": "Raw",
-        "scheme": "Key",
-        "parameter": "@appsetting('commondataservice-connectionKey')"
-      }
     }
   }
 }

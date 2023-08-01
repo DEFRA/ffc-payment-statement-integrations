@@ -29,9 +29,6 @@
         "servicebus_connection_string_api": {
             "type": "securestring"
         },
-        "connections_dataverse_name_api": {
-            "type": "string"
-        },
         "portal_client_id": {
             "type": "securestring"
         },
@@ -86,25 +83,6 @@
             }
         },
         {
-            "type": "Microsoft.Web/connections",
-            "apiVersion": "2018-07-01-preview",
-            "name": "[parameters('connections_dataverse_name_api')]",
-            "location": "[parameters('location')]",
-            "kind": "V2",
-            "properties": {
-                "displayName": "[parameters('connections_dataverse_name_api')]",
-                "parameterValues": {
-                    "token:clientId": "[parameters('portal_client_id')]",
-                    "token:clientSecret": "[parameters('portal_client_secret')]",
-                    "token:TenantId": "[parameters('portal_tenant_id')]",
-                    "token:grantType": "client_credentials"
-                },
-                "api": {
-                    "id": "[concat('/subscriptions/',subscription().subscriptionId,'/providers/Microsoft.Web/locations/',parameters('location'),'/managedApis/commondataservice')]"
-                }
-            }
-        },
-        {
             "type": "Microsoft.Web/connections/accessPolicies",
             "apiVersion": "2016-06-01",
             "name": "[concat(parameters('connections_servicebus_name_sp'),'/',parameters('serviceBusUserManagedIdentityObjectId'))]",
@@ -139,24 +117,6 @@
                     }
                 }
             }
-        },
-        {
-            "type": "Microsoft.Web/connections/accessPolicies",
-            "apiVersion": "2016-06-01",
-            "name": "[concat(parameters('connections_dataverse_name_api'),'/',parameters('serviceBusUserManagedIdentityObjectId'))]",
-            "location": "[parameters('location')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Web/connections', parameters('connections_dataverse_name_api'))]"
-            ],
-            "properties": {
-                "principal": {
-                    "type": "ActiveDirectory",
-                    "identity": {
-                        "tenantId": "[parameters('logicAppSystemAssignedIdentityTenantId')]",
-                        "objectId": "[parameters('logicAppSystemAssignedIdentityObjectId')]"
-                    }
-                }
-            }
         }
     ],
     "outputs": {
@@ -167,10 +127,6 @@
       "servicebusendpointurlapi": {
         "type": "string",
         "value": "[reference(resourceId('Microsoft.Web/connections', parameters('connections_servicebus_name_api')),'2016-06-01', 'full').properties.connectionRuntimeUrl]"
-      },
-      "dataverseendpointurlapi": {
-        "type": "string",
-        "value": "[reference(resourceId('Microsoft.Web/connections', parameters('connections_dataverse_name_api')),'2016-06-01', 'full').properties.connectionRuntimeUrl]"
       }
     }
   }
