@@ -147,6 +147,20 @@
                     "method": "GET"
                 }
             }
+        },
+        "parameters": {
+            "PdfServiceUrl": {
+              "type": "String",
+              "value": "@appsetting('PdfServiceUrl')"
+            },
+            "FfcRetrievalWorkflowSasToken": {
+              "type": "String",
+              "value": "@appsetting('FfcRetrievalWorkflowSasToken')"
+            },
+            "FfcRetrievalWorkflowEndpoint": {
+              "type": "String",
+              "value": "@appsetting('FfcRetrievalWorkflowEndpoint')"
+            }
         }
     },
     "kind": "Stateful"
