@@ -90,8 +90,6 @@ jobs:
                 -location $(resourceGroupLocation)
                 -connections_servicebus_name_sp $(servicebusConnectionNameSP)
                 -servicebus_connection_string_sp $(ServiceBusConnectionStringDev)
-                -connections_servicebus_name_api $(servicebusConnectionNameAPI)
-                -servicebus_connection_string_api $(ServiceBusConnectionStringDev)
                 -serviceBusUserManagedIdentityTenantId $(ServiceBusUserManagedIdentityTenantIdDev)
                 -serviceBusUserManagedIdentityObjectId $(ServiceBusUserManagedIdentityObjectIdDev)
                 -logicAppSystemAssignedIdentityTenantId $(logicAppSystemAssignedIdentityTenantId)
@@ -117,7 +115,6 @@ jobs:
               scriptLocation: 'inlineScript'
               inlineScript: |
                 az functionapp config appsettings set --name $(logicAppName) --resource-group  $(resourceGroupName) --settings \
-                "SERVICEBUS_CONNECTION_SP_RUNTIMEURL=$(servicebusendpointurlsp)" \
-                "SERVICEBUS_CONNECTION_API_RUNTIMEURL=$(servicebusendpointurlapi)"
+                "SERVICEBUS_CONNECTION_SP_RUNTIMEURL=$(servicebusendpointurlsp)"
               addSpnToEnvironment: true
               useGlobalConfig: true

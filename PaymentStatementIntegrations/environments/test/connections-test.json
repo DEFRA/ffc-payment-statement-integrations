@@ -43,17 +43,5 @@
     }
   },
   "managedApiConnections": {
-    "pay-servicebus-api": {
-      "api": {
-        "id": "/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/providers/Microsoft.Web/locations/uksouth/managedApis/servicebus"
-      },
-      "connection": {
-        "id": "/subscriptions/d49bcc71-d9a8-400b-9385-0015251d90c5/resourceGroups/SNDESTLOGICAPPS-RG/providers/Microsoft.Web/connections/servicebus-3"
-      },
-      "authentication": {
-        "type": "ManagedServiceIdentity"
-      },
-      "connectionRuntimeUrl": "@appsetting('SERVICEBUS_CONNECTION_API_RUNTIMEURL')"
-    }
   }
 }

@@ -48,7 +48,4 @@ variables:
   # The following are in KeyVault secrets
   # - serviceBusUserManagedIdentityTenantId - may be in a different tenant to the Logic App
   # - serviceBusUserManagedIdentityObjectId
-
-  servicebusConnectionNameAPI: 'pay-servicebus-api'
-  servicebusNamespaceAPI: 'SNDFFCINFSB1001.servicebus.windows.net'
   

@@ -317,7 +317,7 @@
                             "headers": {
                                 "Content-Type": "application/x-www-form-urlencoded"
                             },
-                            "body": "grant_type=client_credentials\n&client_id=@{parameters('PortalClientId')}&\nclient_secret=@{encodeUriComponent(parameters('PortalClientSecret'))}&\nresource=@{encodeUriComponent(parameters('CrmBaseUrl'))}"
+                            "body": "grant_type=client_credentials\n&client_id=@{parameters('PortalClientId')}\n&client_secret=@{encodeUriComponent(parameters('PortalClientSecret'))}\n&resource=@{encodeUriComponent(parameters('CrmBaseUrl'))}"
                         },
                         "runAfter": {
                             "If_JSON_is_valid": [
