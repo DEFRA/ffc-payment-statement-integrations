@@ -78,7 +78,7 @@ jobs:
             scriptType: 'bash'
             scriptLocation: 'inlineScript'
             inlineScript: |
-              az webapp config set set --name $(LAname) --resource-group  $(resourceGroupName) --generic-configurations '{"vnetPrivatePortsCount": 2}'
+              az webapp config set --name $(LAname) --resource-group  $(resourceGroupName) --generic-configurations '{"vnetPrivatePortsCount": 2}'
             addSpnToEnvironment: true
             useGlobalConfig: true
 
