@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 
 namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
 {
@@ -43,11 +44,35 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
                 testRunner.AddApiMocks = (request) =>
                 {
                     HttpResponseMessage mockedResponse = new HttpResponseMessage();
-                    if (request?.RequestUri != null && request.RequestUri.AbsolutePath.Contains("/api/data/v9.1/") && request.Method == HttpMethod.Post)
+                    if (request?.RequestUri != null && request.RequestUri.AbsolutePath.Contains("/oauth2/token") && request.Method == HttpMethod.Post)
                     {
                         mockedResponse.RequestMessage = request;
                         mockedResponse.StatusCode = HttpStatusCode.OK;
-                        mockedResponse.Content = ContentHelper.CreatePlainStringContent("success");
+                        mockedResponse.Content = ValidAuthToken();
+                    }
+                    else if (request?.RequestUri != null && request.RequestUri.AbsolutePath.Contains("/api/data/v9.2/accounts") && request.Method == HttpMethod.Get)
+                    {
+                        mockedResponse.RequestMessage = request;
+                        mockedResponse.StatusCode = HttpStatusCode.OK;
+                        mockedResponse.Content = ValidOrgLookup();
+                    }
+                    else if (request?.RequestUri != null && request.RequestUri.AbsolutePath.Contains("/api/data/v9.2/incidents") && request.Method == HttpMethod.Post)
+                    {
+                        mockedResponse.RequestMessage = request;
+                        mockedResponse.StatusCode = HttpStatusCode.OK;
+                        mockedResponse.Content = ValidCreateCase();
+                    }
+                    else if (request?.RequestUri != null && request.RequestUri.AbsolutePath.Contains("/api/data/v9.2/rpa_customernotifications") && request.Method == HttpMethod.Post)
+                    {
+                        mockedResponse.RequestMessage = request;
+                        mockedResponse.StatusCode = HttpStatusCode.OK;
+                        mockedResponse.Content = ValidCreateNotification();
+                    }
+                    else if (request?.RequestUri != null && request.RequestUri.AbsolutePath.Contains("/api/data/v9.2/rpa_activitymetadatas") && request.Method == HttpMethod.Post)
+                    {
+                        mockedResponse.RequestMessage = request;
+                        mockedResponse.StatusCode = HttpStatusCode.OK;
+                        mockedResponse.Content = ValidCreateMetadata();
                     }
                     return mockedResponse;
                 };
@@ -65,21 +90,30 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
                 Assert.AreEqual(HttpStatusCode.Accepted, workflowResponse.StatusCode);
 
                 // Check action result
-                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Parse_JSON"));
-                //Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Add_a_row_to_CRM"));
-                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Dead-letter_the_message_failed_CRM"));
-                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Dead-letter_the_message_invalid_JSON"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Parse_Payload_JSON"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("If_JSON_is_valid"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_CRM_Token"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Parse_Token_Response"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Extract_year"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("CRM_Lookup_Org"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Parse_Organisation_Details"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Extract_Org_Id"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("CRM_Create_Case"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Extract_case_id"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("CRM_Create_Notification_Activity"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Extract_activity_id"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("CRM_Create_Meta_Data"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Dead-letter_the_message"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Complete_the_message"));
 
-                // Check request to CRM via Dataserve connector
-                //var crmRequest = testRunner.MockRequests.First(r => r.RequestUri.AbsolutePath.Contains("/api/data/v9.1"));
-                //Assert.AreEqual(HttpMethod.Post, crmRequest.Method);
-                //Assert.IsTrue(crmRequest.Content.Contains("FFC_PaymentStatement_SFI_2022_1234567890_2022090615023001.pdf"));
+                // Check request to CRM for 'create metadata'
+                var crmRequest = testRunner.MockRequests.First(r => r.RequestUri.AbsolutePath.Contains("/api/data/v9.2/rpa_activitymetadatas"));
+                Assert.AreEqual(HttpMethod.Post, crmRequest.Method);
+                Assert.IsTrue(crmRequest.Content.Contains("\"rpa_filename\":\"FFC_PaymentStatement_SFI_2022_1234567890_2022090615023001.pdf\""));
 
                 // Check tracked properties
-                var trackedProps = testRunner.GetWorkflowActionTrackedProperties("Parse_JSON");
-                var expectedBody = "{\"sbi\":12345678,\"frn\":123456789,\"apiLink\":\"https://myStatementRetrievalApiEndpoint/statement-receiver/statement/v1/FFC_PaymentStatement_SFI_2022_1234567890_2022090615023001.pdf\",\"documentType\":\"Payment statement\",\"scheme\":\"SFI\"}";
-                Assert.AreEqual(expectedBody, trackedProps["messageBody"]);
+                var trackedProps = testRunner.GetWorkflowActionTrackedProperties("Initialize_Progress");
+                Assert.AreEqual("FfcCrmInsert", trackedProps["WorkflowName"]);
             }
         }
 
@@ -94,18 +128,7 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
 
             using (ITestRunner testRunner = CreateTestRunner(settingsToOverride))
             {
-                // Mock the HTTP calls and customize responses
-                testRunner.AddApiMocks = (request) =>
-                {
-                    HttpResponseMessage mockedResponse = new HttpResponseMessage();
-                    if (request?.RequestUri != null && request.RequestUri.AbsolutePath.Contains("/api/data/v9.1/") && request.Method == HttpMethod.Post)
-                    {
-                        mockedResponse.RequestMessage = request;
-                        mockedResponse.StatusCode = HttpStatusCode.OK;
-                        mockedResponse.Content = ContentHelper.CreatePlainStringContent("success");
-                    }
-                    return mockedResponse;
-                };
+                // No need to mock any API calls as none will be called in this flow
 
                 // Run the workflow
                 var workflowResponse = testRunner.TriggerWorkflow(
@@ -120,10 +143,20 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
                 Assert.AreEqual(HttpStatusCode.Accepted, workflowResponse.StatusCode);
 
                 // Check action result
-                Assert.AreEqual(ActionStatus.Failed, testRunner.GetWorkflowActionStatus("Parse_JSON"));
-                //Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Add_a_row_to_CRM"));
-                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Dead-letter_the_message_failed_CRM"));
-                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Dead-letter_the_message_invalid_JSON"));
+                Assert.AreEqual(ActionStatus.Failed, testRunner.GetWorkflowActionStatus("Parse_Payload_JSON"));
+                Assert.AreEqual(ActionStatus.Failed, testRunner.GetWorkflowActionStatus("If_JSON_is_valid"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Get_CRM_Token"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Parse_Token_Response"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Extract_year"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("CRM_Lookup_Org"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Parse_Organisation_Details"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Extract_Org_Id"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("CRM_Create_Case"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Extract_case_id"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("CRM_Create_Notification_Activity"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Extract_activity_id"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("CRM_Create_Meta_Data"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Dead-letter_the_message"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Complete_the_message"));
 
                 // Check request to CRM via Dataserve connector never happened
@@ -131,9 +164,8 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
                 Assert.IsNull(crmRequest);
 
                 // Check tracked properties
-                var trackedProps = testRunner.GetWorkflowActionTrackedProperties("Parse_JSON");
-                var expectedBody = "{\"sbi2\":12345678,\"frn2\":123456789,\"apiLink2\":\"https://myStatementRetrievalApiEndpoint/statement-receiver/statement/v1/FFC_PaymentStatement_SFI_2022_1234567890_2022090615023001.pdf\",\"documentType2\":\"Payment statement\",\"scheme2\":\"SFI\",\"sbi\":\"defgh\"}";
-                Assert.AreEqual(expectedBody, trackedProps["messageBody"]);
+                var trackedProps = testRunner.GetWorkflowActionTrackedProperties("Initialize_Progress");
+                Assert.AreEqual("FfcCrmInsert", trackedProps["WorkflowName"]);
             }
         }
 
@@ -148,18 +180,7 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
 
             using (ITestRunner testRunner = CreateTestRunner(settingsToOverride))
             {
-                // Mock the HTTP calls and customize responses
-                testRunner.AddApiMocks = (request) =>
-                {
-                    HttpResponseMessage mockedResponse = new HttpResponseMessage();
-                    if (request?.RequestUri != null && request.RequestUri.AbsolutePath.Contains("/api/data/v9.1/") && request.Method == HttpMethod.Post)
-                    {
-                        mockedResponse.RequestMessage = request;
-                        mockedResponse.StatusCode = HttpStatusCode.OK;
-                        mockedResponse.Content = ContentHelper.CreatePlainStringContent("success");
-                    }
-                    return mockedResponse;
-                };
+                // No need to mock any API calls as none will be called in this flow
 
                 // Run the workflow
                 var workflowResponse = testRunner.TriggerWorkflow(
@@ -174,10 +195,20 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
                 Assert.AreEqual(HttpStatusCode.Accepted, workflowResponse.StatusCode);
 
                 // Check action result
-                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Parse_JSON"));
-                //Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Add_a_row_to_CRM"));
-                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Dead-letter_the_message_failed_CRM"));
-                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Dead-letter_the_message_invalid_JSON"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Parse_Payload_JSON"));
+                Assert.AreEqual(ActionStatus.Failed, testRunner.GetWorkflowActionStatus("If_JSON_is_valid"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Get_CRM_Token"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Parse_Token_Response"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Extract_year"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("CRM_Lookup_Org"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Parse_Organisation_Details"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Extract_Org_Id"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("CRM_Create_Case"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Extract_case_id"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("CRM_Create_Notification_Activity"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Extract_activity_id"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("CRM_Create_Meta_Data"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Dead-letter_the_message"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Complete_the_message"));
 
                 // Check request to CRM via Dataserve connector never happened
@@ -185,9 +216,8 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
                 Assert.IsNull(crmRequest);
 
                 // Check tracked properties
-                var trackedProps = testRunner.GetWorkflowActionTrackedProperties("Parse_JSON");
-                var expectedBody = "{\"sbi\":12345678,\"frn\":123456789}";
-                Assert.AreEqual(expectedBody, trackedProps["messageBody"]);
+                var trackedProps = testRunner.GetWorkflowActionTrackedProperties("Initialize_Progress");
+                Assert.AreEqual("FfcCrmInsert", trackedProps["WorkflowName"]);
             }
         }
 
@@ -195,7 +225,7 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
         /// Tests that the correct response is returned when successful.
         /// </summary>
         [TestMethod]
-        public void CrmInsertTest_Fails_When_Failed_CRM_Insert()
+        public void CrmInsertTest_Fails_When_Failed_CRM_Calls()
         {
             // Override one of the settings in the local settings file
             var settingsToOverride = new Dictionary<string, string>();
@@ -206,7 +236,13 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
                 testRunner.AddApiMocks = (request) =>
                 {
                     HttpResponseMessage mockedResponse = new HttpResponseMessage();
-                    if (request?.RequestUri != null && request.RequestUri.AbsolutePath.Contains("/api/data/v9.1/") && request.Method == HttpMethod.Post)
+                    if (request?.RequestUri != null && request.RequestUri.AbsolutePath.Contains("/oauth2/token") && request.Method == HttpMethod.Post)
+                    {
+                        mockedResponse.RequestMessage = request;
+                        mockedResponse.StatusCode = HttpStatusCode.OK;
+                        mockedResponse.Content = ValidAuthToken();
+                    }
+                    else if (request?.RequestUri != null && request.RequestUri.AbsolutePath.Contains("/api/data/v9.2/"))
                     {
                         // As this is a connector (and not an action HTTP call), the Unit Test Framework
                         // will not automatically remove the retry policy. Therefore we must use a code that is not 408, 429 or 5xx
@@ -231,28 +267,30 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
                 Assert.AreEqual(HttpStatusCode.Accepted, workflowResponse.StatusCode);
 
                 // Check action result
-                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Parse_JSON"));
-                //Assert.AreEqual(ActionStatus.Failed, testRunner.GetWorkflowActionStatus("Add_a_row_to_CRM"));
-                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Dead-letter_the_message_invalid_JSON"));
-                //Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Dead-letter_the_message_failed_CRM"));
-                //Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Complete_the_message"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Parse_Payload_JSON"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("If_JSON_is_valid"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_CRM_Token"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Parse_Token_Response"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Extract_year"));
+                Assert.AreEqual(ActionStatus.Failed, testRunner.GetWorkflowActionStatus("CRM_Lookup_Org"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Parse_Organisation_Details"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Extract_Org_Id"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("CRM_Create_Case"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Extract_case_id"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("CRM_Create_Notification_Activity"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Extract_activity_id"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("CRM_Create_Meta_Data"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Dead-letter_the_message"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Complete_the_message"));
 
-                // Check request to CRM via Dataserve connector
-                //var crmRequest = testRunner.MockRequests.First(r => r.RequestUri.AbsolutePath.Contains("/api/data/v9.1"));
-                //Assert.AreEqual(HttpMethod.Post, crmRequest.Method);
-                //Assert.IsTrue(crmRequest.Content.Contains("FFC_PaymentStatement_SFI_2022_1234567890_2022090615023001.pdf"));
-                //var crmRequest = testRunner.MockRequests.First(r => r.RequestUri.AbsolutePath.Contains("/api/data/v9.1"));
-                //Assert.AreEqual(HttpMethod.Post, crmRequest.Method);
-                //Assert.IsTrue(crmRequest.Content.Contains("FFC_PaymentStatement_SFI_2022_1234567890_2022090615023001.pdf"));
+                // Check request to CRM
+                var crmRequest = testRunner.MockRequests.First(r => r.RequestUri.AbsolutePath.Contains("/api/data/v9.2/accounts"));
+                Assert.AreEqual(HttpMethod.Get, crmRequest.Method);
+                Assert.AreEqual(string.Empty, crmRequest.Content);
 
                 // Check tracked properties
-                var trackedProps = testRunner.GetWorkflowActionTrackedProperties("Parse_JSON");
-                var expectedBody = "{\"sbi\":12345678,\"frn\":123456789,\"apiLink\":\"https://myStatementRetrievalApiEndpoint/statement-receiver/statement/v1/FFC_PaymentStatement_SFI_2022_1234567890_2022090615023001.pdf\",\"documentType\":\"Payment statement\",\"scheme\":\"SFI\"}";
-                Assert.AreEqual(expectedBody, trackedProps["messageBody"]);
-                //var trackedPropsError = testRunner.GetWorkflowActionTrackedProperties("Compose_for_logging");
-                //Assert.IsTrue(trackedPropsError["ErrorText"].Contains("BadRequest"));
-                //var trackedPropsError = testRunner.GetWorkflowActionTrackedProperties("Compose_for_logging");
-                //Assert.IsTrue(trackedPropsError["ErrorText"].Contains("BadRequest"));
+                var trackedProps = testRunner.GetWorkflowActionTrackedProperties("Initialize_Progress");
+                Assert.AreEqual("FfcCrmInsert", trackedProps["WorkflowName"]);
             }
         }
 
@@ -339,6 +377,62 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
                 lockedUntilUtc = "9999-12-31T23:59:59.9999999Z",
                 lockToken = "056bb9fa-9b8f-4d93-874b-7e78e71a588d",
                 sequenceNumber = 980
+            };
+
+            return UnitTestHelper.EncodeAsStringContent(json);
+        }
+
+        private static StringContent ValidOrgLookup()
+        {
+            // Since a property beginning with '@' cannot be defined in an anonymous type,
+            // this JSON is created using strings
+
+            var jsonStr = "{ \"value\": [ { \"@odata.etag\": \"W162878835\", \"name\": \"1 Frog Hall\", \"accountid\": \"df1f5e8a-a175-e411-9411-00155deb6487\" } ] }";
+
+            return new StringContent(jsonStr, Encoding.UTF8, "application/json");
+        }
+
+        private static StringContent ValidCreateCase()
+        {
+            var json = new
+            {
+                incidentid = "6e2fc685-1e2d-ee11-bdf4-000d3adf3558"
+            };
+
+            return UnitTestHelper.EncodeAsStringContent(json);
+        }
+
+        private static StringContent ValidCreateNotification()
+        {
+            var json = new
+            {
+                activityid = "70e5a58b-1e2d-ee11-bdf4-002248a28b4d"
+            };
+
+            return UnitTestHelper.EncodeAsStringContent(json);
+        }
+
+        private static StringContent ValidCreateMetadata()
+        {
+            // Return value not used, so blank is ok here
+            var json = new
+            {
+            };
+
+            return UnitTestHelper.EncodeAsStringContent(json);
+        }
+
+        private static StringContent ValidAuthToken()
+        {
+            var json = new
+            {
+                token_type = "Bearer",
+                expires_in = "3599",
+                ext_expires_in = "3599",
+                expires_on = "1690535569",
+                not_before = "1690531669",
+                resource = "https://rpadevv9.crm4.dynamics.com",
+                access_token = "eyJ0eXAiOiJKV1Qaaaaaaa"
             };
 
             return UnitTestHelper.EncodeAsStringContent(json);

@@ -25,7 +25,7 @@ steps:
       version: 'latest'
 
   - bash: |
-      npm install -g azurite
+      npm install -g azurite@3.24.0
       mkdir azurite
       azurite --silent --location azurite --debug azurite\debug.log &
     displayName: 'Install and launch Azurite'
