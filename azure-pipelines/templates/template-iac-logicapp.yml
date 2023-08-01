@@ -69,6 +69,19 @@ jobs:
             addSpnToEnvironment: true
             useGlobalConfig: true
 
+        # Workaround for ServiceBus and VNET - see the following urls:
+        # https://learn.microsoft.com/en-us/answers/questions/1333946/azure-standard-logic-app-service-bus-built-in-conn
+        # https://techcommunity.microsoft.com/t5/azure-integration-services-blog/enabling-service-bus-and-sap-built-in-connectors-for-stateful/ba-p/3820381
+        - task: AzureCLI@2
+          inputs:
+            azureSubscription: ${{ parameters.serviceConnection }}
+            scriptType: 'bash'
+            scriptLocation: 'inlineScript'
+            inlineScript: |
+              az webapp config set set --name $(LAname) --resource-group  $(resourceGroupName) --generic-configurations '{"vnetPrivatePortsCount": 2}'
+            addSpnToEnvironment: true
+            useGlobalConfig: true
+
         - task: AzureResourceGroupDeployment@2
           displayName: 'Deploy Dashboard'
           inputs:

@@ -43,5 +43,10 @@
     "name": "AzureBlob_rleEndpoint",
     "value": "https://devrleinfst1401.blob.core.windows.net",
     "slotSetting": false
+  },
+  {
+    "name": "AdLoginBaseUrl",
+    "value": "https://login.microsoftonline.com",
+    "slotSetting": false
   }
 ]
