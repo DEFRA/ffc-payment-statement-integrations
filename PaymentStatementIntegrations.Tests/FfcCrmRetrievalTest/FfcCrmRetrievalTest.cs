@@ -49,7 +49,6 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmRetrievalTest
                     }
                     return mockedResponse;
                 };
-
                 // Run the workflow
                 var workflowResponse = testRunner.TriggerWorkflow(
                     GetParamsWithIdMissing(),

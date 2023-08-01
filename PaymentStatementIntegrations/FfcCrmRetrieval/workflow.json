@@ -42,7 +42,7 @@
                     }
                 },
                 "runAfter": {
-                    "Try_Scope": [
+                    "Catch_Scope": [
                         "SUCCEEDED",
                         "TIMEDOUT",
                         "FAILED",
@@ -77,6 +77,49 @@
                     ]
                 }
             },
+            "Catch_Scope": {
+                "type": "Scope",
+                "actions": {
+                    "Filter_array": {
+                        "type": "Query",
+                        "inputs": {
+                            "from": "@result('Try_Scope')",
+                            "where": "@equals(item()?['status'],'Failed')"
+                        }
+                    },
+                    "Set_ErrorText_with_error": {
+                        "type": "SetVariable",
+                        "inputs": {
+                            "name": "ErrorText",
+                            "value": "@string(first(body('Filter_array')))"
+                        },
+                        "runAfter": {
+                            "Filter_array": [
+                                "SUCCEEDED"
+                            ]
+                        }
+                    },
+                    "Compose_for_logging": {
+                        "type": "Compose",
+                        "inputs": "@variables('ErrorText')",
+                        "runAfter": {
+                            "Set_ErrorText_with_error": [
+                                "SUCCEEDED"
+                            ]
+                        },
+                        "trackedProperties": {
+                            "ErrorText": "@action()?['inputs']"
+                        }
+                   }
+                },
+                "runAfter": {
+                    "Try_Scope": [
+                        "TIMEDOUT",
+                        "FAILED"
+                    ]
+                },
+                "trackedProperties": {}
+            },
             "Initialize_ErrorText": {
                 "type": "InitializeVariable",
                 "inputs": {
@@ -103,73 +146,6 @@
                 "inputs": {
                     "method": "GET"
                 }
-            }
-        },
-        "parameters": {
-            "PdfServiceUrl": {
-                "type": "String",
-                "value": "@appsetting('PdfServiceUrl')",
-                "defaultValue": "@appsetting('PdfServiceUrl')"
-            },
-            "CrmBaseUrl": {
-                "type": "String",
-                "value": "@appsetting('CrmBaseUrl')",
-                "defaultValue": "@appsetting('CrmBaseUrl')"
-            },
-            "AdLoginBaseUrl": {
-                "type": "String",
-                "value": "@appsetting('AdLoginBaseUrl')",
-                "defaultValue": "@appsetting('AdLoginBaseUrl')"
-            },
-            "SharepointBaseUrl": {
-                "type": "String",
-                "value": "@appsetting('SharepointBaseUrl')",
-                "defaultValue": "@appsetting('SharepointBaseUrl')"
-            },
-            "PortalClientId": {
-                "type": "String",
-                "value": "@appsetting('PortalClientId')",
-                "defaultValue": "@appsetting('PortalClientId')"
-            },
-            "PortalTenantId": {
-                "type": "String",
-                "value": "@appsetting('PortalTenantId')",
-                "defaultValue": "@appsetting('PortalTenantId')"
-            },
-            "PortalClientSecret": {
-                "type": "String",
-                "value": "@appsetting('PortalClientSecret')",
-                "defaultValue": "@appsetting('PortalClientSecret')"
-            },
-            "SharepointClientId": {
-                "type": "String",
-                "value": "@appsetting('SharepointClientId')",
-                "defaultValue": "@appsetting('SharepointClientId')"
-            },
-            "SharepointTenantId": {
-                "type": "String",
-                "value": "@appsetting('SharepointTenantId')",
-                "defaultValue": "@appsetting('SharepointTenantId')"
-            },
-            "SharepointClientSecret": {
-                "type": "String",
-                "value": "@appsetting('SharepointClientSecret')",
-                "defaultValue": "@appsetting('SharepointClientSecret')"
-            },
-            "UnknownContact": {
-                "type": "String",
-                "value": "65879706-0798-e411-9412-00155deb6486",
-                "defaultValue": "65879706-0798-e411-9412-00155deb6486"
-            },
-            "FfcRetrievalWorkflowSasToken": {
-                "type": "String",
-                "value": "@appsetting('FfcRetrievalWorkflowSasToken')",
-                "defaultValue": "@appsetting('FfcRetrievalWorkflowSasToken')"
-            },
-            "FfcRetrievalWorkflowEndpoint": {
-                "type": "String",
-                "value": "@appsetting('FfcRetrievalWorkflowEndpoint')",
-                "defaultValue": "@appsetting('FfcRetrievalWorkflowEndpoint')"
             }
         }
     },
