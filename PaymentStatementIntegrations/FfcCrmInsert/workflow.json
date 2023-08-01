@@ -20,6 +20,15 @@
                             }
                         },
                         "trackedProperties": {}
+                    },
+                    "Throw_workflow_failure": {
+                        "type": "Compose",
+                        "inputs": "@int('__FINAL_ERROR__')",
+                        "runAfter": {
+                            "Dead-letter_the_message": [
+                                "SUCCEEDED"
+                            ]
+                        }
                     }
                 },
                 "runAfter": {
@@ -699,6 +708,73 @@
                     }
                 },
                 "splitOn": "@triggerOutputs()?['body']"
+            }
+        },
+        "parameters": {
+            "PdfServiceUrl": {
+                "type": "String",
+                "value": "@appsetting('PdfServiceUrl')",
+                "defaultValue": "@appsetting('PdfServiceUrl')"
+            },
+            "CrmBaseUrl": {
+                "type": "String",
+                "value": "@appsetting('CrmBaseUrl')",
+                "defaultValue": "@appsetting('CrmBaseUrl')"
+            },
+            "AdLoginBaseUrl": {
+                "type": "String",
+                "value": "@appsetting('AdLoginBaseUrl')",
+                "defaultValue": "@appsetting('AdLoginBaseUrl')"
+            },
+            "SharepointBaseUrl": {
+                "type": "String",
+                "value": "@appsetting('SharepointBaseUrl')",
+                "defaultValue": "@appsetting('SharepointBaseUrl')"
+            },
+            "PortalClientId": {
+                "type": "String",
+                "value": "@appsetting('PortalClientId')",
+                "defaultValue": "@appsetting('PortalClientId')"
+            },
+            "PortalTenantId": {
+                "type": "String",
+                "value": "@appsetting('PortalTenantId')",
+                "defaultValue": "@appsetting('PortalTenantId')"
+            },
+            "PortalClientSecret": {
+                "type": "String",
+                "value": "@appsetting('PortalClientSecret')",
+                "defaultValue": "@appsetting('PortalClientSecret')"
+            },
+            "SharepointClientId": {
+                "type": "String",
+                "value": "@appsetting('SharepointClientId')",
+                "defaultValue": "@appsetting('SharepointClientId')"
+            },
+            "SharepointTenantId": {
+                "type": "String",
+                "value": "@appsetting('SharepointTenantId')",
+                "defaultValue": "@appsetting('SharepointTenantId')"
+            },
+            "SharepointClientSecret": {
+                "type": "String",
+                "value": "@appsetting('SharepointClientSecret')",
+                "defaultValue": "@appsetting('SharepointClientSecret')"
+            },
+            "UnknownContact": {
+                "type": "String",
+                "value": "65879706-0798-e411-9412-00155deb6486",
+                "defaultValue": "65879706-0798-e411-9412-00155deb6486"
+            },
+            "FfcRetrievalWorkflowSasToken": {
+                "type": "String",
+                "value": "@appsetting('FfcRetrievalWorkflowSasToken')",
+                "defaultValue": "@appsetting('FfcRetrievalWorkflowSasToken')"
+            },
+            "FfcRetrievalWorkflowEndpoint": {
+                "type": "String",
+                "value": "@appsetting('FfcRetrievalWorkflowEndpoint')",
+                "defaultValue": "@appsetting('FfcRetrievalWorkflowEndpoint')"
             }
         }
     },
