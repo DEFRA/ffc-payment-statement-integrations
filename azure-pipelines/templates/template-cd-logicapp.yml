@@ -90,13 +90,10 @@ jobs:
                 -location $(resourceGroupLocation)
                 -connections_servicebus_name_sp $(servicebusConnectionNameSP)
                 -servicebus_connection_string_sp $(ServiceBusConnectionStringDev)
-                -connections_servicebus_name_api $(servicebusConnectionNameAPI)
-                -servicebus_connection_string_api $(ServiceBusConnectionStringDev)
                 -serviceBusUserManagedIdentityTenantId $(ServiceBusUserManagedIdentityTenantIdDev)
                 -serviceBusUserManagedIdentityObjectId $(ServiceBusUserManagedIdentityObjectIdDev)
                 -logicAppSystemAssignedIdentityTenantId $(logicAppSystemAssignedIdentityTenantId)
                 -logicAppSystemAssignedIdentityObjectId $(logicAppSystemAssignedIdentityObjectId)
-                -connections_dataverse_name_api $(dataverseConnectionNameAPI)
                 -portal_client_id $(PortalClientId)
                 -portal_client_secret $(PortalClientSecret)
                 -portal_tenant_id $(PortalTenantId)
@@ -118,8 +115,6 @@ jobs:
               scriptLocation: 'inlineScript'
               inlineScript: |
                 az functionapp config appsettings set --name $(logicAppName) --resource-group  $(resourceGroupName) --settings \
-                "SERVICEBUS_CONNECTION_SP_RUNTIMEURL=$(servicebusendpointurlsp)" \
-                "SERVICEBUS_CONNECTION_API_RUNTIMEURL=$(servicebusendpointurlapi)" \
-                "DATAVERSE_CONNECTION_API_RUNTIMEURL=$(dataverseendpointurlapi)"
+                "SERVICEBUS_CONNECTION_SP_RUNTIMEURL=$(servicebusendpointurlsp)"
               addSpnToEnvironment: true
               useGlobalConfig: true

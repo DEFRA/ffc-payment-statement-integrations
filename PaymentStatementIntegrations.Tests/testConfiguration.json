@@ -5,8 +5,9 @@
 
   "workflow": {
     "externalApiUrlsToMock": [
-      "https://external-pdf-service.testing.net"
-    ],
+      "https://external-pdf-service.testing.net",
+      "https://crm.testing.net",
+      "https://ad-dummy-login.net"    ],
     "builtInConnectorsToMock": [
       "executeQuery",
       "sendMessage",

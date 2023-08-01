@@ -12,6 +12,17 @@
     "Sql-ConnectionString": "any-sql-connection-string",
     "ServiceBus-ConnectionString": "any-servicebus-connection-string",
     "PdfServiceUrl": "https://external-pdf-service.testing.net/api/v1",
-    "CommonDataService-ManagedConnectionRuntimeUrl": "https://external-common-data-service.testing.net/apim/commondataservice/abcdef/"
+    "CrmBaseUrl": "https://crm.testing.net",
+    "CommonDataService-ManagedConnectionRuntimeUrl": "https://external-common-data-service.testing.net/apim/commondataservice/abcdef/",
+    "AdLoginBaseUrl": "https://ad-dummy-login.net",
+    "PortalClientId": "portal-client-id",
+    "PortalTenantId": "portal-tenant-id",
+    "PortalClientSecret": "sharepoint-client-secret",
+    "SharepointClientId": "sharepoint-client-id",
+    "SharepointTenantId": "sharepoint-tenant-id",
+    "SharepointClientSecret": "sharepoint-client-secret",
+    "SharepointBaseUrl": "https://sharepoint-test-dummy.com/sites/testsite",
+    "FfcRetrievalWorkflowEndpoint": "https://ffc-workflow",
+    "FfcRetrievalWorkflowSasToken": "test-sas-token"
   }
 }
