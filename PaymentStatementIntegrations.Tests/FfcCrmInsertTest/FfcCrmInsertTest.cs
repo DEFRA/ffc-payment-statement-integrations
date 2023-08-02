@@ -156,9 +156,8 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("CRM_Create_Notification_Activity"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Extract_activity_id"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("CRM_Create_Meta_Data"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Strip_sensitive_data"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Dead-letter_the_message"));
-                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("No_masking"));
-                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Mask_sensitive_data"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Complete_the_message"));
 
                 // Check request to CRM via Dataserve connector never happened
@@ -210,9 +209,8 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("CRM_Create_Notification_Activity"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Extract_activity_id"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("CRM_Create_Meta_Data"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Strip_sensitive_data"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Dead-letter_the_message"));
-                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("No_masking"));
-                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Mask_sensitive_data"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Complete_the_message"));
 
                 // Check request to CRM via Dataserve connector never happened
@@ -284,9 +282,8 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("CRM_Create_Notification_Activity"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Extract_activity_id"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("CRM_Create_Meta_Data"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Strip_sensitive_data"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Dead-letter_the_message"));
-                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("No_masking"));
-                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Mask_sensitive_data"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Complete_the_message"));
 
                 // Check request to CRM
@@ -350,14 +347,13 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("CRM_Create_Notification_Activity"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Extract_activity_id"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("CRM_Create_Meta_Data"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Strip_sensitive_data"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Dead-letter_the_message"));
-                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("No_masking"));
-                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Mask_sensitive_data"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Complete_the_message"));
 
                 // Check masking
-                var outputs = testRunner.GetWorkflowActionOutput("Mask_sensitive_data");
-                Assert.IsFalse(outputs.ToString().Contains("client_secret"));
+                var outputs = testRunner.GetWorkflowActionOutput("Strip_sensitive_data");
+                Assert.IsTrue(outputs.ToString().Contains("client_secret=******&"));
 
 
                 // Check tracked properties
