@@ -5,13 +5,25 @@
             "Catch_Scope": {
                 "type": "Scope",
                 "actions": {
+                    "Append_error_text": {
+                        "type": "AppendToStringVariable",
+                        "inputs": {
+                            "name": "ProgressText",
+                            "value": ": @{outputs('Strip_sensitive_data')}"
+                        },
+                        "runAfter": {
+                            "Strip_sensitive_data": [
+                                "SUCCEEDED"
+                            ]
+                        }
+                    },
                     "Dead-letter_the_message": {
                         "type": "ServiceProvider",
                         "inputs": {
                             "parameters": {
                                 "messageId": "@triggerBody()?['messageId']",
                                 "deadLetterReason": "Workflow failed to complete - error in TryScope",
-                                "deadLetterErrorDescription": "@variables('ProgressText')"
+                                "deadLetterErrorDescription": "@substring(variables('ProgressText'), 0, min(length(variables('ProgressText')), 4096))"
                             },
                             "serviceProviderConfiguration": {
                                 "connectionName": "serviceBus",
@@ -19,7 +31,47 @@
                                 "serviceProviderId": "/serviceProviders/serviceBus"
                             }
                         },
+                        "runAfter": {
+                            "Append_error_text": [
+                                "SUCCEEDED"
+                            ]
+                        },
                         "trackedProperties": {}
+                    },
+                    "Throw_workflow_failure": {
+                        "type": "Compose",
+                        "inputs": "@int('__FINAL_ERROR__')",
+                        "runAfter": {
+                            "Dead-letter_the_message": [
+                                "SUCCEEDED"
+                            ]
+                        }
+                    },
+                    "Strip_sensitive_data": {
+                        "type": "JavaScriptCode",
+                        "inputs": {
+                            "code": "// This code snippet removes any sensitive token values if defined\n\n// List of tokens with their terminating char - defined in pairs\nvar sensitiveTokens = [ 'client_secret=', '&', 'client_id=', '&', 'Authorization\":', '}' ];\nvar errorStack = JSON.stringify(workflowContext.actions.Get_error_stack.outputs);\ntry {\n    for (var i=0; i < sensitiveTokens.length; i = i + 2) {\n        var tok = sensitiveTokens[i];\n        var tokLen = tok.length;\n        var tokPos = errorStack.indexOf(tok);\n        var endPos = errorStack.indexOf(sensitiveTokens[i+1],tokPos + 1);\n        if (tokPos > -1) {\n            if (endPos > -1) {\n                errorStack = errorStack.substring(0, tokPos + tokLen) +\n                    '******' +\n                    errorStack.substring(endPos);\n            } else {\n                errorStack = errorStack.substring(0, tokPos + tokLen) +\n                    '******';\n            }\n        }\n    }\n}\ncatch (err) {\n  // Do nothing\n}\nreturn errorStack;"
+                        },
+                        "runAfter": {
+                            "Get_error_stack": [
+                                "SUCCEEDED"
+                            ]
+                        }
+                    },
+                    "Get_error_stack": {
+                        "type": "Query",
+                        "inputs": {
+                            "from": "@result('Try_Scope')",
+                            "where": "@equals(item()?['status'],'Failed')"
+                        },
+                        "runtimeConfiguration": {
+                            "secureData": {
+                                "properties": [
+                                    "inputs",
+                                    "outputs"
+                                ]
+                            }
+                        }
                     }
                 },
                 "runAfter": {
@@ -78,6 +130,22 @@
                 },
                 "trackedProperties": {}
             },
+            "Initialize_filename": {
+                "type": "InitializeVariable",
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "Filename",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Initialize_activity_id": [
+                        "SUCCEEDED"
+                    ]
+                }
+            },
             "Initialize_org_id": {
                 "type": "InitializeVariable",
                 "inputs": {
@@ -90,6 +158,22 @@
                 },
                 "runAfter": {
                     "Initialize_year": [
+                        "SUCCEEDED"
+                    ]
+                }
+            },
+            "Initialize_variable": {
+                "type": "InitializeVariable",
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "FinalErrorText",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Initialize_filename": [
                         "SUCCEEDED"
                     ]
                 }
@@ -136,7 +220,7 @@
                     }
                 },
                 "runAfter": {
-                    "Initialize_filename": [
+                    "Initialize_variable": [
                         "SUCCEEDED"
                     ]
                 },
@@ -145,6 +229,70 @@
             "Try_Scope": {
                 "type": "Scope",
                 "actions": {
+                    "Append_progess_activity_id": {
+                        "type": "AppendToStringVariable",
+                        "inputs": {
+                            "name": "ProgressText",
+                            "value": ": created activity id @{variables('NewActivityId')}"
+                        },
+                        "runAfter": {
+                            "Extract_activity_id": [
+                                "SUCCEEDED"
+                            ]
+                        },
+                        "trackedProperties": {}
+                    },
+                    "Append_progress_case_id": {
+                        "type": "AppendToStringVariable",
+                        "inputs": {
+                            "name": "ProgressText",
+                            "value": ": created case id @{variables('NewCaseId')}"
+                        },
+                        "runAfter": {
+                            "Extract_case_id": [
+                                "SUCCEEDED"
+                            ]
+                        },
+                        "trackedProperties": {}
+                    },
+                    "Append_progress_created_metadata": {
+                        "type": "AppendToStringVariable",
+                        "inputs": {
+                            "name": "ProgressText",
+                            "value": ": created metadata"
+                        },
+                        "runAfter": {
+                            "CRM_Create_Meta_Data": [
+                                "SUCCEEDED"
+                            ]
+                        }
+                    },
+                    "Append_progress_org_id": {
+                        "type": "AppendToStringVariable",
+                        "inputs": {
+                            "name": "ProgressText",
+                            "value": ": got org id @{variables('OrganisationId')}"
+                        },
+                        "runAfter": {
+                            "Extract_Org_Id": [
+                                "SUCCEEDED"
+                            ]
+                        },
+                        "trackedProperties": {}
+                    },
+                    "Append_progress_year": {
+                        "type": "AppendToStringVariable",
+                        "inputs": {
+                            "name": "ProgressText",
+                            "value": ": got year @{variables('PayloadYear')}"
+                        },
+                        "runAfter": {
+                            "Extract_year": [
+                                "SUCCEEDED"
+                            ]
+                        },
+                        "trackedProperties": {}
+                    },
                     "CRM_Create_Case": {
                         "type": "Http",
                         "inputs": {
@@ -258,6 +406,107 @@
                         },
                         "trackedProperties": {}
                     },
+                    "Check_Org_Id": {
+                        "type": "If",
+                        "expression": {
+                            "and": [
+                                {
+                                    "not": {
+                                        "equals": [
+                                            "@variables('OrganisationId')",
+                                            ""
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        "actions": {},
+                        "else": {
+                            "actions": {
+                                "Append_progress_invalid_org": {
+                                    "type": "AppendToStringVariable",
+                                    "inputs": {
+                                        "name": "ProgressText",
+                                        "value": ": invalid org id"
+                                    }
+                                },
+                                "Throw_error_invalid_org": {
+                                    "type": "Compose",
+                                    "inputs": "@int('__ERROR_INVALID_ORG__')",
+                                    "runAfter": {
+                                        "Append_progress_invalid_org": [
+                                            "SUCCEEDED"
+                                        ]
+                                    }
+                                }
+                            }
+                        },
+                        "runAfter": {
+                            "Append_progress_org_id": [
+                                "SUCCEEDED"
+                            ]
+                        }
+                    },
+                    "Check_year": {
+                        "type": "If",
+                        "expression": {
+                            "and": [
+                                {
+                                    "not": {
+                                        "equals": [
+                                            "@variables('PayloadYear')",
+                                            ""
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        "actions": {},
+                        "else": {
+                            "actions": {
+                                "Append_progress_invalid_year": {
+                                    "type": "AppendToStringVariable",
+                                    "inputs": {
+                                        "name": "ProgressText",
+                                        "value": ": invalid year"
+                                    },
+                                    "trackedProperties": {}
+                                },
+                                "Throw_error_invalid_year": {
+                                    "type": "Compose",
+                                    "inputs": "@int('__ERROR_INVALID_YEAR__')",
+                                    "runAfter": {
+                                        "Append_progress_invalid_year": [
+                                            "SUCCEEDED"
+                                        ]
+                                    }
+                                }
+                            }
+                        },
+                        "runAfter": {
+                            "Append_progress_year": [
+                                "SUCCEEDED"
+                            ]
+                        }
+                    },
+                    "Complete_the_message": {
+                        "type": "ServiceProvider",
+                        "inputs": {
+                            "parameters": {
+                                "messageId": "@triggerBody()?['messageId']"
+                            },
+                            "serviceProviderConfiguration": {
+                                "connectionName": "serviceBus",
+                                "operationId": "completeMessage",
+                                "serviceProviderId": "/serviceProviders/serviceBus"
+                            }
+                        },
+                        "runAfter": {
+                            "Append_progress_created_metadata": [
+                                "SUCCEEDED"
+                            ]
+                        }
+                    },
                     "Extract_Org_Id": {
                         "type": "SetVariable",
                         "inputs": {
@@ -327,8 +576,81 @@
                         "runtimeConfiguration": {
                             "contentTransfer": {
                                 "transferMode": "Chunked"
+                            },
+                            "secureData": {
+                                "properties": [
+                                    "inputs",
+                                    "outputs"
+                                ]
                             }
                         }
+                    },
+                    "If_JSON_is_valid": {
+                        "type": "If",
+                        "expression": {
+                            "and": [
+                                {
+                                    "equals": [
+                                        "@actions('Parse_Payload_JSON').status",
+                                        "Succeeded"
+                                    ]
+                                },
+                                {
+                                    "not": {
+                                        "equals": [
+                                            "@string(body('Parse_Payload_JSON')?['apiLink'])",
+                                            ""
+                                        ]
+                                    }
+                                },
+                                {
+                                    "not": {
+                                        "equals": [
+                                            "@string(body('Parse_Payload_JSON')?['sbi'])",
+                                            ""
+                                        ]
+                                    }
+                                },
+                                {
+                                    "not": {
+                                        "equals": [
+                                            "@string(body('Parse_Payload_JSON')?['frn'])",
+                                            ""
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        "actions": {
+                            "Append_to_string_variable": {
+                                "type": "AppendToStringVariable",
+                                "inputs": {
+                                    "name": "ProgressText",
+                                    "value": ": JSON is valid"
+                                }
+                            }
+                        },
+                        "else": {
+                            "actions": {
+                                "Append_progress_invalid_JSON": {
+                                    "type": "AppendToStringVariable",
+                                    "inputs": {
+                                        "name": "ProgressText",
+                                        "value": ": Invalid JSON: @{triggerBody()?['contentData']}"
+                                    }
+                                },
+                                "Throw_error_invalid_JSON": {
+                                    "type": "Compose",
+                                    "inputs": "@int('__ERROR_INVALID_JSON__')",
+                                    "runAfter": {
+                                        "Append_progress_invalid_JSON": [
+                                            "SUCCEEDED"
+                                        ]
+                                    }
+                                }
+                            }
+                        },
+                        "trackedProperties": {}
                     },
                     "Parse_Organisation_Details": {
                         "type": "ParseJson",
@@ -409,238 +731,6 @@
                             ]
                         }
                     },
-                    "Check_year": {
-                        "type": "If",
-                        "expression": {
-                            "and": [
-                                {
-                                    "not": {
-                                        "equals": [
-                                            "@variables('PayloadYear')",
-                                            ""
-                                        ]
-                                    }
-                                }
-                            ]
-                        },
-                        "actions": {},
-                        "else": {
-                            "actions": {
-                                "Append_progress_invalid_year": {
-                                    "type": "AppendToStringVariable",
-                                    "inputs": {
-                                        "name": "ProgressText",
-                                        "value": ": invalid year"
-                                    },
-                                    "trackedProperties": {}
-                                },
-                                "Throw_error_invalid_year": {
-                                    "type": "Compose",
-                                    "inputs": "@int('__ERROR_INVALID_YEAR__')",
-                                    "runAfter": {
-                                        "Append_progress_invalid_year": [
-                                            "SUCCEEDED"
-                                        ]
-                                    }
-                                }
-                            }
-                        },
-                        "runAfter": {
-                            "Append_progress_year": [
-                                "SUCCEEDED"
-                            ]
-                        }
-                    },
-                    "Check_Org_Id": {
-                        "type": "If",
-                        "expression": {
-                            "and": [
-                                {
-                                    "not": {
-                                        "equals": [
-                                            "@variables('OrganisationId')",
-                                            ""
-                                        ]
-                                    }
-                                }
-                            ]
-                        },
-                        "actions": {},
-                        "else": {
-                            "actions": {
-                                "Append_progress_invalid_org": {
-                                    "type": "AppendToStringVariable",
-                                    "inputs": {
-                                        "name": "ProgressText",
-                                        "value": ": invalid org id"
-                                    }
-                                },
-                                "Throw_error_invalid_org": {
-                                    "type": "Compose",
-                                    "inputs": "@int('__ERROR_INVALID_ORG__')",
-                                    "runAfter": {
-                                        "Append_progress_invalid_org": [
-                                            "SUCCEEDED"
-                                        ]
-                                    }
-                                }
-                            }
-                        },
-                        "runAfter": {
-                            "Append_progress_org_id": [
-                                "SUCCEEDED"
-                            ]
-                        }
-                    },
-                    "If_JSON_is_valid": {
-                        "type": "If",
-                        "expression": {
-                            "and": [
-                                {
-                                    "equals": [
-                                        "@actions('Parse_Payload_JSON').status",
-                                        "Succeeded"
-                                    ]
-                                },
-                                {
-                                    "not": {
-                                        "equals": [
-                                            "@string(body('Parse_Payload_JSON')?['apiLink'])",
-                                            ""
-                                        ]
-                                    }
-                                },
-                                {
-                                    "not": {
-                                        "equals": [
-                                            "@string(body('Parse_Payload_JSON')?['sbi'])",
-                                            ""
-                                        ]
-                                    }
-                                },
-                                {
-                                    "not": {
-                                        "equals": [
-                                            "@string(body('Parse_Payload_JSON')?['frn'])",
-                                            ""
-                                        ]
-                                    }
-                                }
-                            ]
-                        },
-                        "actions": {
-                            "Append_to_string_variable": {
-                                "type": "AppendToStringVariable",
-                                "inputs": {
-                                    "name": "ProgressText",
-                                    "value": ": JSON is valid"
-                                }
-                            }
-                        },
-                        "else": {
-                            "actions": {
-                                "Append_progress_invalid_JSON": {
-                                    "type": "AppendToStringVariable",
-                                    "inputs": {
-                                        "name": "ProgressText",
-                                        "value": ": Invalid JSON: @{triggerBody()?['contentData']}"
-                                    }
-                                },
-                                "Throw_error_invalid_JSON": {
-                                    "type": "Compose",
-                                    "inputs": "@int('__ERROR_INVALID_JSON__')",
-                                    "runAfter": {
-                                        "Append_progress_invalid_JSON": [
-                                            "SUCCEEDED"
-                                        ]
-                                    }
-                                }
-                            }
-                        },
-                        "trackedProperties": {}
-                    },
-                    "Append_progress_year": {
-                        "type": "AppendToStringVariable",
-                        "inputs": {
-                            "name": "ProgressText",
-                            "value": ": got year @{variables('PayloadYear')}"
-                        },
-                        "runAfter": {
-                            "Extract_year": [
-                                "SUCCEEDED"
-                            ]
-                        },
-                        "trackedProperties": {}
-                    },
-                    "Append_progress_org_id": {
-                        "type": "AppendToStringVariable",
-                        "inputs": {
-                            "name": "ProgressText",
-                            "value": ": got org id @{variables('OrganisationId')}"
-                        },
-                        "runAfter": {
-                            "Extract_Org_Id": [
-                                "SUCCEEDED"
-                            ]
-                        },
-                        "trackedProperties": {}
-                    },
-                    "Append_progress_case_id": {
-                        "type": "AppendToStringVariable",
-                        "inputs": {
-                            "name": "ProgressText",
-                            "value": ": created case id @{variables('NewCaseId')}"
-                        },
-                        "runAfter": {
-                            "Extract_case_id": [
-                                "SUCCEEDED"
-                            ]
-                        },
-                        "trackedProperties": {}
-                    },
-                    "Append_progess_activity_id": {
-                        "type": "AppendToStringVariable",
-                        "inputs": {
-                            "name": "ProgressText",
-                            "value": ": created activity id @{variables('NewActivityId')}"
-                        },
-                        "runAfter": {
-                            "Extract_activity_id": [
-                                "SUCCEEDED"
-                            ]
-                        },
-                        "trackedProperties": {}
-                    },
-                    "Append_progress_created_metadata": {
-                        "type": "AppendToStringVariable",
-                        "inputs": {
-                            "name": "ProgressText",
-                            "value": ": created metadata"
-                        },
-                        "runAfter": {
-                            "CRM_Create_Meta_Data": [
-                                "SUCCEEDED"
-                            ]
-                        }
-                    },
-                    "Complete_the_message": {
-                        "type": "ServiceProvider",
-                        "inputs": {
-                            "parameters": {
-                                "messageId": "@triggerBody()?['messageId']"
-                            },
-                            "serviceProviderConfiguration": {
-                                "connectionName": "serviceBus",
-                                "operationId": "completeMessage",
-                                "serviceProviderId": "/serviceProviders/serviceBus"
-                            }
-                        },
-                        "runAfter": {
-                            "Append_progress_created_metadata": [
-                                "SUCCEEDED"
-                            ]
-                        }
-                    },
                     "Set_filename": {
                         "type": "SetVariable",
                         "inputs": {
@@ -663,26 +753,77 @@
                     ]
                 },
                 "trackedProperties": {}
-            },
-            "Initialize_filename": {
-                "type": "InitializeVariable",
-                "inputs": {
-                    "variables": [
-                        {
-                            "name": "Filename",
-                            "type": "string"
-                        }
-                    ]
-                },
-                "runAfter": {
-                    "Initialize_activity_id": [
-                        "SUCCEEDED"
-                    ]
-                }
             }
         },
         "contentVersion": "1.0.0.0",
         "outputs": {},
+        "parameters": {
+            "PdfServiceUrl": {
+                "type": "String",
+                "value": "@appsetting('PdfServiceUrl')",
+                "defaultValue": "@appsetting('PdfServiceUrl')"
+            },
+            "CrmBaseUrl": {
+                "type": "String",
+                "value": "@appsetting('CrmBaseUrl')",
+                "defaultValue": "@appsetting('CrmBaseUrl')"
+            },
+            "AdLoginBaseUrl": {
+                "type": "String",
+                "value": "@appsetting('AdLoginBaseUrl')",
+                "defaultValue": "@appsetting('AdLoginBaseUrl')"
+            },
+            "SharepointBaseUrl": {
+                "type": "String",
+                "value": "@appsetting('SharepointBaseUrl')",
+                "defaultValue": "@appsetting('SharepointBaseUrl')"
+            },
+            "PortalClientId": {
+                "type": "String",
+                "value": "@appsetting('PortalClientId')",
+                "defaultValue": "@appsetting('PortalClientId')"
+            },
+            "PortalTenantId": {
+                "type": "String",
+                "value": "@appsetting('PortalTenantId')",
+                "defaultValue": "@appsetting('PortalTenantId')"
+            },
+            "PortalClientSecret": {
+                "type": "String",
+                "value": "@appsetting('PortalClientSecret')",
+                "defaultValue": "@appsetting('PortalClientSecret')"
+            },
+            "SharepointClientId": {
+                "type": "String",
+                "value": "@appsetting('SharepointClientId')",
+                "defaultValue": "@appsetting('SharepointClientId')"
+            },
+            "SharepointTenantId": {
+                "type": "String",
+                "value": "@appsetting('SharepointTenantId')",
+                "defaultValue": "@appsetting('SharepointTenantId')"
+            },
+            "SharepointClientSecret": {
+                "type": "String",
+                "value": "@appsetting('SharepointClientSecret')",
+                "defaultValue": "@appsetting('SharepointClientSecret')"
+            },
+            "UnknownContact": {
+                "type": "String",
+                "value": "65879706-0798-e411-9412-00155deb6486",
+                "defaultValue": "65879706-0798-e411-9412-00155deb6486"
+            },
+            "FfcRetrievalWorkflowSasToken": {
+                "type": "String",
+                "value": "@appsetting('FfcRetrievalWorkflowSasToken')",
+                "defaultValue": "@appsetting('FfcRetrievalWorkflowSasToken')"
+            },
+            "FfcRetrievalWorkflowEndpoint": {
+                "type": "String",
+                "value": "@appsetting('FfcRetrievalWorkflowEndpoint')",
+                "defaultValue": "@appsetting('FfcRetrievalWorkflowEndpoint')"
+            }
+        },
         "triggers": {
             "When_messages_are_available_in_a_topic_subscription_(peek-lock)": {
                 "type": "ServiceProvider",
