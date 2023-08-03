@@ -39,9 +39,9 @@
     "type": "String",
     "value": "@appsetting('SharepointClientSecret')"
   },
-  "UnknownContact": {
+  "UnknownContactId": {
     "type": "String",
-    "value": "65879706-0798-e411-9412-00155deb6486"
+    "value": "@appsetting('UnknownContactId')"
   },
   "FfcRetrievalWorkflowSasToken": {
     "type": "String",
@@ -50,5 +50,17 @@
   "FfcRetrievalWorkflowEndpoint": {
     "type": "String",
     "value": "@appsetting('FfcRetrievalWorkflowEndpoint')"
+  },
+  "SharepointSiteSubPath": {
+    "type": "String",
+    "value": "@appsetting('SharepointSiteSubPath')"
+  },
+  "GovNotifyApiKey": {
+    "type": "String",
+    "value": "@appsetting('GovNotifyApiKey')"
+  },
+  "ErrorEmailTempateId": {
+    "type": "String",
+    "value": "9cf49f31-d557-4a78-beeb-27fe87553ae7"
   }
 }

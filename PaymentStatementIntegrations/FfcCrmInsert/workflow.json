@@ -808,10 +808,10 @@
                 "value": "@appsetting('SharepointClientSecret')",
                 "defaultValue": "@appsetting('SharepointClientSecret')"
             },
-            "UnknownContact": {
+            "UnknownContactId": {
                 "type": "String",
-                "value": "65879706-0798-e411-9412-00155deb6486",
-                "defaultValue": "65879706-0798-e411-9412-00155deb6486"
+                "value": "@appsetting('UnknownContactId')",
+                "defaultValue": "@appsetting('UnknownContactId')"
             },
             "FfcRetrievalWorkflowSasToken": {
                 "type": "String",

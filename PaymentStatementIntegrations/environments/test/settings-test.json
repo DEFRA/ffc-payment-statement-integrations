@@ -63,5 +63,25 @@
     "name": "FfcRetrievalWorkflowSasToken",
     "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/FfcRetrievalWorkflowSasToken/898d55c115534253b00d2e6538c623be)",
     "slotSetting": false
+  },
+  {
+    "name": "SharepointBaseUrl",
+    "value": "https://defradev.sharepoint.com",
+    "slotSetting": false
+  },
+  {
+    "name": "SharepointSiteSubPath",
+    "value": "/sites/tempdocstore",
+    "slotSetting": false
+  },
+  {
+    "name": "GovNotifyApiKey",
+    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/GovNotifyApiKey/17b4bb50a66d41fe936e83e7470bba75)",
+    "slotSetting": false
+  },
+  {
+    "name": "UnknownContactId",
+    "value": "65879706-0798-e411-9412-00155deb6486",
+    "slotSetting": false
   }
 ]
