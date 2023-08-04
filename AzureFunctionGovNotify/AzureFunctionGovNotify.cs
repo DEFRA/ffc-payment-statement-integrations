@@ -23,7 +23,8 @@ namespace AzureFunctionGovNotify
             try
             {
                 log.LogInformation("AzureFunctionGovNotify: send email via GovNotify");
-                log.LogInformation("AzureFunctionGovNotify: calling IP = " + GetCallingIp(req, log));
+                var callingIp = GetCallingIp(req, log);
+                log.LogInformation("AzureFunctionGovNotify: calling IP = " + callingIp);
                 string jsonContent = req.Body != null ? await new StreamReader(req.Body).ReadToEndAsync() : string.Empty;
                 log.LogInformation("AzureFunctionGovNotify: json = " + jsonContent);
                 if (!string.IsNullOrEmpty(jsonContent))
@@ -45,7 +46,7 @@ namespace AzureFunctionGovNotify
                                 personalisation: emailData.Personalisations
                             );
                             log.LogInformation("AzureFunctionGovNotify: Email successfully sent via GovNotify");
-                            return new OkResult();
+                            return new OkObjectResult("IP=" + callingIp);
                         }
                     }
                 }
@@ -60,8 +61,6 @@ namespace AzureFunctionGovNotify
 
         private static string GetCallingIp(HttpRequest request, ILogger log)
         {
-            log.LogInformation("AzureFunctionGovNotify x-for1 " + request.Headers["X-Forwarded-For"]);
-            log.LogInformation("AzureFunctionGovNotify x-for2 " + request.Headers["X-Forwarded-For"].FirstOrDefault());
             return (request.Headers["X-Forwarded-For"].FirstOrDefault() ?? string.Empty).Split(new char[] { ':' }).FirstOrDefault();
         }
     }
