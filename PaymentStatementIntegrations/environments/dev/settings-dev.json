@@ -83,5 +83,10 @@
     "name": "UnknownContactId",
     "value": "65879706-0798-e411-9412-00155deb6486",
     "slotSetting": false
+  },
+  {
+    "name": "ErrorEmailTemplateId",
+    "value": "9cf49f31-d557-4a78-beeb-27fe87553ae7",
+    "slotSetting": false
   }
 ]

@@ -61,6 +61,6 @@
   },
   "ErrorEmailTempateId": {
     "type": "String",
-    "value": "9cf49f31-d557-4a78-beeb-27fe87553ae7"
+    "value": "@appsetting('ErrorEmailTempateId')"
   }
 }
