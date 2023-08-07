@@ -12,7 +12,8 @@ variables:
   resourceGroupLocation: 'uksouth'
   resourceGroupName: '$(resourcePrefix)RG1401'
   
-  serviceConnection: 'AZD-RLE-TST1'
+  # Temporarily at DEV1 until TST1 is authorised
+  serviceConnection: 'AZD-RLE-DEV1'
 
   keyVaultName: '$(resourcePrefix)KV1401'
 
