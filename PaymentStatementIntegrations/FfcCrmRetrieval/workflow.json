@@ -54,11 +54,66 @@
             "Try_Scope": {
                 "type": "Scope",
                 "actions": {
+                    "Extract_referer": {
+                        "type": "Compose",
+                        "description": "Check URL link has been triggered from a CRM page as opposed to someone pasting URL into a browser",
+                        "inputs": "@triggerOutputs()?['headers']?['Referer']"
+                    },
+                    "Is_call_from_CRM": {
+                        "type": "If",
+                        "expression": {
+                            "and": [
+                                {
+                                    "startsWith": [
+                                        "@outputs('Extract_referer')",
+                                        "@parameters('CrmBaseUrl')"
+                                    ]
+                                }
+                            ]
+                        },
+                        "actions": {},
+                        "else": {
+                            "actions": {
+                                "Invalid_response": {
+                                    "type": "Response",
+                                    "kind": "Http",
+                                    "inputs": {
+                                        "statusCode": 400,
+                                        "body": "Invalid request"
+                                    }
+                                },
+                                "Terminate": {
+                                    "type": "Terminate",
+                                    "inputs": {
+                                        "runStatus": "Succeeded"
+                                    },
+                                    "runAfter": {
+                                        "Invalid_response": [
+                                            "SUCCEEDED"
+                                        ]
+                                    }
+                                }
+                            }
+                        },
+                        "runAfter": {
+                            "Extract_referer": [
+                                "SUCCEEDED",
+                                "FAILED",
+                                "TIMEDOUT",
+                                "SKIPPED"
+                            ]
+                        }
+                    },
                     "Get_PDF_from_service": {
                         "type": "Http",
                         "inputs": {
                             "uri": "@{parameters('PdfServiceUrl')}/statements/statement/@{trigger().outputs?.queries?.id}",
                             "method": "GET"
+                        },
+                        "runAfter": {
+                            "Is_call_from_CRM": [
+                                "SUCCEEDED"
+                            ]
                         },
                         "runtimeConfiguration": {
                             "contentTransfer": {
@@ -110,7 +165,7 @@
                         "trackedProperties": {
                             "ErrorText": "@action()?['inputs']"
                         }
-                   }
+                    }
                 },
                 "runAfter": {
                     "Try_Scope": [
@@ -146,6 +201,88 @@
                 "inputs": {
                     "method": "GET"
                 }
+            }
+        },
+        "parameters": {
+            "PdfServiceUrl": {
+                "type": "String",
+                "value": "@appsetting('PdfServiceUrl')",
+                "defaultValue": "@appsetting('PdfServiceUrl')"
+            },
+            "CrmBaseUrl": {
+                "type": "String",
+                "value": "@appsetting('CrmBaseUrl')",
+                "defaultValue": "@appsetting('CrmBaseUrl')"
+            },
+            "AdLoginBaseUrl": {
+                "type": "String",
+                "value": "@appsetting('AdLoginBaseUrl')",
+                "defaultValue": "@appsetting('AdLoginBaseUrl')"
+            },
+            "SharepointBaseUrl": {
+                "type": "String",
+                "value": "@appsetting('SharepointBaseUrl')",
+                "defaultValue": "@appsetting('SharepointBaseUrl')"
+            },
+            "PortalClientId": {
+                "type": "String",
+                "value": "@appsetting('PortalClientId')",
+                "defaultValue": "@appsetting('PortalClientId')"
+            },
+            "PortalTenantId": {
+                "type": "String",
+                "value": "@appsetting('PortalTenantId')",
+                "defaultValue": "@appsetting('PortalTenantId')"
+            },
+            "PortalClientSecret": {
+                "type": "String",
+                "value": "@appsetting('PortalClientSecret')",
+                "defaultValue": "@appsetting('PortalClientSecret')"
+            },
+            "SharepointClientId": {
+                "type": "String",
+                "value": "@appsetting('SharepointClientId')",
+                "defaultValue": "@appsetting('SharepointClientId')"
+            },
+            "SharepointTenantId": {
+                "type": "String",
+                "value": "@appsetting('SharepointTenantId')",
+                "defaultValue": "@appsetting('SharepointTenantId')"
+            },
+            "SharepointClientSecret": {
+                "type": "String",
+                "value": "@appsetting('SharepointClientSecret')",
+                "defaultValue": "@appsetting('SharepointClientSecret')"
+            },
+            "UnknownContactId": {
+                "type": "String",
+                "value": "@appsetting('UnknownContactId')",
+                "defaultValue": "@appsetting('UnknownContactId')"
+            },
+            "FfcRetrievalWorkflowSasToken": {
+                "type": "String",
+                "value": "@appsetting('FfcRetrievalWorkflowSasToken')",
+                "defaultValue": "@appsetting('FfcRetrievalWorkflowSasToken')"
+            },
+            "FfcRetrievalWorkflowEndpoint": {
+                "type": "String",
+                "value": "@appsetting('FfcRetrievalWorkflowEndpoint')",
+                "defaultValue": "@appsetting('FfcRetrievalWorkflowEndpoint')"
+            },
+            "SharepointSiteSubPath": {
+                "type": "String",
+                "value": "@appsetting('SharepointSiteSubPath')",
+                "defaultValue": "@appsetting('SharepointSiteSubPath')"
+            },
+            "GovNotifyApiKey": {
+                "type": "String",
+                "value": "@appsetting('GovNotifyApiKey')",
+                "defaultValue": "@appsetting('GovNotifyApiKey')"
+            },
+            "ErrorEmailTempateId": {
+                "type": "String",
+                "value": "@appsetting('ErrorEmailTempateId')",
+                "defaultValue": "@appsetting('ErrorEmailTempateId')"
             }
         }
     },

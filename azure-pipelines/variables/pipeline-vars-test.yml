@@ -12,8 +12,7 @@ variables:
   resourceGroupLocation: 'uksouth'
   resourceGroupName: '$(resourcePrefix)RG1401'
   
-  #####Currently set to DEV as TST does not yet exist and fails parsing the pipeline
-  serviceConnection: 'AZD-RLE-DEV1'
+  serviceConnection: 'AZD-RLE-TST1'
 
   keyVaultName: '$(resourcePrefix)KV1401'
 
@@ -48,5 +47,5 @@ variables:
   # - serviceBusUserManagedIdentityObjectId
 
   servicebusConnectionNameSP: 'serviceBus'
-  servicebusNamespaceSP: 'SNDFFCINFSB1001.servicebus.windows.net'
+  servicebusNamespaceSP: 'TSTFFCINFSB1001.servicebus.windows.net'
   
