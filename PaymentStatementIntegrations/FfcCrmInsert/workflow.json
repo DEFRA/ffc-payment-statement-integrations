@@ -162,22 +162,6 @@
                     ]
                 }
             },
-            "Initialize_variable": {
-                "type": "InitializeVariable",
-                "inputs": {
-                    "variables": [
-                        {
-                            "name": "FinalErrorText",
-                            "type": "string"
-                        }
-                    ]
-                },
-                "runAfter": {
-                    "Initialize_filename": [
-                        "SUCCEEDED"
-                    ]
-                }
-            },
             "Initialize_year": {
                 "type": "InitializeVariable",
                 "inputs": {
@@ -193,38 +177,6 @@
                         "SUCCEEDED"
                     ]
                 }
-            },
-            "Parse_Payload_JSON": {
-                "type": "ParseJson",
-                "inputs": {
-                    "content": "@triggerBody()?['contentData']",
-                    "schema": {
-                        "properties": {
-                            "apiLink": {
-                                "type": "string"
-                            },
-                            "documentType": {
-                                "type": "string"
-                            },
-                            "frn": {
-                                "type": "integer"
-                            },
-                            "sbi": {
-                                "type": "integer"
-                            },
-                            "scheme": {
-                                "type": "string"
-                            }
-                        },
-                        "type": "object"
-                    }
-                },
-                "runAfter": {
-                    "Initialize_variable": [
-                        "SUCCEEDED"
-                    ]
-                },
-                "trackedProperties": {}
             },
             "Try_Scope": {
                 "type": "Scope",
@@ -650,6 +602,11 @@
                                 }
                             }
                         },
+                        "runAfter": {
+                            "Parse_Payload_JSON": [
+                                "SUCCEEDED"
+                            ]
+                        },
                         "trackedProperties": {}
                     },
                     "Parse_Organisation_Details": {
@@ -742,10 +699,37 @@
                                 "SUCCEEDED"
                             ]
                         }
+                    },
+                    "Parse_Payload_JSON": {
+                        "type": "ParseJson",
+                        "inputs": {
+                            "content": "@triggerBody()?['contentData']",
+                            "schema": {
+                                "properties": {
+                                    "apiLink": {
+                                        "type": "string"
+                                    },
+                                    "documentType": {
+                                        "type": "string"
+                                    },
+                                    "frn": {
+                                        "type": "integer"
+                                    },
+                                    "sbi": {
+                                        "type": "integer"
+                                    },
+                                    "scheme": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "trackedProperties": {}
                     }
                 },
                 "runAfter": {
-                    "Parse_Payload_JSON": [
+                    "Initialize_filename": [
                         "SUCCEEDED",
                         "TIMEDOUT",
                         "FAILED",
@@ -808,10 +792,10 @@
                 "value": "@appsetting('SharepointClientSecret')",
                 "defaultValue": "@appsetting('SharepointClientSecret')"
             },
-            "UnknownContact": {
+            "UnknownContactId": {
                 "type": "String",
-                "value": "65879706-0798-e411-9412-00155deb6486",
-                "defaultValue": "65879706-0798-e411-9412-00155deb6486"
+                "value": "@appsetting('UnknownContactId')",
+                "defaultValue": "@appsetting('UnknownContactId')"
             },
             "FfcRetrievalWorkflowSasToken": {
                 "type": "String",
@@ -822,6 +806,21 @@
                 "type": "String",
                 "value": "@appsetting('FfcRetrievalWorkflowEndpoint')",
                 "defaultValue": "@appsetting('FfcRetrievalWorkflowEndpoint')"
+            },
+            "SharepointSiteSubPath": {
+                "type": "String",
+                "value": "@appsetting('SharepointSiteSubPath')",
+                "defaultValue": "@appsetting('SharepointSiteSubPath')"
+            },
+            "GovNotifyApiKey": {
+                "type": "String",
+                "value": "@appsetting('GovNotifyApiKey')",
+                "defaultValue": "@appsetting('GovNotifyApiKey')"
+            },
+            "ErrorEmailTempateId": {
+                "type": "String",
+                "value": "@appsetting('ErrorEmailTempateId')",
+                "defaultValue": "@appsetting('ErrorEmailTempateId')"
             }
         },
         "triggers": {

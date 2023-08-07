@@ -144,7 +144,7 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
 
                 // Check action result
                 Assert.AreEqual(ActionStatus.Failed, testRunner.GetWorkflowActionStatus("Parse_Payload_JSON"));
-                Assert.AreEqual(ActionStatus.Failed, testRunner.GetWorkflowActionStatus("If_JSON_is_valid"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("If_JSON_is_valid"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Get_CRM_Token"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Parse_Token_Response"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Extract_year"));
