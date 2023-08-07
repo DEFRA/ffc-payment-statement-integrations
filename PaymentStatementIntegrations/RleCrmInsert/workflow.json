@@ -1,0 +1,1011 @@
+{
+    "definition": {
+        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+        "actions": {
+            "Init_ActivityId": {
+                "type": "InitializeVariable",
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "ActivityId",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Init_NewCaseId": [
+                        "SUCCEEDED"
+                    ]
+                }
+            },
+            "Init_NewCaseId": {
+                "type": "InitializeVariable",
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "NewCaseId",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Initialize_ContactId": [
+                        "SUCCEEDED"
+                    ]
+                }
+            },
+            "Init_OrganisationId": {
+                "type": "InitializeVariable",
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "OrganisationId",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Init_FileList": [
+                        "SUCCEEDED"
+                    ]
+                }
+            },
+            "Initialize_ProgressText": {
+                "type": "InitializeVariable",
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "ProgressText",
+                            "type": "string",
+                            "value": "Started"
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Init_ActivityId": [
+                        "SUCCEEDED"
+                    ]
+                }
+            },
+            "Try_Scope": {
+                "type": "Scope",
+                "actions": {
+                    "All_Values_Are_Present": {
+                        "type": "If",
+                        "expression": {
+                            "and": [
+                                {
+                                    "not": {
+                                        "equals": [
+                                            "@string(body('Parse_CTL_File')?['crn'])",
+                                            ""
+                                        ]
+                                    }
+                                },
+                                {
+                                    "not": {
+                                        "equals": [
+                                            "@string(body('Parse_CTL_File')?['frn'])",
+                                            ""
+                                        ]
+                                    }
+                                },
+                                {
+                                    "equals": [
+                                        "@body('Parse_CTL_File')?['filesInSubmission']",
+                                        "@length(variables('FileList'))"
+                                    ]
+                                }
+                            ]
+                        },
+                        "actions": {},
+                        "else": {
+                            "actions": {
+                                "Throw_error_missing_values": {
+                                    "type": "Compose",
+                                    "inputs": "@int('__ERROR_missing_values__')",
+                                    "runAfter": {
+                                        "Is_FIle_Number_Mismatch": [
+                                            "SUCCEEDED"
+                                        ]
+                                    }
+                                },
+                                "Is_FIle_Number_Mismatch": {
+                                    "type": "If",
+                                    "expression": {
+                                        "and": [
+                                            {
+                                                "not": {
+                                                    "equals": [
+                                                        "@body('Parse_CTL_File')?['filesInSubmission']",
+                                                        "@length(variables('FileList'))"
+                                                    ]
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    "actions": {
+                                        "Append_file_mismatch_error": {
+                                            "type": "AppendToStringVariable",
+                                            "inputs": {
+                                                "name": "ProgressText",
+                                                "value": ": mismatch of file numbers in CTL"
+                                            }
+                                        }
+                                    },
+                                    "else": {
+                                        "actions": {
+                                            "Append_missing_value_error": {
+                                                "type": "AppendToStringVariable",
+                                                "inputs": {
+                                                    "name": "ProgressText",
+                                                    "value": ": missing values in CTL file"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "runAfter": {
+                            "Set_FileList": [
+                                "SUCCEEDED"
+                            ]
+                        }
+                    },
+                    "Parse_CTL_File": {
+                        "type": "ParseJson",
+                        "inputs": {
+                            "content": "@body('Read_CTL_blob_contents')?['content']",
+                            "schema": {
+                                "properties": {
+                                    "crn": {
+                                        "type": "string"
+                                    },
+                                    "files": {
+                                        "items": {
+                                            "properties": {
+                                                "fileName": {
+                                                    "type": "string"
+                                                },
+                                                "guid": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "fileName",
+                                                "guid"
+                                            ],
+                                            "type": "object"
+                                        },
+                                        "type": "array"
+                                    },
+                                    "filesInSubmission": {
+                                        "type": "integer"
+                                    },
+                                    "frn": {
+                                        "type": "string"
+                                    },
+                                    "sbi": {
+                                        "type": "string"
+                                    },
+                                    "submissionDateTime": {
+                                        "type": "string"
+                                    },
+                                    "uosr": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "runAfter": {
+                            "Read_CTL_blob_contents": [
+                                "SUCCEEDED"
+                            ]
+                        },
+                        "trackedProperties": {}
+                    },
+                    "Read_CTL_blob_contents": {
+                        "type": "ServiceProvider",
+                        "inputs": {
+                            "parameters": {
+                                "containerName": "rle-container",
+                                "blobName": "@triggerBody()?['name']"
+                            },
+                            "serviceProviderConfiguration": {
+                                "connectionName": "azureBlobRle",
+                                "operationId": "readBlob",
+                                "serviceProviderId": "/serviceProviders/AzureBlob"
+                            }
+                        }
+                    },
+                    "Set_FileList": {
+                        "type": "SetVariable",
+                        "inputs": {
+                            "name": "FileList",
+                            "value": "@body('Parse_CTL_File')?['files']"
+                        },
+                        "runAfter": {
+                            "Parse_CTL_File": [
+                                "SUCCEEDED"
+                            ]
+                        }
+                    },
+                    "Has_ActivityId": {
+                        "type": "If",
+                        "expression": {
+                            "and": [
+                                {
+                                    "not": {
+                                        "equals": [
+                                            "@string(variables('ActivityId'))",
+                                            ""
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        "actions": {
+                            "Get_Sharepoint_Token": {
+                                "type": "Http",
+                                "inputs": {
+                                    "uri": "@{parameters('SharepointLoginBaseUrl')}/@{parameters('SharepointTenantId')}/tokens/OAuth/2/",
+                                    "method": "POST",
+                                    "headers": {
+                                        "Content-Type": "application/x-www-form-urlencoded"
+                                    },
+                                    "body": "client_id=@{parameters('SharepointClientId')}%40@{parameters('SharepointTenantId')}\n&resource=00000003-0000-0ff1-ce00-000000000000/@{parameters('SharepointDomain')}%40@{parameters('SharepointTenantId')}\n&grant_type=client_credentials\n&client_secret=@{encodeUriComponent(parameters('SharepointClientSecret'))}"
+                                },
+                                "runtimeConfiguration": {
+                                    "contentTransfer": {
+                                        "transferMode": "Chunked"
+                                    }
+                                }
+                            },
+                            "Parse_Sharepoint_Token": {
+                                "type": "ParseJson",
+                                "inputs": {
+                                    "content": "@body('Get_Sharepoint_Token')",
+                                    "schema": {
+                                        "properties": {
+                                            "access_token": {
+                                                "type": "string"
+                                            },
+                                            "expires_in": {
+                                                "type": "string"
+                                            },
+                                            "token_type": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "runAfter": {
+                                    "Get_Sharepoint_Token": [
+                                        "SUCCEEDED"
+                                    ]
+                                }
+                            },
+                            "Create_Folder": {
+                                "type": "Http",
+                                "inputs": {
+                                    "uri": "@{parameters('SharepointBaseUrl')}/_api/web/folders",
+                                    "method": "POST",
+                                    "headers": {
+                                        "Authorization": "Bearer @{body('Parse_Sharepoint_Token')?['access_token']}",
+                                        "Content-Type": "application/json"
+                                    },
+                                    "body": {
+                                        "ServerRelativeUrl": "/@{parameters('SharepointSiteSubPath')}Documents/01atest"
+                                    }
+                                },
+                                "runAfter": {
+                                    "Parse_Sharepoint_Token": [
+                                        "SUCCEEDED"
+                                    ]
+                                },
+                                "runtimeConfiguration": {
+                                    "contentTransfer": {
+                                        "transferMode": "Chunked"
+                                    }
+                                }
+                            },
+                            "Append_progress_folder": {
+                                "type": "AppendToStringVariable",
+                                "inputs": {
+                                    "name": "ProgressText",
+                                    "value": ": created folder"
+                                },
+                                "runAfter": {
+                                    "Create_Folder": [
+                                        "SUCCEEDED"
+                                    ]
+                                }
+                            },
+                            "For_each": {
+                                "type": "Foreach",
+                                "foreach": "@variables('FileList')",
+                                "actions": {
+                                    "Get_filename": {
+                                        "type": "Compose",
+                                        "inputs": "@item()['fileName']"
+                                    },
+                                    "Read_blob_content": {
+                                        "type": "ServiceProvider",
+                                        "inputs": {
+                                            "parameters": {
+                                                "containerName": "rle-container",
+                                                "blobName": "@outputs('Get_filename')"
+                                            },
+                                            "serviceProviderConfiguration": {
+                                                "connectionName": "azureBlobRle",
+                                                "operationId": "readBlob",
+                                                "serviceProviderId": "/serviceProviders/AzureBlob"
+                                            }
+                                        },
+                                        "runAfter": {
+                                            "Append_progress_filename": [
+                                                "SUCCEEDED"
+                                            ]
+                                        }
+                                    },
+                                    "Copy_To_Sharepoint": {
+                                        "type": "Http",
+                                        "inputs": {
+                                            "uri": "@{parameters('SharepointBaseUrl')}/_api/web/GetFolderByServerRelativeUrl('Documents/01atest')/Files/add(url='@{outputs('Get_filename')}',overwrite=true)",
+                                            "method": "POST",
+                                            "headers": {
+                                                "Authorization": "Bearer @{body('Parse_Sharepoint_Token')?['access_token']}",
+                                                "accept": "application/json"
+                                            },
+                                            "body": "@body('Read_blob_content')?['content']"
+                                        },
+                                        "runAfter": {
+                                            "Read_blob_content": [
+                                                "SUCCEEDED"
+                                            ]
+                                        },
+                                        "runtimeConfiguration": {
+                                            "contentTransfer": {
+                                                "transferMode": "Chunked"
+                                            }
+                                        }
+                                    },
+                                    "Append_progress_sp": {
+                                        "type": "AppendToStringVariable",
+                                        "inputs": {
+                                            "name": "ProgressText",
+                                            "value": ": copied file @{outputs('Get_filename')} to SP"
+                                        },
+                                        "runAfter": {
+                                            "Copy_To_Sharepoint": [
+                                                "SUCCEEDED"
+                                            ]
+                                        }
+                                    },
+                                    "Append_progress_metadata": {
+                                        "type": "AppendToStringVariable",
+                                        "inputs": {
+                                            "name": "ProgressText",
+                                            "value": ": created metadata"
+                                        },
+                                        "runAfter": {
+                                            "Create_Meta_Data": [
+                                                "SUCCEEDED"
+                                            ]
+                                        }
+                                    },
+                                    "Create_Meta_Data": {
+                                        "type": "Http",
+                                        "inputs": {
+                                            "uri": "@{parameters('CrmBaseUrl')}/api/data/v9.2/rpa_activitymetadatas",
+                                            "method": "POST",
+                                            "headers": {
+                                                "Authorization": "Bearer @{body('Parse_CRM_Token')?['access_token']}"
+                                            },
+                                            "body": {
+                                                "rpa_RelatedCase@odata.bind": "/incidents(@{variables('NewCaseId')})",
+                                                "rpa_RelatedOnlineSubmissionId@odata.bind": "/rpa_onlinesubmissions(@{variables('ActivityId')})",
+                                                "rpa_contact@odata.bind": "/contacts(65879706-0798-e411-9412-00155deb6486)",
+                                                "rpa_crn": "@{body('Parse_CTL_File')?['crn']}",
+                                                "rpa_direction": "false",
+                                                "rpa_docrefproxy": "SFIPS",
+                                                "rpa_fileabsoluteurl": "@{parameters('SharepointBaseUrl')}@{body('Copy_To_Sharepoint')['ServerRelativeUrl']}@{outputs('Get_filename')}",
+                                                "rpa_filename": "@{outputs('Get_filename')}",
+                                                "rpa_organisation@odata.bind": "/accounts(@{variables('OrganisationId')})",
+                                                "rpa_sbi": "@{body('Parse_CTL_File')?['sbi']}"
+                                            }
+                                        },
+                                        "runAfter": {
+                                            "Append_progress_sp": [
+                                                "SUCCEEDED"
+                                            ]
+                                        },
+                                        "runtimeConfiguration": {
+                                            "contentTransfer": {
+                                                "transferMode": "Chunked"
+                                            }
+                                        }
+                                    },
+                                    "Append_progress_filename": {
+                                        "type": "AppendToStringVariable",
+                                        "inputs": {
+                                            "name": "ProgressText",
+                                            "value": ": checking blob @{outputs('Get_filename')}"
+                                        },
+                                        "runAfter": {
+                                            "Get_filename": [
+                                                "SUCCEEDED"
+                                            ]
+                                        }
+                                    }
+                                },
+                                "runAfter": {
+                                    "Append_progress_folder": [
+                                        "SUCCEEDED"
+                                    ]
+                                },
+                                "runtimeConfiguration": {
+                                    "concurrency": {
+                                        "repetitions": 1
+                                    }
+                                },
+                                "trackedProperties": {}
+                            }
+                        },
+                        "else": {
+                            "actions": {
+                                "Append_error_missing_activity": {
+                                    "type": "AppendToStringVariable",
+                                    "inputs": {
+                                        "name": "ProgressText",
+                                        "value": ": missing activity id"
+                                    }
+                                },
+                                "Throw_error_missing_activity": {
+                                    "type": "Compose",
+                                    "inputs": "@int('__ERROR_missing_activity__')",
+                                    "runAfter": {
+                                        "Append_error_missing_activity": [
+                                            "SUCCEEDED"
+                                        ]
+                                    }
+                                }
+                            }
+                        },
+                        "runAfter": {
+                            "Append_progress_activity_id": [
+                                "SUCCEEDED"
+                            ]
+                        }
+                    },
+                    "Get_CRM_Token": {
+                        "type": "Http",
+                        "inputs": {
+                            "uri": "@{parameters('AdLoginBaseUrl')}/@{parameters('PortalTenantId')}/oauth2/token",
+                            "method": "POST",
+                            "headers": {
+                                "Content-Type": "application/x-www-form-urlencoded"
+                            },
+                            "body": "grant_type=client_credentials\n&client_id=@{parameters('PortalClientId')}\n&client_secret=@{encodeUriComponent(parameters('PortalClientSecret'))}\n&resource=@{encodeUriComponent(parameters('CrmBaseUrl'))}"
+                        },
+                        "runAfter": {
+                            "All_Values_Are_Present": [
+                                "SUCCEEDED"
+                            ]
+                        },
+                        "runtimeConfiguration": {
+                            "contentTransfer": {
+                                "transferMode": "Chunked"
+                            }
+                        }
+                    },
+                    "Parse_CRM_Token": {
+                        "type": "ParseJson",
+                        "inputs": {
+                            "content": "@body('Get_CRM_Token')",
+                            "schema": {
+                                "properties": {
+                                    "access_token": {
+                                        "type": "string"
+                                    },
+                                    "expires_in": {
+                                        "type": "string"
+                                    },
+                                    "expires_on": {
+                                        "type": "string"
+                                    },
+                                    "ext_expires_in": {
+                                        "type": "string"
+                                    },
+                                    "not_before": {
+                                        "type": "string"
+                                    },
+                                    "resource": {
+                                        "type": "string"
+                                    },
+                                    "token_type": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "runAfter": {
+                            "Get_CRM_Token": [
+                                "SUCCEEDED"
+                            ]
+                        }
+                    },
+                    "Get_CRM_Org": {
+                        "type": "Http",
+                        "inputs": {
+                            "uri": "@{parameters('CrmBaseUrl')}/api/data/v9.2/accounts?$select=name,accountid&$filter=rpa_capfirmid eq '@{body('Parse_CTL_File')?['frn']}'",
+                            "method": "GET",
+                            "headers": {
+                                "Authorization": "Bearer @{body('Parse_CRM_Token')?['access_token']}"
+                            }
+                        },
+                        "runAfter": {
+                            "Parse_CRM_Token": [
+                                "SUCCEEDED"
+                            ]
+                        },
+                        "runtimeConfiguration": {
+                            "contentTransfer": {
+                                "transferMode": "Chunked"
+                            }
+                        }
+                    },
+                    "Parse_Org_Response": {
+                        "type": "ParseJson",
+                        "inputs": {
+                            "content": "@body('Get_CRM_Org')",
+                            "schema": {
+                                "properties": {
+                                    "@@odata.context": {
+                                        "type": "string"
+                                    },
+                                    "value": {
+                                        "items": {
+                                            "properties": {
+                                                "@@odata.etag": {
+                                                    "type": "string"
+                                                },
+                                                "accountid": {
+                                                    "type": "string"
+                                                },
+                                                "name": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "@@odata.etag",
+                                                "name",
+                                                "accountid"
+                                            ],
+                                            "type": "object"
+                                        },
+                                        "type": "array"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "runAfter": {
+                            "Get_CRM_Org": [
+                                "SUCCEEDED"
+                            ]
+                        }
+                    },
+                    "Set_OrganisationId": {
+                        "type": "SetVariable",
+                        "inputs": {
+                            "name": "OrganisationId",
+                            "value": "@{outputs('Parse_Org_Response')?['body']?['value'][0]['accountid']}"
+                        },
+                        "runAfter": {
+                            "Parse_Org_Response": [
+                                "SUCCEEDED"
+                            ]
+                        }
+                    },
+                    "Append_progress_org_id": {
+                        "type": "AppendToStringVariable",
+                        "inputs": {
+                            "name": "ProgressText",
+                            "value": ": org_id @{variables('OrganisationId')}"
+                        },
+                        "runAfter": {
+                            "Set_OrganisationId": [
+                                "SUCCEEDED"
+                            ]
+                        }
+                    },
+                    "Get_CRM_Contact": {
+                        "type": "Http",
+                        "inputs": {
+                            "uri": "@{parameters('CrmBaseUrl')}/api/data/v9.2/contacts?$select=contactid,fullname&$filter=rpa_capcustomerid eq '@{body('Parse_CTL_File')?['crn']}'",
+                            "method": "GET",
+                            "headers": {
+                                "Authorization": "Bearer @{body('Parse_CRM_Token')?['access_token']}"
+                            }
+                        },
+                        "runAfter": {
+                            "Append_progress_org_id": [
+                                "SUCCEEDED"
+                            ]
+                        },
+                        "runtimeConfiguration": {
+                            "contentTransfer": {
+                                "transferMode": "Chunked"
+                            }
+                        }
+                    },
+                    "Parse_Contact_Details": {
+                        "type": "ParseJson",
+                        "inputs": {
+                            "content": "@body('Get_CRM_Contact')",
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "contactid": {
+                                        "type": "string"
+                                    },
+                                    "fullname": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        },
+                        "runAfter": {
+                            "Get_CRM_Contact": [
+                                "SUCCEEDED"
+                            ]
+                        }
+                    },
+                    "Extract_ContactId": {
+                        "type": "SetVariable",
+                        "inputs": {
+                            "name": "ContactId",
+                            "value": "@body('Parse_Contact_Details')?['contactid']"
+                        },
+                        "runAfter": {
+                            "Parse_Contact_Details": [
+                                "SUCCEEDED"
+                            ]
+                        }
+                    },
+                    "Create_CRM_Case": {
+                        "type": "Http",
+                        "inputs": {
+                            "uri": "@{parameters('CrmBaseUrl')}/api/data/v9.2/incidents?$select=incidentid",
+                            "method": "POST",
+                            "headers": {
+                                "Authorization": "Bearer @{body('Parse_CRM_Token')?['access_token']}",
+                                "Prefer": "return=representation"
+                            },
+                            "body": {
+                                "caseorigincode": "100000002",
+                                "casetypecode": "927350013",
+                                "customerid_contact@odata.bind": "/contacts(@{variables('ContactId')})",
+                                "rpa_Contact@odata.bind": "/contacts(@{variables('ContactId')})",
+                                "rpa_Organisation@odata.bind": "/accounts(@{variables('OrganisationId')})",
+                                "rpa_isunknowncontact": "true",
+                                "rpa_isunknownorganisation": "false",
+                                "title": "RLE1 Form File - Received"
+                            }
+                        },
+                        "runAfter": {
+                            "Extract_ContactId": [
+                                "SUCCEEDED"
+                            ]
+                        },
+                        "runtimeConfiguration": {
+                            "contentTransfer": {
+                                "transferMode": "Chunked"
+                            }
+                        }
+                    },
+                    "Set_NewCaseId": {
+                        "type": "SetVariable",
+                        "inputs": {
+                            "name": "NewCaseId",
+                            "value": "@{body('Create_CRM_Case')?['incidentid']}"
+                        },
+                        "runAfter": {
+                            "Create_CRM_Case": [
+                                "SUCCEEDED"
+                            ]
+                        }
+                    },
+                    "Append_progress_case_id": {
+                        "type": "AppendToStringVariable",
+                        "inputs": {
+                            "name": "ProgressText",
+                            "value": ": created case id @{variables('NewCaseId')}"
+                        },
+                        "runAfter": {
+                            "Set_NewCaseId": [
+                                "SUCCEEDED"
+                            ]
+                        }
+                    },
+                    "Create_Online_Submission_Activity": {
+                        "type": "Http",
+                        "inputs": {
+                            "uri": "@{parameters('CrmBaseUrl')}/api/data/v9.2/rpa_onlinesubmissions?$select=activityid",
+                            "method": "POST",
+                            "headers": {
+                                "Authorization": "@{body('Parse_CRM_Token')?['access_token']}",
+                                "Prefer": "return=representation"
+                            },
+                            "body": {
+                                "regardingobjectid_incident_rpa_onlinesubmission@odata.bind": "/incidents(@{variables('NewCaseId')})",
+                                "rpa_filesinsubmission": "@{body('Parse_CTL_File')?['filesInSubmission']}",
+                                "rpa_onlinesubmissiondate": "@{body('Parse_CTL_File')?['submissionDate']}",
+                                "rpa_onlinesubmissionid": "@{body('Parse_CTL_File')?['uosr']}",
+                                "subject": "RLE2 File - Sent via Notify"
+                            }
+                        },
+                        "runAfter": {
+                            "Append_progress_case_id": [
+                                "SUCCEEDED"
+                            ]
+                        },
+                        "runtimeConfiguration": {
+                            "contentTransfer": {
+                                "transferMode": "Chunked"
+                            }
+                        }
+                    },
+                    "Set_ActivityId": {
+                        "type": "SetVariable",
+                        "inputs": {
+                            "name": "ActivityId",
+                            "value": "@{body('Create_Online_Submission_Activity')?['activityid']}"
+                        },
+                        "runAfter": {
+                            "Create_Online_Submission_Activity": [
+                                "SUCCEEDED"
+                            ]
+                        }
+                    },
+                    "Append_progress_activity_id": {
+                        "type": "AppendToStringVariable",
+                        "inputs": {
+                            "name": "ProgressText",
+                            "value": ": created activity @{variables('ActivityId')}"
+                        },
+                        "runAfter": {
+                            "Set_ActivityId": [
+                                "SUCCEEDED"
+                            ]
+                        }
+                    }
+                },
+                "runAfter": {
+                    "Initialize_ProgressText": [
+                        "SUCCEEDED"
+                    ]
+                }
+            },
+            "Catch_Scope": {
+                "type": "Scope",
+                "actions": {
+                    "Get_error_stack": {
+                        "type": "Query",
+                        "inputs": {
+                            "from": "@result('Try_Scope')",
+                            "where": "@equals(item()?['status'],'Failed')"
+                        },
+                        "runtimeConfiguration": {
+                            "secureData": {
+                                "properties": [
+                                    "inputs",
+                                    "outputs"
+                                ]
+                            }
+                        },
+                        "trackedProperties": {}
+                    },
+                    "Strip_sensitive_data": {
+                        "type": "JavaScriptCode",
+                        "inputs": {
+                            "code": "// This code snippet removes any sensitive token values if defined\n\n// List of tokens with their terminating char - defined in pairs\nvar sensitiveTokens = [ 'client_secret=', '&', 'client_id=', '&', 'Authorization\":', '}' ];\nvar errorStack = JSON.stringify(workflowContext.actions.Get_error_stack.outputs);\ntry {\n    for (var i=0; i < sensitiveTokens.length; i = i + 2) {\n        var tok = sensitiveTokens[i];\n        var tokLen = tok.length;\n        var tokPos = errorStack.indexOf(tok);\n        var endPos = errorStack.indexOf(sensitiveTokens[i+1],tokPos + 1);\n        if (tokPos > -1) {\n            if (endPos > -1) {\n                errorStack = errorStack.substring(0, tokPos + tokLen) +\n                    '******' +\n                    errorStack.substring(endPos);\n            } else {\n                errorStack = errorStack.substring(0, tokPos + tokLen) +\n                    '******';\n            }\n        }\n    }\n}\ncatch (err) {\n  // Do nothing\n}\nreturn errorStack;"
+                        },
+                        "runAfter": {
+                            "Get_error_stack": [
+                                "SUCCEEDED"
+                            ]
+                        },
+                        "trackedProperties": {}
+                    },
+                    "Append_progress_final": {
+                        "type": "AppendToStringVariable",
+                        "inputs": {
+                            "name": "ProgressText",
+                            "value": ": @{outputs('Strip_sensitive_data')}"
+                        },
+                        "runAfter": {
+                            "Strip_sensitive_data": [
+                                "SUCCEEDED"
+                            ]
+                        },
+                        "trackedProperties": {}
+                    },
+                    "Throw_final_error": {
+                        "type": "Compose",
+                        "inputs": "@int('__ERROR_FINAL__')",
+                        "runAfter": {
+                            "Compose_final_error": [
+                                "SUCCEEDED"
+                            ]
+                        },
+                        "trackedProperties": {}
+                    },
+                    "Compose_final_error": {
+                        "type": "Compose",
+                        "inputs": "@variables('ProgressText')",
+                        "runAfter": {
+                            "Append_progress_final": [
+                                "SUCCEEDED"
+                            ]
+                        }
+                    }
+                },
+                "runAfter": {
+                    "Try_Scope": [
+                        "TIMEDOUT",
+                        "FAILED",
+                        "SKIPPED"
+                    ]
+                }
+            },
+            "Initialize_ContactId": {
+                "type": "InitializeVariable",
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "ContactId",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Init_OrganisationId": [
+                        "SUCCEEDED"
+                    ]
+                }
+            },
+            "Init_FileList": {
+                "type": "InitializeVariable",
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "FileList",
+                            "type": "array"
+                        }
+                    ]
+                },
+                "runAfter": {},
+                "trackedProperties": {
+                    "WorkflowName": "RleCrmInsert"
+                }
+            }
+        },
+        "contentVersion": "1.0.0.0",
+        "outputs": {},
+        "triggers": {
+            "When_a_blob_is_added_or_updated": {
+                "type": "ServiceProvider",
+                "inputs": {
+                    "parameters": {
+                        "path": "/rle-container"
+                    },
+                    "serviceProviderConfiguration": {
+                        "connectionName": "azureBlobRle",
+                        "operationId": "whenABlobIsAddedOrModified",
+                        "serviceProviderId": "/serviceProviders/AzureBlob"
+                    }
+                },
+                "trackedProperties": {}
+            }
+        },
+        "parameters": {
+            "PdfServiceUrl": {
+                "type": "String",
+                "value": "@appsetting('PdfServiceUrl')",
+                "defaultValue": "@appsetting('PdfServiceUrl')"
+            },
+            "CrmBaseUrl": {
+                "type": "String",
+                "value": "@appsetting('CrmBaseUrl')",
+                "defaultValue": "@appsetting('CrmBaseUrl')"
+            },
+            "AdLoginBaseUrl": {
+                "type": "String",
+                "value": "@appsetting('AdLoginBaseUrl')",
+                "defaultValue": "@appsetting('AdLoginBaseUrl')"
+            },
+            "PortalClientId": {
+                "type": "String",
+                "value": "@appsetting('PortalClientId')",
+                "defaultValue": "@appsetting('PortalClientId')"
+            },
+            "PortalTenantId": {
+                "type": "String",
+                "value": "@appsetting('PortalTenantId')",
+                "defaultValue": "@appsetting('PortalTenantId')"
+            },
+            "PortalClientSecret": {
+                "type": "String",
+                "value": "@appsetting('PortalClientSecret')",
+                "defaultValue": "@appsetting('PortalClientSecret')"
+            },
+            "SharepointLoginBaseUrl": {
+                "type": "String",
+                "value": "@appsetting('SharepointLoginBaseUrl')",
+                "defaultValue": "@appsetting('SharepointLoginBaseUrl')"
+            },
+            "SharepointDomain": {
+                "type": "String",
+                "value": "@appsetting('SharepointDomain')",
+                "defaultValue": "@appsetting('SharepointDomain')"
+            },
+            "SharepointBaseUrl": {
+                "type": "String",
+                "value": "@appsetting('SharepointBaseUrl')",
+                "defaultValue": "@appsetting('SharepointBaseUrl')"
+            },
+            "SharepointSiteSubPath": {
+                "type": "String",
+                "value": "@appsetting('SharepointSiteSubPath')",
+                "defaultValue": "@appsetting('SharepointSiteSubPath')"
+            },
+            "SharepointClientId": {
+                "type": "String",
+                "value": "@appsetting('SharepointClientId')",
+                "defaultValue": "@appsetting('SharepointClientId')"
+            },
+            "SharepointTenantId": {
+                "type": "String",
+                "value": "@appsetting('SharepointTenantId')",
+                "defaultValue": "@appsetting('SharepointTenantId')"
+            },
+            "SharepointClientSecret": {
+                "type": "String",
+                "value": "@appsetting('SharepointClientSecret')",
+                "defaultValue": "@appsetting('SharepointClientSecret')"
+            },
+            "UnknownContactId": {
+                "type": "String",
+                "value": "@appsetting('UnknownContactId')",
+                "defaultValue": "@appsetting('UnknownContactId')"
+            },
+            "FfcRetrievalWorkflowSasToken": {
+                "type": "String",
+                "value": "@appsetting('FfcRetrievalWorkflowSasToken')",
+                "defaultValue": "@appsetting('FfcRetrievalWorkflowSasToken')"
+            },
+            "FfcRetrievalWorkflowEndpoint": {
+                "type": "String",
+                "value": "@appsetting('FfcRetrievalWorkflowEndpoint')",
+                "defaultValue": "@appsetting('FfcRetrievalWorkflowEndpoint')"
+            },
+            "GovNotifyApiKey": {
+                "type": "String",
+                "value": "@appsetting('GovNotifyApiKey')",
+                "defaultValue": "@appsetting('GovNotifyApiKey')"
+            },
+            "ErrorEmailTempateId": {
+                "type": "String",
+                "value": "@appsetting('ErrorEmailTempateId')",
+                "defaultValue": "@appsetting('ErrorEmailTempateId')"
+            }
+        }
+    },
+    "kind": "Stateful"
+}

@@ -10,7 +10,7 @@ using System.Net.Http;
 namespace PaymentStatementIntegrations.Tests.FfcCrmRetrievalTest
 {
     /// <summary>
-    /// Test cases for the <i>CrmRetrieval</i> workflow.
+    /// Test cases for the <i>FfcCrmRetrieval</i> workflow.
     /// </summary>
     [TestClass]
     public class FfcCrmRetrievalTest : WorkflowTestBase

@@ -12,7 +12,7 @@ using System.Text;
 namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
 {
     /// <summary>
-    /// Test cases for the <i>CrmInsert</i> workflow.
+    /// Test cases for the <i>FfcCrmInsert</i> workflow.
     /// </summary>
     [TestClass]
     public class FfcCrmInsertTest : WorkflowTestBase

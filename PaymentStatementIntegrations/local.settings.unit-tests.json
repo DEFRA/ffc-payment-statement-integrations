@@ -18,9 +18,12 @@
     "PortalClientId": "portal-client-id",
     "PortalTenantId": "portal-tenant-id",
     "PortalClientSecret": "sharepoint-client-secret",
+    "SharepointLoginBaseUrl": "https://sp-dummy-login.net",
     "SharepointClientId": "sharepoint-client-id",
     "SharepointTenantId": "sharepoint-tenant-id",
     "SharepointClientSecret": "sharepoint-client-secret",
+    "SharepointDomain": "sharepoint-test-dummy.com",
+    "SharepointSiteSubPath": "sites/testsite",
     "SharepointBaseUrl": "https://sharepoint-test-dummy.com/sites/testsite",
     "FfcRetrievalWorkflowEndpoint": "https://ffc-workflow",
     "FfcRetrievalWorkflowSasToken": "test-sas-token"

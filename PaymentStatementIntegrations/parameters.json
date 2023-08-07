@@ -11,10 +11,6 @@
     "type": "String",
     "value": "@appsetting('AdLoginBaseUrl')"
   },
-  "SharepointBaseUrl": {
-    "type": "String",
-    "value": "@appsetting('SharepointBaseUrl')"
-  },
   "PortalClientId": {
     "type": "String",
     "value": "@appsetting('PortalClientId')"
@@ -26,6 +22,22 @@
   "PortalClientSecret": {
     "type": "String",
     "value": "@appsetting('PortalClientSecret')"
+  },
+  "SharepointLoginBaseUrl": {
+    "type": "String",
+    "value": "@appsetting('SharepointLoginBaseUrl')"
+  },
+  "SharepointDomain": {
+    "type": "String",
+    "value": "@appsetting('SharepointDomain')"
+  },
+  "SharepointBaseUrl": {
+    "type": "String",
+    "value": "@appsetting('SharepointBaseUrl')"
+  },
+  "SharepointSiteSubPath": {
+    "type": "String",
+    "value": "@appsetting('SharepointSiteSubPath')"
   },
   "SharepointClientId": {
     "type": "String",
@@ -50,10 +62,6 @@
   "FfcRetrievalWorkflowEndpoint": {
     "type": "String",
     "value": "@appsetting('FfcRetrievalWorkflowEndpoint')"
-  },
-  "SharepointSiteSubPath": {
-    "type": "String",
-    "value": "@appsetting('SharepointSiteSubPath')"
   },
   "GovNotifyApiKey": {
     "type": "String",
