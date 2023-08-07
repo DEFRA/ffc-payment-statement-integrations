@@ -49,10 +49,16 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmRetrievalTest
                     }
                     return mockedResponse;
                 };
+
+                // Referer in header - note 'https://crm.testing.net' gets dynamically replaced by unit test framework mocks
+                var headers = new Dictionary<string, string>();
+                headers.Add("Referer", "http://localhost:7075/");
+
                 // Run the workflow
                 var workflowResponse = testRunner.TriggerWorkflow(
                     GetParamsWithIdMissing(),
-                    HttpMethod.Get);
+                    HttpMethod.Get,
+                    headers);
 
                 // Check workflow run status
                 Assert.AreEqual(WorkflowRunStatus.Succeeded, testRunner.WorkflowRunStatus);
@@ -69,7 +75,7 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmRetrievalTest
         }
 
         /// <summary>
-        /// Tests that the correct response is returned when the HTTP call to the Service One API to get the PDF content fails.
+        /// Tests that the correct response is returned when the HTTP call to the PDF Service to get the PDF content fails.
         /// </summary>
         [TestMethod]
         public void CrmRetrievalTest_When_Get_PDF_Service_Fails()
@@ -89,10 +95,15 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmRetrievalTest
                     return mockedResponse;
                 };
 
+                // Referer in header - note 'https://crm.testing.net' gets dynamically replaced by unit test framework mocks
+                var headers = new Dictionary<string, string>();
+                headers.Add("Referer", "http://localhost:7075/");
+
                 // Run the workflow
                 var workflowResponse = testRunner.TriggerWorkflow(
                     GetValidParams(),
-                    HttpMethod.Get);
+                    HttpMethod.Get,
+                    headers);
 
                 // Check workflow run status
                 Assert.AreEqual(WorkflowRunStatus.Succeeded, testRunner.WorkflowRunStatus);
@@ -103,6 +114,7 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmRetrievalTest
                 Assert.AreEqual("text/plain; charset=utf-8", workflowResponse.Content.Headers.ContentType?.ToString());
 
                 // Check action result
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Is_call_from_CRM"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Serve_PDF"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Failed_Response"));
 
@@ -115,7 +127,7 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmRetrievalTest
         }
 
         /// <summary>
-        /// Tests that the correct response is returned when the HTTP call to the Service Two API to update the customer details is successful.
+        /// Tests that the correct response is returned when the HTTP call to the workflow is fully successful.
         /// </summary>
         [TestMethod]
         public void CrmRetrievalTest_When_Successful()
@@ -138,10 +150,15 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmRetrievalTest
                     return mockedResponse;
                 };
 
+                // Referer in header - note 'https://crm.testing.net' gets dynamically replaced by unit test framework mocks
+                var headers = new Dictionary<string, string>();
+                headers.Add("Referer", "http://localhost:7075/");
+
                 // Run the workflow
                 var workflowResponse = testRunner.TriggerWorkflow(
                     GetValidParams(),
-                    HttpMethod.Get);
+                    HttpMethod.Get,
+                    headers);
 
                 // Check workflow run status
                 Assert.AreEqual(WorkflowRunStatus.Succeeded, testRunner.WorkflowRunStatus);
@@ -159,6 +176,55 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmRetrievalTest
                 // Check request to PDF Server
                 var pdfServerRequest = testRunner.MockRequests.First(r => r.RequestUri.AbsolutePath == $"/api/v1/statements/statement/{_ExamplePdfFile}");
                 Assert.AreEqual(HttpMethod.Get, pdfServerRequest.Method);
+            }
+        }
+
+        /// <summary>
+        /// Tests that the correct response is returned when the HTTP call to the workflow doesn't contain the correct referrer.
+        /// </summary>
+        [TestMethod]
+        public void CrmRetrievalTest_Failes_When_Wrong_Referrer()
+        {
+            // Override one of the settings in the local settings file
+            var settingsToOverride = new Dictionary<string, string>();
+
+            using (ITestRunner testRunner = CreateTestRunner(settingsToOverride))
+            {
+                // Mock the HTTP calls and customize responses
+                testRunner.AddApiMocks = (request) =>
+                {
+                    HttpResponseMessage mockedResponse = new HttpResponseMessage();
+                    if (request.RequestUri?.AbsolutePath == $"/api/v1/statements/statement/{_ExamplePdfFile}" && request.Method == HttpMethod.Get)
+                    {
+                        mockedResponse.RequestMessage = request;
+                        mockedResponse.StatusCode = HttpStatusCode.OK;
+                        mockedResponse.Content = GetPdfResponse();
+                    }
+                    return mockedResponse;
+                };
+
+                // Referer in header - note 'https://crm.testing.net' gets dynamically replaced by unit test framework mocks
+                var headers = new Dictionary<string, string>();
+                headers.Add("Referer", "http://somewronghost:7075/");
+
+                // Run the workflow
+                var workflowResponse = testRunner.TriggerWorkflow(
+                    GetValidParams(),
+                    HttpMethod.Get,
+                    headers);
+
+                // Check workflow run status
+                Assert.AreEqual(WorkflowRunStatus.Succeeded, testRunner.WorkflowRunStatus);
+
+                // Check workflow response
+                testRunner.ExceptionWrapper(() => Assert.AreEqual(HttpStatusCode.BadRequest, workflowResponse.StatusCode));
+
+                // Check action result
+                Assert.AreEqual(ActionStatus.Cancelled, testRunner.GetWorkflowActionStatus("Is_call_from_CRM"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Invalid_response"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Get_PDF_from_service"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Failed_Response"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Serve_PDF"));
             }
         }
 
