@@ -65,7 +65,7 @@
                             "and": [
                                 {
                                     "startsWith": [
-                                        "@outputs('Extract_referer')",
+                                        "@string(outputs('Extract_referer'))",
                                         "@parameters('CrmBaseUrl')"
                                     ]
                                 }
