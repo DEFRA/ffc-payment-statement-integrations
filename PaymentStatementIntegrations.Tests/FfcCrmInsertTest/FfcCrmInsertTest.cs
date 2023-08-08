@@ -354,7 +354,7 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
                 // Check masking
                 var outputs = testRunner.GetWorkflowActionOutput("Strip_sensitive_data");
                 Assert.IsTrue(outputs.ToString().Contains("client_secret=******&"));
-
+                Assert.IsFalse(outputs.ToString().Contains("SENSITIVE"));
 
                 // Check tracked properties
                 var trackedProps = testRunner.GetWorkflowActionTrackedProperties("Initialize_Progress");
