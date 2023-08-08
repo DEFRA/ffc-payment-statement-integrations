@@ -1,22 +1,26 @@
 ﻿{
   "logging": {
-    "writeFunctionRuntineStartupLogs": true
+    "writeFunctionRuntineStartupLogs": true,
+    "WriteMockRequestMatchingLogs": true
   },
 
   "workflow": {
     "externalApiUrlsToMock": [
       "https://external-pdf-service.testing.net",
       "https://crm.testing.net",
-      "https://ad-dummy-login.net"    ],
+      "https://ad-dummy-login.net",
+      "https://sp-dummy-login.net",
+      "https://sharepoint-test-dummy.com"
+    ],
     "builtInConnectorsToMock": [
       "executeQuery",
       "sendMessage",
       "completeMessage",
       "deadLetterMessage",
+      "readBlob",
       "uploadBlob",
       "deleteBlob",
-      "putMessage",
-      "insertRow"
+      "putMessage"
     ],
     "autoConfigureWithStatelessRunHistory": true
   }

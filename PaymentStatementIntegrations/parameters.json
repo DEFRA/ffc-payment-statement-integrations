@@ -1,47 +1,15 @@
 {
-  "PdfServiceUrl": {
+  "AdLoginBaseUrl": {
     "type": "String",
-    "value": "@appsetting('PdfServiceUrl')"
+    "value": "@appsetting('AdLoginBaseUrl')"
   },
   "CrmBaseUrl": {
     "type": "String",
     "value": "@appsetting('CrmBaseUrl')"
   },
-  "AdLoginBaseUrl": {
+  "ErrorEmailTempateId": {
     "type": "String",
-    "value": "@appsetting('AdLoginBaseUrl')"
-  },
-  "SharepointBaseUrl": {
-    "type": "String",
-    "value": "@appsetting('SharepointBaseUrl')"
-  },
-  "PortalClientId": {
-    "type": "String",
-    "value": "@appsetting('PortalClientId')"
-  },
-  "PortalTenantId": {
-    "type": "String",
-    "value": "@appsetting('PortalTenantId')"
-  },
-  "PortalClientSecret": {
-    "type": "String",
-    "value": "@appsetting('PortalClientSecret')"
-  },
-  "SharepointClientId": {
-    "type": "String",
-    "value": "@appsetting('SharepointClientId')"
-  },
-  "SharepointTenantId": {
-    "type": "String",
-    "value": "@appsetting('SharepointTenantId')"
-  },
-  "SharepointClientSecret": {
-    "type": "String",
-    "value": "@appsetting('SharepointClientSecret')"
-  },
-  "UnknownContactId": {
-    "type": "String",
-    "value": "@appsetting('UnknownContactId')"
+    "value": "@appsetting('ErrorEmailTempateId')"
   },
   "FfcRetrievalWorkflowSasToken": {
     "type": "String",
@@ -51,16 +19,56 @@
     "type": "String",
     "value": "@appsetting('FfcRetrievalWorkflowEndpoint')"
   },
-  "SharepointSiteSubPath": {
-    "type": "String",
-    "value": "@appsetting('SharepointSiteSubPath')"
-  },
   "GovNotifyApiKey": {
     "type": "String",
     "value": "@appsetting('GovNotifyApiKey')"
   },
-  "ErrorEmailTempateId": {
+  "PdfServiceUrl": {
     "type": "String",
-    "value": "@appsetting('ErrorEmailTempateId')"
+    "value": "@appsetting('PdfServiceUrl')"
+  },
+  "PortalClientId": {
+    "type": "String",
+    "value": "@appsetting('PortalClientId')"
+  },
+  "PortalClientSecret": {
+    "type": "String",
+    "value": "@appsetting('PortalClientSecret')"
+  },
+  "PortalTenantId": {
+    "type": "String",
+    "value": "@appsetting('PortalTenantId')"
+  },
+  "SharepointBaseUrl": {
+    "type": "String",
+    "value": "@appsetting('SharepointBaseUrl')"
+  },
+  "SharepointClientId": {
+    "type": "String",
+    "value": "@appsetting('SharepointClientId')"
+  },
+  "SharepointClientSecret": {
+    "type": "String",
+    "value": "@appsetting('SharepointClientSecret')"
+  },
+  "SharepointDomain": {
+    "type": "String",
+    "value": "@appsetting('SharepointDomain')"
+  },
+  "SharepointLoginBaseUrl": {
+    "type": "String",
+    "value": "@appsetting('SharepointLoginBaseUrl')"
+  },
+  "SharepointSiteSubPath": {
+    "type": "String",
+    "value": "@appsetting('SharepointSiteSubPath')"
+  },
+  "SharepointTenantId": {
+    "type": "String",
+    "value": "@appsetting('SharepointTenantId')"
+  },
+  "UnknownContactId": {
+    "type": "String",
+    "value": "@appsetting('UnknownContactId')"
   }
 }
