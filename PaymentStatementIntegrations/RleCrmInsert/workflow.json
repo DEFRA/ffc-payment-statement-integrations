@@ -562,7 +562,7 @@
                                                 "rpa_crn": "@{body('Parse_CTL_File')?['crn']}",
                                                 "rpa_direction": "true",
                                                 "rpa_docrefproxy": "SFIPS",
-                                                "rpa_fileabsoluteurl": "@{parameters('SharepointBaseUrl')}@{body('Copy_To_Sharepoint')['ServerRelativeUrl']}@{outputs('Get_filename')}",
+                                                "rpa_fileabsoluteurl": "@{parameters('SharepointBaseUrl')}@{body('Copy_To_Sharepoint')['ServerRelativeUrl']}",
                                                 "rpa_filename": "@{outputs('Get_filename')}",
                                                 "rpa_organisation@odata.bind": "/accounts(@{variables('OrganisationId')})",
                                                 "rpa_sbi": "@{variables('SbiNumber')}"
