@@ -15,8 +15,7 @@
                             "Strip_sensitive_data": [
                                 "SUCCEEDED"
                             ]
-                        },
-                        "trackedProperties": {}
+                        }
                     },
                     "Compose_final_error": {
                         "type": "Compose",
@@ -40,8 +39,7 @@
                                     "outputs"
                                 ]
                             }
-                        },
-                        "trackedProperties": {}
+                        }
                     },
                     "Strip_sensitive_data": {
                         "type": "JavaScriptCode",
@@ -52,8 +50,7 @@
                             "Get_error_stack": [
                                 "SUCCEEDED"
                             ]
-                        },
-                        "trackedProperties": {}
+                        }
                     },
                     "Throw_final_error": {
                         "type": "Compose",
@@ -62,8 +59,7 @@
                             "Compose_final_error": [
                                 "SUCCEEDED"
                             ]
-                        },
-                        "trackedProperties": {}
+                        }
                     }
                 },
                 "runAfter": {
@@ -246,12 +242,11 @@
                             "Is_SBI_valid": [
                                 "SUCCEEDED"
                             ]
-                        },
-                        "trackedProperties": {}
+                        }
                     },
                     "Convert_Date_Format": {
                         "type": "Compose",
-                        "inputs": "@formatDateTime(parseDateTime(body('Parse_CTL_File')?['submissionDate'], 'en-GB', 'dd/MM/yyyy HH:mm:ss'),'yyyy-MM-dd')",
+                        "inputs": "@formatDateTime(convertToUtc(parseDateTime(body('Parse_CTL_File')?['submissionDate'], 'en-GB', 'dd/MM/yyyy HH:mm:ss'),'GMT Standard Time'),'yyyy-MM-dd HH:mm:ss')",
                         "runAfter": {
                             "Append_progress_case_id": [
                                 "SUCCEEDED"
@@ -273,9 +268,9 @@
                                 "customerid_contact@odata.bind": "/contacts(@{variables('ContactId')})",
                                 "rpa_Contact@odata.bind": "/contacts(@{variables('ContactId')})",
                                 "rpa_Organisation@odata.bind": "/accounts(@{variables('OrganisationId')})",
-                                "rpa_isunknowncontact": "true",
+                                "rpa_isunknowncontact": "false",
                                 "rpa_isunknownorganisation": "false",
-                                "title": "RLE1 Form File - Received"
+                                "title": "Online Submission @{body('Parse_CTL_File')['uosr']}"
                             }
                         },
                         "runAfter": {
@@ -303,7 +298,7 @@
                                 "rpa_filesinsubmission": "@{body('Parse_CTL_File')?['filesInSubmission']}",
                                 "rpa_onlinesubmissiondate": "@{outputs('Convert_Date_Format')}",
                                 "rpa_onlinesubmissionid": "@{body('Parse_CTL_File')?['uosr']}",
-                                "subject": "RLE2 File - Sent via Notify"
+                                "subject": "eRLE1 @{body('Parse_CTL_File')?['type']} (@{body('Parse_CTL_File')['uosr']})"
                             }
                         },
                         "runAfter": {
@@ -397,7 +392,7 @@
                     "Get_CRM_Org": {
                         "type": "Http",
                         "inputs": {
-                            "uri": "@{parameters('CrmBaseUrl')}/api/data/v9.2/accounts?$select=name,accountid,rpa_sbi&$filter=rpa_capfirmid eq '@{body('Parse_CTL_File')?['frn']}'",
+                            "uri": "@{parameters('CrmBaseUrl')}/api/data/v9.2/accounts?$select=name,accountid,rpa_sbinumber&$filter=rpa_capfirmid eq '@{body('Parse_CTL_File')?['frn']}'",
                             "method": "GET",
                             "headers": {
                                 "Authorization": "Bearer @{body('Parse_CRM_Token')?['access_token']}"
@@ -563,9 +558,9 @@
                                             "body": {
                                                 "rpa_RelatedCase@odata.bind": "/incidents(@{variables('NewCaseId')})",
                                                 "rpa_RelatedOnlineSubmissionId@odata.bind": "/rpa_onlinesubmissions(@{variables('ActivityId')})",
-                                                "rpa_contact@odata.bind": "/contacts(65879706-0798-e411-9412-00155deb6486)",
+                                                "rpa_contact@odata.bind": "/contacts(@{variables('ContactId')})",
                                                 "rpa_crn": "@{body('Parse_CTL_File')?['crn']}",
-                                                "rpa_direction": "false",
+                                                "rpa_direction": "true",
                                                 "rpa_docrefproxy": "SFIPS",
                                                 "rpa_fileabsoluteurl": "@{parameters('SharepointBaseUrl')}@{body('Copy_To_Sharepoint')['ServerRelativeUrl']}@{outputs('Get_filename')}",
                                                 "rpa_filename": "@{outputs('Get_filename')}",
@@ -774,8 +769,7 @@
                             "Decode_blob_CTL_contents": [
                                 "SUCCEEDED"
                             ]
-                        },
-                        "trackedProperties": {}
+                        }
                     },
                     "Parse_Contact_Details": {
                         "type": "ParseJson",
@@ -850,8 +844,7 @@
                             "Get_CRM_Org": [
                                 "SUCCEEDED"
                             ]
-                        },
-                        "trackedProperties": {}
+                        }
                     },
                     "Set_FileList": {
                         "type": "SetVariable",
@@ -885,8 +878,7 @@
                                 "inputs": {
                                     "name": "SbiNumber",
                                     "value": "@body('Parse_CTL_File')?['sbi']"
-                                },
-                                "trackedProperties": {}
+                                }
                             }
                         },
                         "else": {
