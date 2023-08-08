@@ -165,7 +165,7 @@
                     ]
                 },
                 "runAfter": {
-                    "Init_ActivityId": [
+                    "Init_SBI": [
                         "SUCCEEDED"
                     ]
                 }
@@ -240,13 +240,14 @@
                         "type": "AppendToStringVariable",
                         "inputs": {
                             "name": "ProgressText",
-                            "value": ": org_id @{variables('OrganisationId')}"
+                            "value": ": org_id @{variables('OrganisationId')} : sbi @{variables('SbiNumber')}"
                         },
                         "runAfter": {
-                            "Extract_OrganisationId": [
+                            "Is_SBI_valid": [
                                 "SUCCEEDED"
                             ]
-                        }
+                        },
+                        "trackedProperties": {}
                     },
                     "Convert_Date_Format": {
                         "type": "Compose",
@@ -396,7 +397,7 @@
                     "Get_CRM_Org": {
                         "type": "Http",
                         "inputs": {
-                            "uri": "@{parameters('CrmBaseUrl')}/api/data/v9.2/accounts?$select=name,accountid&$filter=rpa_capfirmid eq '@{body('Parse_CTL_File')?['frn']}'",
+                            "uri": "@{parameters('CrmBaseUrl')}/api/data/v9.2/accounts?$select=name,accountid,rpa_sbi&$filter=rpa_capfirmid eq '@{body('Parse_CTL_File')?['frn']}'",
                             "method": "GET",
                             "headers": {
                                 "Authorization": "Bearer @{body('Parse_CRM_Token')?['access_token']}"
@@ -569,7 +570,7 @@
                                                 "rpa_fileabsoluteurl": "@{parameters('SharepointBaseUrl')}@{body('Copy_To_Sharepoint')['ServerRelativeUrl']}@{outputs('Get_filename')}",
                                                 "rpa_filename": "@{outputs('Get_filename')}",
                                                 "rpa_organisation@odata.bind": "/accounts(@{variables('OrganisationId')})",
-                                                "rpa_sbi": "@{body('Parse_CTL_File')?['sbi']}"
+                                                "rpa_sbi": "@{variables('SbiNumber')}"
                                             }
                                         },
                                         "runAfter": {
@@ -827,11 +828,15 @@
                                                 },
                                                 "name": {
                                                     "type": "string"
+                                                },
+                                                "rpa_sbinumber": {
+                                                    "type": "string"
                                                 }
                                             },
                                             "required": [
                                                 "name",
-                                                "accountid"
+                                                "accountid",
+                                                "rpa_sbinumber"
                                             ],
                                             "type": "object"
                                         },
@@ -845,7 +850,8 @@
                             "Get_CRM_Org": [
                                 "SUCCEEDED"
                             ]
-                        }
+                        },
+                        "trackedProperties": {}
                     },
                     "Set_FileList": {
                         "type": "SetVariable",
@@ -858,10 +864,67 @@
                                 "SUCCEEDED"
                             ]
                         }
+                    },
+                    "Is_SBI_valid": {
+                        "type": "If",
+                        "expression": {
+                            "and": [
+                                {
+                                    "not": {
+                                        "equals": [
+                                            "@string(body('Parse_CTL_File')?['sbi'])",
+                                            ""
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        "actions": {
+                            "Set_SBI_from_CTL": {
+                                "type": "SetVariable",
+                                "inputs": {
+                                    "name": "SbiNumber",
+                                    "value": "@body('Parse_CTL_File')?['sbi']"
+                                },
+                                "trackedProperties": {}
+                            }
+                        },
+                        "else": {
+                            "actions": {
+                                "Set_SBI_from_Org": {
+                                    "type": "SetVariable",
+                                    "inputs": {
+                                        "name": "SbiNumber",
+                                        "value": "@{outputs('Parse_Org_Response')?['body']?['value'][0]['rpa_sbinumber']}"
+                                    }
+                                }
+                            }
+                        },
+                        "runAfter": {
+                            "Extract_OrganisationId": [
+                                "SUCCEEDED"
+                            ]
+                        }
                     }
                 },
                 "runAfter": {
                     "Initialize_ProgressText": [
+                        "SUCCEEDED"
+                    ]
+                }
+            },
+            "Init_SBI": {
+                "type": "InitializeVariable",
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "SbiNumber",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Init_ActivityId": [
                         "SUCCEEDED"
                     ]
                 }
