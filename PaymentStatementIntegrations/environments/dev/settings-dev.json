@@ -1,42 +1,7 @@
 [
   {
-    "name": "ServiceBus-ConnectionString",
-    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/ServiceBusConnectionStringDev/6b685b987b6144918bf46424a18a1e29)",
-    "slotSetting": false
-  },
-  {
-    "name": "PdfServiceUrl",
-    "value": "https://ffc-pay-statement-receiver.ffc.snd.azure.defra.cloud/v1",
-    "slotSetting": false
-  },
-  {
-    "name": "PortalClientId",
-    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/PortalClientId/dfbef37c3c824044a2201543c33dc0fd)",
-    "slotSetting": false
-  },
-  {
-    "name": "PortalTenantId",
-    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/PortalTenantId/8d65bddf48314b9ab9a7dfb112fdfe10)",
-    "slotSetting": false
-  },
-  {
-    "name": "PortalClientSecret",
-    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/PortalClientSecret/612179932d9c481aaa7531704488102a)",
-    "slotSetting": false
-  },
-  {
-    "name": "SharepointClientId",
-    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/SharepointClientId/7e38c5976df94e0d80e045db14e30ff9)",
-    "slotSetting": false
-  },
-  {
-    "name": "SharepointTenantId",
-    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/SharepointTenantId/e27fd505f76f44b6b1f98195b68e2c8d)",
-    "slotSetting": false
-  },
-  {
-    "name": "SharepointClientSecret",
-    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/SharepointClientSecret/c9f4d737da204ecf8f2d8d39235e0abd)",
+    "name": "AdLoginBaseUrl",
+    "value": "https://login.microsoftonline.com",
     "slotSetting": false
   },
   {
@@ -45,13 +10,13 @@
     "slotSetting": false
   },
   {
-    "name": "AdLoginBaseUrl",
-    "value": "https://login.microsoftonline.com",
+    "name": "CrmBaseUrl",
+    "value": "https://rpadevv9.crm4.dynamics.com",
     "slotSetting": false
   },
   {
-    "name": "CrmBaseUrl",
-    "value": "https://rpadevv9.crm4.dynamics.com",
+    "name": "ErrorEmailTemplateId",
+    "value": "9cf49f31-d557-4a78-beeb-27fe87553ae7",
     "slotSetting": false
   },
   {
@@ -65,28 +30,73 @@
     "slotSetting": false
   },
   {
-    "name": "SharepointBaseUrl",
-    "value": "https://defradev.sharepoint.com",
-    "slotSetting": false
-  },
-  {
-    "name": "SharepointSiteSubPath",
-    "value": "/sites/tempdocstore",
-    "slotSetting": false
-  },
-  {
     "name": "GovNotifyApiKey",
     "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/GovNotifyApiKey/17b4bb50a66d41fe936e83e7470bba75)",
     "slotSetting": false
   },
   {
-    "name": "UnknownContactId",
-    "value": "65879706-0798-e411-9412-00155deb6486",
+    "name": "PdfServiceUrl",
+    "value": "https://ffc-pay-statement-receiver.ffc.snd.azure.defra.cloud/v1",
     "slotSetting": false
   },
   {
-    "name": "ErrorEmailTemplateId",
-    "value": "9cf49f31-d557-4a78-beeb-27fe87553ae7",
+    "name": "PortalClientId",
+    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/PortalClientId/dfbef37c3c824044a2201543c33dc0fd)",
+    "slotSetting": false
+  },
+  {
+    "name": "PortalClientSecret",
+    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/PortalClientSecret/612179932d9c481aaa7531704488102a)",
+    "slotSetting": false
+  },
+  {
+    "name": "PortalTenantId",
+    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/PortalTenantId/8d65bddf48314b9ab9a7dfb112fdfe10)",
+    "slotSetting": false
+  },
+  {
+    "name": "ServiceBus-ConnectionString",
+    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/ServiceBusConnectionStringDev/6b685b987b6144918bf46424a18a1e29)",
+    "slotSetting": false
+  },
+  {
+    "name": "SharepointBaseUrl",
+    "value": "https://defradev.sharepoint.com",
+    "slotSetting": false
+  },
+  {
+    "name": "SharepointClientId",
+    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/SharepointClientId/7e38c5976df94e0d80e045db14e30ff9)",
+    "slotSetting": false
+  },
+  {
+    "name": "SharepointClientSecret",
+    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/SharepointClientSecret/c9f4d737da204ecf8f2d8d39235e0abd)",
+    "slotSetting": false
+  },
+  {
+    "name": "SharepointDomain",
+    "value": "defradev.sharepoint.com",
+    "slotSetting": false
+  },
+  {
+    "name": "SharepointLoginBaseUrl",
+    "value": "https://accounts.accesscontrol.windows.net",
+    "slotSetting": false
+  },
+  {
+    "name": "SharepointSiteSubPath",
+    "value": "sites/tempdocstore",
+    "slotSetting": false
+  },
+  {
+    "name": "SharepointTenantId",
+    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/SharepointTenantId/e27fd505f76f44b6b1f98195b68e2c8d)",
+    "slotSetting": false
+  },
+  {
+    "name": "UnknownContactId",
+    "value": "65879706-0798-e411-9412-00155deb6486",
     "slotSetting": false
   }
 ]
