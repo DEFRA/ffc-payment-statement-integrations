@@ -3,10 +3,8 @@
         "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
         "actions": {
             "Catch_Scope": {
-                "type": "Scope",
                 "actions": {
                     "Append_progress_final": {
-                        "type": "AppendToStringVariable",
                         "inputs": {
                             "name": "ProgressText",
                             "value": ": @{outputs('Strip_sensitive_data')}"
@@ -15,19 +13,77 @@
                             "Strip_sensitive_data": [
                                 "SUCCEEDED"
                             ]
-                        }
+                        },
+                        "type": "AppendToStringVariable"
                     },
                     "Compose_final_error": {
-                        "type": "Compose",
                         "inputs": "@variables('ProgressText')",
                         "runAfter": {
                             "Append_progress_final": [
                                 "SUCCEEDED"
                             ]
-                        }
+                        },
+                        "type": "Compose"
+                    },
+                    "For_each_email_address": {
+                        "actions": {
+                            "Send_email": {
+                                "inputs": {
+                                    "body": {
+                                        "apiKey": "@{parameters('GovNotifyApiKey')}",
+                                        "personalisations": {
+                                            "fail_body": "@{variables('ProgressText')}",
+                                            "fail_run_link": "@concat('https://portal.azure.com/#blade/Microsoft_Azure_EMA/DesignerEditor.ReactView/id/', encodeUriComponent(concat('/subscriptions/',appsetting('WORKFLOWS_SUBSCRIPTION_ID'), '/resourceGroups/', appsetting('WORKFLOWS_RESOURCE_GROUP_NAME'),'/providers/Microsoft.Web/sites/',appsetting('WORKFLOWS_LOGIC_APP_NAME'),'/workflows/',workflow().name)),'/location/',appsetting('WORKFLOWS_LOCATION_NAME'),'/isReadOnly/true/isMonitoringView/true/runId/',workflow().run.name)",
+                                            "process_name": "RleCrmInsert"
+                                        },
+                                        "templateId": "9cf49f31-d557-4a78-beeb-27fe87553ae7",
+                                        "toAddress": "@{item()}"
+                                    },
+                                    "headers": {
+                                        "Authorization": "Bearer @{body('Parse_email_auth_token')?['access_token']}",
+                                        "x-functions-key": "@{parameters('EmailAzureFunctionSasToken')}"
+                                    },
+                                    "method": "POST",
+                                    "uri": "@{parameters('EmailAzureFunctionEndpoint')}"
+                                },
+                                "runtimeConfiguration": {
+                                    "contentTransfer": {
+                                        "transferMode": "Chunked"
+                                    }
+                                },
+                                "type": "Http"
+                            }
+                        },
+                        "foreach": "@split(appsetting('ErrorEmailToAddresses'),',')",
+                        "runAfter": {
+                            "Parse_email_auth_token": [
+                                "SUCCEEDED"
+                            ]
+                        },
+                        "type": "Foreach"
+                    },
+                    "Get_email_auth_token": {
+                        "inputs": {
+                            "body": "grant_type=client_credentials\n&client_id=@{parameters('PortalClientId')}\n&client_secret=@{encodeUriComponent(parameters('PortalClientSecret'))}\n&resource=@{encodeUriComponent(parameters('CrmBaseUrl'))}",
+                            "headers": {
+                                "Content-Type": "application/x-www-form-urlencoded"
+                            },
+                            "method": "POST",
+                            "uri": "@{parameters('AdLoginBaseUrl')}/@{parameters('PortalTenantId')}/oauth2/token"
+                        },
+                        "runAfter": {
+                            "Compose_final_error": [
+                                "SUCCEEDED"
+                            ]
+                        },
+                        "runtimeConfiguration": {
+                            "contentTransfer": {
+                                "transferMode": "Chunked"
+                            }
+                        },
+                        "type": "Http"
                     },
                     "Get_error_stack": {
-                        "type": "Query",
                         "inputs": {
                             "from": "@result('Try_Scope')",
                             "where": "@equals(item()?['status'],'Failed')"
@@ -39,42 +95,10 @@
                                     "outputs"
                                 ]
                             }
-                        }
-                    },
-                    "Strip_sensitive_data": {
-                        "type": "JavaScriptCode",
-                        "inputs": {
-                            "code": "// This code snippet removes any sensitive token values if defined\n\n// List of tokens with their terminating char - defined in pairs\nvar sensitiveTokens = [ 'client_secret=', '&', 'client_id=', '&', 'Authorization\":', '}' ];\nvar errorStack = JSON.stringify(workflowContext.actions.Get_error_stack.outputs);\ntry {\n    for (var i=0; i < sensitiveTokens.length; i = i + 2) {\n        var tok = sensitiveTokens[i];\n        var tokLen = tok.length;\n        var tokPos = errorStack.indexOf(tok);\n        var endPos = errorStack.indexOf(sensitiveTokens[i+1],tokPos + 1);\n        if (tokPos > -1) {\n            if (endPos > -1) {\n                errorStack = errorStack.substring(0, tokPos + tokLen) +\n                    '******' +\n                    errorStack.substring(endPos);\n            } else {\n                errorStack = errorStack.substring(0, tokPos + tokLen) +\n                    '******';\n            }\n        }\n    }\n}\ncatch (err) {\n  // Do nothing\n}\nreturn errorStack;"
                         },
-                        "runAfter": {
-                            "Get_error_stack": [
-                                "SUCCEEDED"
-                            ]
-                        }
-                    },
-                    "Get_email_auth_token": {
-                        "type": "Http",
-                        "inputs": {
-                            "uri": "@{parameters('AdLoginBaseUrl')}/@{parameters('PortalTenantId')}/oauth2/token",
-                            "method": "POST",
-                            "headers": {
-                                "Content-Type": "application/x-www-form-urlencoded"
-                            },
-                            "body": "grant_type=client_credentials\n&client_id=@{parameters('PortalClientId')}\n&client_secret=@{encodeUriComponent(parameters('PortalClientSecret'))}\n&resource=@{encodeUriComponent(parameters('CrmBaseUrl'))}"
-                        },
-                        "runAfter": {
-                            "Compose_final_error": [
-                                "SUCCEEDED"
-                            ]
-                        },
-                        "runtimeConfiguration": {
-                            "contentTransfer": {
-                                "transferMode": "Chunked"
-                            }
-                        }
+                        "type": "Query"
                     },
                     "Parse_email_auth_token": {
-                        "type": "ParseJson",
                         "inputs": {
                             "content": "@body('Get_email_auth_token')",
                             "schema": {
@@ -108,38 +132,19 @@
                             "Get_email_auth_token": [
                                 "SUCCEEDED"
                             ]
-                        }
+                        },
+                        "type": "ParseJson"
                     },
-                    "Send_email": {
-                        "type": "Http",
+                    "Strip_sensitive_data": {
                         "inputs": {
-                            "uri": "@{parameters('EmailAzureFunctionEndpoint')}",
-                            "method": "POST",
-                            "headers": {
-                                "Authorization": "Bearer @{body('Parse_email_auth_token')?['access_token']}",
-                                "x-functions-key": "@{parameters('EmailAzureFunctionSasToken')}"
-                            },
-                            "body": {
-                                "apiKey": "@{parameters('GovNotifyApiKey')}",
-                                "personalisations": {
-                                    "fail_body": "@{variables('ProgressText')}",
-                                    "process_name": "RleCrmInsert",
-                                    "fail_run_link": "@concat('https://portal.azure.com/#blade/Microsoft_Azure_EMA/DesignerEditor.ReactView/id/', encodeUriComponent(concat('/subscriptions/',appsetting('WORKFLOWS_SUBSCRIPTION_ID'), '/resourceGroups/', appsetting('WORKFLOWS_RESOURCE_GROUP_NAME'),'/providers/Microsoft.Web/sites/',appsetting('WORKFLOWS_LOGIC_APP_NAME'),'/workflows/',workflow().name)),'/location/',appsetting('WORKFLOWS_LOCATION_NAME'),'/isReadOnly/true/isMonitoringView/true/runId/',workflow().run.name)"
-                                },
-                                "templateId": "9cf49f31-d557-4a78-beeb-27fe87553ae7",
-                                "toAddress": "@appsetting('ErrorEmailToAddresses')"
-                            }
+                            "code": "// This code snippet removes any sensitive token values if defined\n\n// List of tokens with their terminating char - defined in pairs\nvar sensitiveTokens = [ 'client_secret=', '&', 'client_id=', '&', 'Authorization\":', '}' ];\nvar errorStack = JSON.stringify(workflowContext.actions.Get_error_stack.outputs);\ntry {\n    for (var i=0; i < sensitiveTokens.length; i = i + 2) {\n        var tok = sensitiveTokens[i];\n        var tokLen = tok.length;\n        var tokPos = errorStack.indexOf(tok);\n        var endPos = errorStack.indexOf(sensitiveTokens[i+1],tokPos + 1);\n        if (tokPos > -1) {\n            if (endPos > -1) {\n                errorStack = errorStack.substring(0, tokPos + tokLen) +\n                    '******' +\n                    errorStack.substring(endPos);\n            } else {\n                errorStack = errorStack.substring(0, tokPos + tokLen) +\n                    '******';\n            }\n        }\n    }\n}\ncatch (err) {\n  // Do nothing\n}\nreturn errorStack;"
                         },
                         "runAfter": {
-                            "Parse_email_auth_token": [
+                            "Get_error_stack": [
                                 "SUCCEEDED"
                             ]
                         },
-                        "runtimeConfiguration": {
-                            "contentTransfer": {
-                                "transferMode": "Chunked"
-                            }
-                        }
+                        "type": "JavaScriptCode"
                     }
                 },
                 "runAfter": {
@@ -148,7 +153,8 @@
                         "FAILED",
                         "SKIPPED"
                     ]
-                }
+                },
+                "type": "Scope"
             },
             "Init_ActivityId": {
                 "type": "InitializeVariable",
