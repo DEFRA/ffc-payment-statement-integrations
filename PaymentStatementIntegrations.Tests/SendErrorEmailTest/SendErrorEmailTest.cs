@@ -52,7 +52,7 @@ namespace PaymentStatementIntegrations.Tests.SendErrorEmailTest
                             mockedResponse.StatusCode = HttpStatusCode.OK;
                             mockedResponse.Content = ValidAuthToken();
                         }
-                        else if (request.RequestUri.AbsolutePath.Contains("/api/AzureFunctionGovNotify") && request.Method == HttpMethod.Post)
+                        else if (request.RequestUri.AbsolutePath.Contains("/api/Email") && request.Method == HttpMethod.Post)
                         {
                             // Email function call
                             mockedResponse.RequestMessage = request;
@@ -62,6 +62,7 @@ namespace PaymentStatementIntegrations.Tests.SendErrorEmailTest
                     return mockedResponse;
                 };
 
+                // Allow internal call
                 var headers = new Dictionary<string, string>();
                 headers.Add("x-ms-workflow-name", "some-workflow-name");
 
@@ -72,17 +73,13 @@ namespace PaymentStatementIntegrations.Tests.SendErrorEmailTest
                     headers);
 
                 // Check workflow run status
-                //Assert.AreEqual(WorkflowRunStatus.Succeeded, testRunner.WorkflowRunStatus);
+                Assert.AreEqual(WorkflowRunStatus.Succeeded, testRunner.WorkflowRunStatus);
 
                 // Check workflow response
-                //testRunner.ExceptionWrapper(() => Assert.AreEqual(HttpStatusCode.Accepted, workflowResponse.StatusCode));
-                //Assert.AreEqual(HttpStatusCode.Accepted, workflowResponse.StatusCode);
-
-                //var in1 = testRunner.GetWorkflowActionInput("Is_external_call");
-                var out1 = testRunner.GetWorkflowAction("Is_external_call").ToString();
+                testRunner.ExceptionWrapper(() => Assert.AreEqual(HttpStatusCode.OK, workflowResponse.StatusCode));
+                Assert.AreEqual(HttpStatusCode.OK, workflowResponse.StatusCode);
 
                 // Check action result
-                Assert.AreEqual(ActionStatus.Failed, testRunner.GetWorkflowActionStatus("Is_external_call"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_error_stack"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Strip_sensitive_data"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_email_auth_token"));
@@ -92,11 +89,67 @@ namespace PaymentStatementIntegrations.Tests.SendErrorEmailTest
                 // Check masking
                 var outputs = testRunner.GetWorkflowActionOutput("Strip_sensitive_data");
                 Assert.IsTrue(outputs.ToString().Contains("client_secret=******&"));
+                Assert.IsTrue(outputs.ToString().Contains("client_id=******"));
+                Assert.IsTrue(outputs.ToString().Contains("Authorization******"));
                 Assert.IsFalse(outputs.ToString().Contains("SENSITIVE"));
+            }
+        }
 
-                // Check tracked properties
-                var trackedProps = testRunner.GetWorkflowActionTrackedProperties("Initialize_Progress");
-                Assert.AreEqual("FfcCrmInsert", trackedProps["WorkflowName"]);
+        /// <summary>
+        /// Tests that the correct response is returned when an external call.
+        /// </summary>
+        [TestMethod]
+        public void SendErrorEmail_Prevents_External_Calls()
+        {
+            // Override one of the settings in the local settings file
+            var settingsToOverride = new Dictionary<string, string>();
+
+            using (ITestRunner testRunner = CreateTestRunner(settingsToOverride))
+            {
+                // Mock the HTTP calls and customize responses
+                testRunner.AddApiMocks = (request) =>
+                {
+                    HttpResponseMessage mockedResponse = new HttpResponseMessage();
+                    if (request?.RequestUri != null)
+                    {
+                        if (request.RequestUri.AbsolutePath.Contains("/oauth2/token") && request.Method == HttpMethod.Post)
+                        {
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                            mockedResponse.Content = ValidAuthToken();
+                        }
+                        else if (request.RequestUri.AbsolutePath.Contains("/api/Email") && request.Method == HttpMethod.Post)
+                        {
+                            // Email function call
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                        }
+                    }
+                    return mockedResponse;
+                };
+
+                // No x-ms-workflow-name header on an external call
+                var headers = new Dictionary<string, string>();
+
+                // Run the workflow
+                var workflowResponse = testRunner.TriggerWorkflow(
+                    GetWorkflowPayload(),
+                    HttpMethod.Post,
+                    headers);
+
+                // Check workflow run status
+                Assert.AreEqual(WorkflowRunStatus.Failed, testRunner.WorkflowRunStatus);
+
+                // Check workflow response
+                testRunner.ExceptionWrapper(() => Assert.AreEqual(HttpStatusCode.BadGateway, workflowResponse.StatusCode));
+                Assert.AreEqual(HttpStatusCode.BadGateway, workflowResponse.StatusCode);
+
+                // Check action result
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Get_error_stack"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Strip_sensitive_data"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Get_email_auth_token"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Parse_email_auth_token"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Send_email"));
             }
         }
 
@@ -110,7 +163,7 @@ namespace PaymentStatementIntegrations.Tests.SendErrorEmailTest
                 apiKey = "apiKey",
                 stack = new []
                 {
-                    new { status = "Failed", otherText = "otherTextFailure" },
+                    new { status = "Failed", otherText = "otherTextFailure with client_secret=secret-SENSITIVE-data&Authorization:SENSITIVE-TOKEN}&client_id=12345SENSITIVE" },
                     new { status = "Succeeded", otherText = "Succeeded" }
                 }
             };

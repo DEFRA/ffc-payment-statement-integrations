@@ -94,13 +94,15 @@
             },
             "Is_external_call": {
                 "actions": {
-                    "External_not_allowed": {
+                    "Terminate": {
                         "inputs": {
-                            "body": "Bad request",
-                            "statusCode": 400
+                            "runError": {
+                                "code": "400",
+                                "message": "Bad request"
+                            },
+                            "runStatus": "Failed"
                         },
-                        "kind": "Http",
-                        "type": "Response"
+                        "type": "Terminate"
                     }
                 },
                 "else": {
@@ -185,7 +187,7 @@
             },
             "Strip_sensitive_data": {
                 "inputs": {
-                    "code": "// This code snippet removes any sensitive token values if defined\n\n// List of tokens with their terminating char - defined in pairs\nvar sensitiveTokens = [ 'client_secret=', '&', 'client_id=', '&', 'Authorization\":', '}' ];\nvar errorStack = JSON.stringify(workflowContext.actions.Get_error_stack.outputs);\ntry {\n    for (var i=0; i < sensitiveTokens.length; i = i + 2) {\n        var tok = sensitiveTokens[i];\n        var tokLen = tok.length;\n        var tokPos = errorStack.indexOf(tok);\n        var endPos = errorStack.indexOf(sensitiveTokens[i+1],tokPos + 1);\n        if (tokPos > -1) {\n            if (endPos > -1) {\n                errorStack = errorStack.substring(0, tokPos + tokLen) +\n                    '******' +\n                    errorStack.substring(endPos);\n            } else {\n                errorStack = errorStack.substring(0, tokPos + tokLen) +\n                    '******';\n            }\n        }\n    }\n}\ncatch (err) {\n  // Do nothing\n}\nreturn errorStack;"
+                    "code": "// This code snippet removes any sensitive token values if defined\n\n// List of tokens with their terminating char - defined in pairs\nvar sensitiveTokens = [ 'client_secret=', '&', 'client_id=', '&', 'Authorization', '}' ];\nvar errorStack = JSON.stringify(workflowContext.actions.Get_error_stack.outputs);\ntry {\n    for (var i=0; i < sensitiveTokens.length; i = i + 2) {\n        var tok = sensitiveTokens[i];\n        var tokLen = tok.length;\n        var tokPos = errorStack.indexOf(tok);\n        var endPos = errorStack.indexOf(sensitiveTokens[i+1],tokPos + 1);\n        if (tokPos > -1) {\n            if (endPos > -1) {\n                errorStack = errorStack.substring(0, tokPos + tokLen) +\n                    '******' +\n                    errorStack.substring(endPos);\n            } else {\n                errorStack = errorStack.substring(0, tokPos + tokLen) +\n                    '******';\n            }\n        }\n    }\n}\ncatch (err) {\n  // Do nothing\n}\nreturn errorStack;"
                 },
                 "runAfter": {
                     "Get_error_stack": [
