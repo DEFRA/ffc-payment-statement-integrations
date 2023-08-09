@@ -55,7 +55,7 @@
                     "Get_email_auth_token": {
                         "type": "Http",
                         "inputs": {
-                            "uri": "@{parameters('AdLoginBaseUrl')}@{parameters('PortalTenantId')}/oauth2/token",
+                            "uri": "@{parameters('AdLoginBaseUrl')}/@{parameters('PortalTenantId')}/oauth2/token",
                             "method": "POST",
                             "headers": {
                                 "Content-Type": "application/x-www-form-urlencoded"
@@ -116,14 +116,15 @@
                             "uri": "@{parameters('EmailAzureFunctionEndpoint')}",
                             "method": "POST",
                             "headers": {
-                                "Authorization": "Bearer @{body('Parse_email_auth_token')?['access_token']}"
+                                "Authorization": "Bearer @{body('Parse_email_auth_token')?['access_token']}",
+                                "x-functions-key": "@{parameters('EmailAzureFunctionSasToken')}"
                             },
                             "body": {
                                 "apiKey": "@{parameters('GovNotifyApiKey')}",
                                 "personalisations": {
                                     "fail_body": "@{variables('ProgressText')}",
                                     "process_name": "RleCrmInsert",
-                                    "fail_run_link": "@concat('https://portal.azure.com/#blade/Microsoft_Azure_EMA/DesignerEditor.ReactView', encodeUriComponent(workflow().run.id))"
+                                    "fail_run_link": "@concat('https://portal.azure.com/#blade/Microsoft_Azure_EMA/DesignerEditor.ReactView/id', encodeUriComponent(workflow().run.id))"
                                 },
                                 "templateId": "9cf49f31-d557-4a78-beeb-27fe87553ae7",
                                 "toAddress": "jeremy.barnsley@defra.gov.uk"

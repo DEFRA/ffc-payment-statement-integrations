@@ -12,6 +12,7 @@
     "CommonDataService-ManagedConnectionRuntimeUrl": "https://external-common-data-service.testing.net/apim/commondataservice/abcdef/",
     "AdLoginBaseUrl": "https://ad-dummy-login.net",
     "EmailAzureFunctionEndpoint": "https://emailazurefunctionendpoint.net/api/Email",
+    "EmailAzureFunctionSasToken": "some-token",
     "PortalClientId": "portal-client-id-SENSITIVE",
     "PortalTenantId": "portal-tenant-id",
     "PortalClientSecret": "sharepoint-client-secret-SENSITIVE",

@@ -11,6 +11,10 @@
     "type": "String",
     "value": "@appsetting('EmailAzureFunctionEndpoint')"
   },
+  "EmailAzureFunctionSasToken": {
+    "type": "String",
+    "value": "@appsetting('EmailAzureFunctionSasToken')"
+  },
   "ErrorEmailTempateId": {
     "type": "String",
     "value": "@appsetting('ErrorEmailTempateId')"
