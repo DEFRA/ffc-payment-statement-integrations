@@ -124,10 +124,10 @@
                                 "personalisations": {
                                     "fail_body": "@{variables('ProgressText')}",
                                     "process_name": "RleCrmInsert",
-                                    "fail_run_link": "@concat('https://portal.azure.com/#blade/Microsoft_Azure_EMA/DesignerEditor.ReactView/id/', appsetting('WORKFLOWS_SUBSCRIPTION_ID'), '/resourceGroups/', appsetting('WORKFLOWS_RESOURCE_GROUP_NAME'),'/providers/Microsoft.Web/sites/',appsetting('WORKFLOWS_LOGIC_APP_NAME'),'/workflows/',workflow().name,'/location/',appsetting('WORKFLOWS_LOCATION_NAME'),'/isReadOnly/true/isMonitoringView/true/runId/',workflow().run.name)"
+                                    "fail_run_link": "@concat('https://portal.azure.com/#blade/Microsoft_Azure_EMA/DesignerEditor.ReactView/id/', encodeUriComponent(concat('/subscriptions/',appsetting('WORKFLOWS_SUBSCRIPTION_ID'), '/resourceGroups/', appsetting('WORKFLOWS_RESOURCE_GROUP_NAME'),'/providers/Microsoft.Web/sites/',appsetting('WORKFLOWS_LOGIC_APP_NAME'),'/workflows/',workflow().name)),'/location/',appsetting('WORKFLOWS_LOCATION_NAME'),'/isReadOnly/true/isMonitoringView/true/runId/',workflow().run.name)"
                                 },
                                 "templateId": "9cf49f31-d557-4a78-beeb-27fe87553ae7",
-                                "toAddress": "jeremy.barnsley@defra.gov.uk"
+                                "toAddress": "@appsetting('ErrorEmailToAddresses')"
                             }
                         },
                         "runAfter": {

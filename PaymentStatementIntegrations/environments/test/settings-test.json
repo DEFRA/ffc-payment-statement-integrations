@@ -25,6 +25,11 @@
     "slotSetting": false
   },
   {
+    "name": "ErrorEmailToAddresses",
+    "value": "jeremy.barnsley@defra.gov.uk,jeremy.barnsley@esynergy.co.uk",
+    "slotSetting": false
+  },
+  {
     "name": "ErrorEmailTemplateId",
     "value": "9cf49f31-d557-4a78-beeb-27fe87553ae7",
     "slotSetting": false
