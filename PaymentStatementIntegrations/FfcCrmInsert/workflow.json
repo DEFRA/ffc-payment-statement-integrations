@@ -3,20 +3,7 @@
         "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
         "actions": {
             "Catch_Scope": {
-                "type": "Scope",
                 "actions": {
-                    "Append_error_text": {
-                        "type": "AppendToStringVariable",
-                        "inputs": {
-                            "name": "ProgressText",
-                            "value": ": @{outputs('Strip_sensitive_data')}"
-                        },
-                        "runAfter": {
-                            "Strip_sensitive_data": [
-                                "SUCCEEDED"
-                            ]
-                        }
-                    },
                     "Dead-letter_the_message": {
                         "type": "ServiceProvider",
                         "inputs": {
@@ -30,56 +17,39 @@
                                 "operationId": "deadLetterMessage",
                                 "serviceProviderId": "/serviceProviders/serviceBus"
                             }
-                        },
-                        "runAfter": {
-                            "Append_error_text": [
-                                "SUCCEEDED"
-                            ]
-                        },
-                        "trackedProperties": {}
+                        }
                     },
-                    "Throw_workflow_failure": {
-                        "type": "Compose",
-                        "inputs": "@int('__FINAL_ERROR__')",
+                    "Send_error_email": {
+                        "inputs": {
+                            "body": {
+                                "apiKey": "@parameters('GovNotifyApiKey')",
+                                "callingWorkflowName": "@{workflow().name}",
+                                "progressText": "@variables('ProgressText')",
+                                "stack": "@result('Try_Scope')",
+                                "workflowRunId": "@{workflow().run.name}"
+                            },
+                            "host": {
+                                "workflow": {
+                                    "id": "SendErrorEmail"
+                                }
+                            }
+                        },
+                        "type": "Workflow",
                         "runAfter": {
                             "Dead-letter_the_message": [
                                 "SUCCEEDED"
                             ]
                         }
-                    },
-                    "Strip_sensitive_data": {
-                        "type": "JavaScriptCode",
-                        "inputs": {
-                            "code": "// This code snippet removes any sensitive token values if defined\n\n// List of tokens with their terminating char - defined in pairs\nvar sensitiveTokens = [ 'client_secret=', '&', 'client_id=', '&', 'Authorization\":', '}' ];\nvar errorStack = JSON.stringify(workflowContext.actions.Get_error_stack.outputs);\ntry {\n    for (var i=0; i < sensitiveTokens.length; i = i + 2) {\n        var tok = sensitiveTokens[i];\n        var tokLen = tok.length;\n        var tokPos = errorStack.indexOf(tok);\n        var endPos = errorStack.indexOf(sensitiveTokens[i+1],tokPos + 1);\n        if (tokPos > -1) {\n            if (endPos > -1) {\n                errorStack = errorStack.substring(0, tokPos + tokLen) +\n                    '******' +\n                    errorStack.substring(endPos);\n            } else {\n                errorStack = errorStack.substring(0, tokPos + tokLen) +\n                    '******';\n            }\n        }\n    }\n}\ncatch (err) {\n  // Do nothing\n}\nreturn errorStack;"
-                        },
-                        "runAfter": {
-                            "Get_error_stack": [
-                                "SUCCEEDED"
-                            ]
-                        }
-                    },
-                    "Get_error_stack": {
-                        "type": "Query",
-                        "inputs": {
-                            "from": "@result('Try_Scope')",
-                            "where": "@equals(item()?['status'],'Failed')"
-                        },
-                        "runtimeConfiguration": {
-                            "secureData": {
-                                "properties": [
-                                    "inputs",
-                                    "outputs"
-                                ]
-                            }
-                        }
                     }
                 },
                 "runAfter": {
                     "Try_Scope": [
+                        "TIMEDOUT",
                         "FAILED",
-                        "TIMEDOUT"
+                        "SKIPPED"
                     ]
-                }
+                },
+                "type": "Scope"
             },
             "Initialize_Progress": {
                 "type": "InitializeVariable",

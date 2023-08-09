@@ -15,6 +15,21 @@
     "slotSetting": false
   },
   {
+    "name": "EmailAzureFunctionEndpoint",
+    "value": "https://devrleinffa1401.azurewebsites.net/api/AzureFunctionGovNotify",
+    "slotSetting": false
+  },
+  {
+    "name": "EmailAzureFunctionSasToken",
+    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/EmailAzureFunctionSasToken/1b6ce561d81b42b88cd28f340edd40a1)",
+    "slotSetting": false
+  },
+  {
+    "name": "ErrorEmailToAddresses",
+    "value": "jeremy.barnsley@defra.gov.uk",
+    "slotSetting": false
+  },
+  {
     "name": "ErrorEmailTemplateId",
     "value": "9cf49f31-d557-4a78-beeb-27fe87553ae7",
     "slotSetting": false

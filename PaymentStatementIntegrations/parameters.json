@@ -7,6 +7,14 @@
     "type": "String",
     "value": "@appsetting('CrmBaseUrl')"
   },
+  "EmailAzureFunctionEndpoint": {
+    "type": "String",
+    "value": "@appsetting('EmailAzureFunctionEndpoint')"
+  },
+  "EmailAzureFunctionSasToken": {
+    "type": "String",
+    "value": "@appsetting('EmailAzureFunctionSasToken')"
+  },
   "ErrorEmailTempateId": {
     "type": "String",
     "value": "@appsetting('ErrorEmailTempateId')"

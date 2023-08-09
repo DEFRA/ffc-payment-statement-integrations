@@ -65,6 +65,7 @@ jobs:
             inlineScript: |
               az functionapp config appsettings set --name $(LAname) --resource-group  $(resourceGroupName) --settings \
               "WORKFLOWS_RESOURCE_GROUP_NAME=$(resourceGroupName)" \
+              "WORKFLOWS_LOGIC_APP_NAME=$(logicAppName)" \
               "WEBSITE_LOAD_ROOT_CERTIFICATES=$(trustedRootThumbprints)"
             addSpnToEnvironment: true
             useGlobalConfig: true

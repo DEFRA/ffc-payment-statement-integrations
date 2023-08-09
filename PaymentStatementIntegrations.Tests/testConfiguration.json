@@ -10,7 +10,8 @@
       "https://crm.testing.net",
       "https://ad-dummy-login.net",
       "https://sp-dummy-login.net",
-      "https://sharepoint-test-dummy.com"
+      "https://sharepoint-test-dummy.com",
+      "https://emailazurefunctionendpoint.net"
     ],
     "builtInConnectorsToMock": [
       "executeQuery",
