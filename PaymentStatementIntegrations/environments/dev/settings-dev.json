@@ -15,6 +15,11 @@
     "slotSetting": false
   },
   {
+    "name": "EmailAzureFunctionEndpoint",
+    "value": "https://devrleinffa1401.azurewebsites.net/api/AzureFunctionGovNotify",
+    "slotSetting": false
+  },
+  {
     "name": "ErrorEmailTemplateId",
     "value": "9cf49f31-d557-4a78-beeb-27fe87553ae7",
     "slotSetting": false

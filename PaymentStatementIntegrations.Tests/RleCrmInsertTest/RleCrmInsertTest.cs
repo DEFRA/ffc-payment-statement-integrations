@@ -147,6 +147,10 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Copy_To_Sharepoint"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Create_Meta_Data"));
 
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Get_error_stack"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Strip_sensitive_data"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Send_email"));
+
                 // Check 'create folder' only ran once
                 Assert.AreEqual(1, testRunner.GetWorkflowActionRepetitionCount("Create_Folder"));
 
@@ -295,6 +299,10 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Copy_To_Sharepoint"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Create_Meta_Data"));
 
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Get_error_stack"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Strip_sensitive_data"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Send_email"));
+
                 // Check 'create folder' only ran once
                 Assert.AreEqual(1, testRunner.GetWorkflowActionRepetitionCount("Create_Folder"));
 
@@ -336,12 +344,35 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
 
             using (ITestRunner testRunner = CreateTestRunner(settingsToOverride))
             {
+                // Mock the HTTP calls and customize responses
+                testRunner.AddApiMocks = (request) =>
+                {
+                    HttpResponseMessage mockedResponse = new HttpResponseMessage();
+                    if (request?.RequestUri != null)
+                    {
+                        if (request.RequestUri.AbsolutePath.Contains("/oauth2/token") && request.Method == HttpMethod.Post)
+                        {
+                            // Email auth token
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                            mockedResponse.Content = ValidAuthToken();
+                        }
+                        else if (request.RequestUri.AbsolutePath.Contains("/api/AzureFunctionGovNotify") && request.Method == HttpMethod.Post)
+                        {
+                            // Email function call
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                        }
+                    }
+                    return mockedResponse;
+                };
+                
                 // Run the workflow
                 // Since there is a condition on the trigger that the filename must end in '.ctrl', we must supply a Name property in the content
                 var workflowResponse = testRunner.TriggerWorkflow(GetInvalidBlobControlFileMissingFrn(), HttpMethod.Post);
 
                 // Check workflow run status
-                Assert.AreEqual(WorkflowRunStatus.Failed, testRunner.WorkflowRunStatus);
+                Assert.AreEqual(WorkflowRunStatus.Succeeded, testRunner.WorkflowRunStatus);
 
                 // Check workflow response
                 testRunner.ExceptionWrapper(() => Assert.AreEqual(HttpStatusCode.Accepted, workflowResponse.StatusCode));
@@ -356,6 +387,9 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Append_file_mismatch_error"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_error_stack"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Strip_sensitive_data"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_email_auth_token"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Parse_email_auth_token"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Send_email"));
 
                 // Check error message
                 var finalError = testRunner.GetWorkflowActionOutput("Compose_final_error").ToString();
@@ -378,12 +412,35 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
 
             using (ITestRunner testRunner = CreateTestRunner(settingsToOverride))
             {
+                // Mock the HTTP calls and customize responses
+                testRunner.AddApiMocks = (request) =>
+                {
+                    HttpResponseMessage mockedResponse = new HttpResponseMessage();
+                    if (request?.RequestUri != null)
+                    {
+                        if (request.RequestUri.AbsolutePath.Contains("/oauth2/token") && request.Method == HttpMethod.Post)
+                        {
+                            // Email auth token
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                            mockedResponse.Content = ValidAuthToken();
+                        }
+                        else if (request.RequestUri.AbsolutePath.Contains("/api/AzureFunctionGovNotify") && request.Method == HttpMethod.Post)
+                        {
+                            // Email function call
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                        }
+                    }
+                    return mockedResponse;
+                };
+
                 // Run the workflow
                 // Since there is a condition on the trigger that the filename must end in '.ctrl', we must supply a Name property in the content
                 var workflowResponse = testRunner.TriggerWorkflow(GetInvalidBlobControlFileMissingCrn(), HttpMethod.Post);
 
                 // Check workflow run status
-                Assert.AreEqual(WorkflowRunStatus.Failed, testRunner.WorkflowRunStatus);
+                Assert.AreEqual(WorkflowRunStatus.Succeeded, testRunner.WorkflowRunStatus);
 
                 // Check workflow response
                 testRunner.ExceptionWrapper(() => Assert.AreEqual(HttpStatusCode.Accepted, workflowResponse.StatusCode));
@@ -398,6 +455,9 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Append_file_mismatch_error"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_error_stack"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Strip_sensitive_data"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_email_auth_token"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Parse_email_auth_token"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Send_email"));
 
                 // Check error message
                 var finalError = testRunner.GetWorkflowActionOutput("Compose_final_error").ToString();
@@ -420,12 +480,35 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
 
             using (ITestRunner testRunner = CreateTestRunner(settingsToOverride))
             {
+                // Mock the HTTP calls and customize responses
+                testRunner.AddApiMocks = (request) =>
+                {
+                    HttpResponseMessage mockedResponse = new HttpResponseMessage();
+                    if (request?.RequestUri != null)
+                    {
+                        if (request.RequestUri.AbsolutePath.Contains("/oauth2/token") && request.Method == HttpMethod.Post)
+                        {
+                            // Email auth token
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                            mockedResponse.Content = ValidAuthToken();
+                        }
+                        else if (request.RequestUri.AbsolutePath.Contains("/api/AzureFunctionGovNotify") && request.Method == HttpMethod.Post)
+                        {
+                            // Email function call
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                        }
+                    }
+                    return mockedResponse;
+                };
+
                 // Run the workflow
                 // Since there is a condition on the trigger that the filename must end in '.ctrl', we must supply a Name property in the content
                 var workflowResponse = testRunner.TriggerWorkflow(GetInvalidBlobControlFileMissingUosr(), HttpMethod.Post);
 
                 // Check workflow run status
-                Assert.AreEqual(WorkflowRunStatus.Failed, testRunner.WorkflowRunStatus);
+                Assert.AreEqual(WorkflowRunStatus.Succeeded, testRunner.WorkflowRunStatus);
 
                 // Check workflow response
                 testRunner.ExceptionWrapper(() => Assert.AreEqual(HttpStatusCode.Accepted, workflowResponse.StatusCode));
@@ -440,6 +523,9 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Append_file_mismatch_error"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_error_stack"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Strip_sensitive_data"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_email_auth_token"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Parse_email_auth_token"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Send_email"));
 
                 // Check error message
                 var finalError = testRunner.GetWorkflowActionOutput("Compose_final_error").ToString();
@@ -462,12 +548,35 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
 
             using (ITestRunner testRunner = CreateTestRunner(settingsToOverride))
             {
+                // Mock the HTTP calls and customize responses
+                testRunner.AddApiMocks = (request) =>
+                {
+                    HttpResponseMessage mockedResponse = new HttpResponseMessage();
+                    if (request?.RequestUri != null)
+                    {
+                        if (request.RequestUri.AbsolutePath.Contains("/oauth2/token") && request.Method == HttpMethod.Post)
+                        {
+                            // Email auth token
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                            mockedResponse.Content = ValidAuthToken();
+                        }
+                        else if (request.RequestUri.AbsolutePath.Contains("/api/AzureFunctionGovNotify") && request.Method == HttpMethod.Post)
+                        {
+                            // Email function call
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                        }
+                    }
+                    return mockedResponse;
+                };
+
                 // Run the workflow
                 // Since there is a condition on the trigger that the filename must end in '.ctrl', we must supply a Name property in the content
                 var workflowResponse = testRunner.TriggerWorkflow(GetInvalidBlobControlFileMissingSubmissionDate(), HttpMethod.Post);
 
                 // Check workflow run status
-                Assert.AreEqual(WorkflowRunStatus.Failed, testRunner.WorkflowRunStatus);
+                Assert.AreEqual(WorkflowRunStatus.Succeeded, testRunner.WorkflowRunStatus);
 
                 // Check workflow response
                 testRunner.ExceptionWrapper(() => Assert.AreEqual(HttpStatusCode.Accepted, workflowResponse.StatusCode));
@@ -482,6 +591,9 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Append_file_mismatch_error"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_error_stack"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Strip_sensitive_data"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_email_auth_token"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Parse_email_auth_token"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Send_email"));
 
                 // Check error message
                 var finalError = testRunner.GetWorkflowActionOutput("Compose_final_error").ToString();
@@ -504,12 +616,35 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
 
             using (ITestRunner testRunner = CreateTestRunner(settingsToOverride))
             {
+                // Mock the HTTP calls and customize responses
+                testRunner.AddApiMocks = (request) =>
+                {
+                    HttpResponseMessage mockedResponse = new HttpResponseMessage();
+                    if (request?.RequestUri != null)
+                    {
+                        if (request.RequestUri.AbsolutePath.Contains("/oauth2/token") && request.Method == HttpMethod.Post)
+                        {
+                            // Email auth token
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                            mockedResponse.Content = ValidAuthToken();
+                        }
+                        else if (request.RequestUri.AbsolutePath.Contains("/api/AzureFunctionGovNotify") && request.Method == HttpMethod.Post)
+                        {
+                            // Email function call
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                        }
+                    }
+                    return mockedResponse;
+                };
+
                 // Run the workflow
                 // Since there is a condition on the trigger that the filename must end in '.ctrl', we must supply a Name property in the content
                 var workflowResponse = testRunner.TriggerWorkflow(GetInvalidBlobControlFileWrongNumFiles(), HttpMethod.Post);
 
                 // Check workflow run status
-                Assert.AreEqual(WorkflowRunStatus.Failed, testRunner.WorkflowRunStatus);
+                Assert.AreEqual(WorkflowRunStatus.Succeeded, testRunner.WorkflowRunStatus);
 
                 // Check workflow response
                 testRunner.ExceptionWrapper(() => Assert.AreEqual(HttpStatusCode.Accepted, workflowResponse.StatusCode));
@@ -524,6 +659,9 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Get_CRM_Token"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_error_stack"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Strip_sensitive_data"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_email_auth_token"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Parse_email_auth_token"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Send_email"));
 
                 // Check error message
                 var finalError = testRunner.GetWorkflowActionOutput("Compose_final_error").ToString();
@@ -574,7 +712,7 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                 var workflowResponse = testRunner.TriggerWorkflow(GetBlobControlFile(), HttpMethod.Post);
 
                 // Check workflow run status
-                Assert.AreEqual(WorkflowRunStatus.Failed, testRunner.WorkflowRunStatus);
+                Assert.AreEqual(WorkflowRunStatus.Succeeded, testRunner.WorkflowRunStatus);
 
                 // Check workflow response
                 testRunner.ExceptionWrapper(() => Assert.AreEqual(HttpStatusCode.Accepted, workflowResponse.StatusCode));
@@ -610,6 +748,8 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
             // Override one of the settings in the local settings file
             var settingsToOverride = new Dictionary<string, string>();
 
+            var firstAuthCall = true;
+
             using (ITestRunner testRunner = CreateTestRunner(settingsToOverride))
             {
                 // Mock the HTTP calls and customize responses
@@ -620,9 +760,26 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                     {
                         if (request.RequestUri.AbsolutePath.Contains("/oauth2/token") && request.Method == HttpMethod.Post)
                         {
+                            // First call is CRM auth token - should fail
+                            // Second call is email auth token - should be successful
                             mockedResponse.RequestMessage = request;
-                            mockedResponse.StatusCode = HttpStatusCode.BadRequest;
-                            mockedResponse.Content = ContentHelper.CreatePlainStringContent("bad request specific error");
+                            if (firstAuthCall)
+                            {
+                                mockedResponse.StatusCode = HttpStatusCode.BadRequest;
+                                mockedResponse.Content = ContentHelper.CreatePlainStringContent("bad request specific error");
+                                firstAuthCall = false;
+                            }
+                            else
+                            {
+                                mockedResponse.StatusCode = HttpStatusCode.OK;
+                                mockedResponse.Content = ValidAuthToken();
+                            }
+                        }
+                        else if (request.RequestUri.AbsolutePath.Contains("/api/AzureFunctionGovNotify") && request.Method == HttpMethod.Post)
+                        {
+                            // Email function call
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
                         }
                     }
                     return mockedResponse;
@@ -633,7 +790,7 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                 var workflowResponse = testRunner.TriggerWorkflow(GetBlobControlFile(), HttpMethod.Post);
 
                 // Check workflow run status
-                Assert.AreEqual(WorkflowRunStatus.Failed, testRunner.WorkflowRunStatus);
+                Assert.AreEqual(WorkflowRunStatus.Succeeded, testRunner.WorkflowRunStatus);
 
                 // Check workflow response
                 testRunner.ExceptionWrapper(() => Assert.AreEqual(HttpStatusCode.Accepted, workflowResponse.StatusCode));
@@ -648,6 +805,9 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Get_CRM_Org"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_error_stack"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Strip_sensitive_data"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_email_auth_token"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Parse_email_auth_token"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Send_email"));
 
                 // Check masking
                 var outputs = testRunner.GetWorkflowActionOutput("Strip_sensitive_data");
