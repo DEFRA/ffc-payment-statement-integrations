@@ -38,13 +38,93 @@
                         },
                         "trackedProperties": {}
                     },
-                    "Throw_workflow_failure": {
-                        "type": "Compose",
-                        "inputs": "@int('__FINAL_ERROR__')",
+                    "Get_email_auth_token": {
+                        "type": "Http",
+                        "inputs": {
+                            "uri": "@{parameters('AdLoginBaseUrl')}/@{parameters('PortalTenantId')}/oauth2/token",
+                            "method": "POST",
+                            "headers": {
+                                "Content-Type": "application/x-www-form-urlencoded"
+                            },
+                            "body": "grant_type=client_credentials\n&client_id=@{parameters('PortalClientId')}\n&client_secret=@{encodeUriComponent(parameters('PortalClientSecret'))}\n&resource=@{encodeUriComponent(parameters('CrmBaseUrl'))}"
+                        },
                         "runAfter": {
                             "Dead-letter_the_message": [
                                 "SUCCEEDED"
                             ]
+                        },
+                        "runtimeConfiguration": {
+                            "contentTransfer": {
+                                "transferMode": "Chunked"
+                            }
+                        }
+                    },
+                    "Parse_email_auth_token": {
+                        "type": "ParseJson",
+                        "inputs": {
+                            "content": "@body('Get_email_auth_token')",
+                            "schema": {
+                                "properties": {
+                                    "access_token": {
+                                        "type": "string"
+                                    },
+                                    "expires_in": {
+                                        "type": "string"
+                                    },
+                                    "expires_on": {
+                                        "type": "string"
+                                    },
+                                    "ext_expires_in": {
+                                        "type": "string"
+                                    },
+                                    "not_before": {
+                                        "type": "string"
+                                    },
+                                    "resource": {
+                                        "type": "string"
+                                    },
+                                    "token_type": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "runAfter": {
+                            "Get_email_auth_token": [
+                                "SUCCEEDED"
+                            ]
+                        }
+                    },
+                    "Send_email": {
+                        "type": "Http",
+                        "inputs": {
+                            "uri": "@{parameters('EmailAzureFunctionEndpoint')}",
+                            "method": "POST",
+                            "headers": {
+                                "Authorization": "Bearer @{body('Parse_email_auth_token')?['access_token']}",
+                                "x-functions-key": "@{parameters('EmailAzureFunctionSasToken')}"
+                            },
+                            "body": {
+                                "apiKey": "@{parameters('GovNotifyApiKey')}",
+                                "personalisations": {
+                                    "fail_body": "@{variables('ProgressText')}",
+                                    "process_name": "RleCrmInsert",
+                                    "fail_run_link": "@concat('https://portal.azure.com/#blade/Microsoft_Azure_EMA/DesignerEditor.ReactView/id/', appsetting('WORKFLOWS_SUBSCRIPTION_ID'), '/resourceGroups/', appsetting('WORKFLOWS_RESOURCE_GROUP_NAME'),'/providers/Microsoft.Web/sites/',appsetting('WORKFLOWS_LOGIC_APP_NAME'),'/workflows/',workflow().name,'/location/',appsetting('WORKFLOWS_LOCATION_NAME'),'/isReadOnly/true/isMonitoringView/true/runId/',workflow().run.name)"
+                                },
+                                "templateId": "9cf49f31-d557-4a78-beeb-27fe87553ae7",
+                                "toAddress": "jeremy.barnsley@defra.gov.uk"
+                            }
+                        },
+                        "runAfter": {
+                            "Parse_email_auth_token": [
+                                "SUCCEEDED"
+                            ]
+                        },
+                        "runtimeConfiguration": {
+                            "contentTransfer": {
+                                "transferMode": "Chunked"
+                            }
                         }
                     },
                     "Strip_sensitive_data": {

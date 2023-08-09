@@ -44,35 +44,38 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
                 testRunner.AddApiMocks = (request) =>
                 {
                     HttpResponseMessage mockedResponse = new HttpResponseMessage();
-                    if (request?.RequestUri != null && request.RequestUri.AbsolutePath.Contains("/oauth2/token") && request.Method == HttpMethod.Post)
+                    if (request?.RequestUri != null)
                     {
-                        mockedResponse.RequestMessage = request;
-                        mockedResponse.StatusCode = HttpStatusCode.OK;
-                        mockedResponse.Content = ValidAuthToken();
-                    }
-                    else if (request?.RequestUri != null && request.RequestUri.AbsolutePath.Contains("/api/data/v9.2/accounts") && request.Method == HttpMethod.Get)
-                    {
-                        mockedResponse.RequestMessage = request;
-                        mockedResponse.StatusCode = HttpStatusCode.OK;
-                        mockedResponse.Content = ValidOrgLookup();
-                    }
-                    else if (request?.RequestUri != null && request.RequestUri.AbsolutePath.Contains("/api/data/v9.2/incidents") && request.Method == HttpMethod.Post)
-                    {
-                        mockedResponse.RequestMessage = request;
-                        mockedResponse.StatusCode = HttpStatusCode.OK;
-                        mockedResponse.Content = ValidCreateCase();
-                    }
-                    else if (request?.RequestUri != null && request.RequestUri.AbsolutePath.Contains("/api/data/v9.2/rpa_customernotifications") && request.Method == HttpMethod.Post)
-                    {
-                        mockedResponse.RequestMessage = request;
-                        mockedResponse.StatusCode = HttpStatusCode.OK;
-                        mockedResponse.Content = ValidCreateNotification();
-                    }
-                    else if (request?.RequestUri != null && request.RequestUri.AbsolutePath.Contains("/api/data/v9.2/rpa_activitymetadatas") && request.Method == HttpMethod.Post)
-                    {
-                        mockedResponse.RequestMessage = request;
-                        mockedResponse.StatusCode = HttpStatusCode.OK;
-                        mockedResponse.Content = ValidCreateMetadata();
+                        if (request.RequestUri.AbsolutePath.Contains("/oauth2/token") && request.Method == HttpMethod.Post)
+                        {
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                            mockedResponse.Content = ValidAuthToken();
+                        }
+                        else if (request.RequestUri.AbsolutePath.Contains("/api/data/v9.2/accounts") && request.Method == HttpMethod.Get)
+                        {
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                            mockedResponse.Content = ValidOrgLookup();
+                        }
+                        else if (request.RequestUri.AbsolutePath.Contains("/api/data/v9.2/incidents") && request.Method == HttpMethod.Post)
+                        {
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                            mockedResponse.Content = ValidCreateCase();
+                        }
+                        else if (request.RequestUri.AbsolutePath.Contains("/api/data/v9.2/rpa_customernotifications") && request.Method == HttpMethod.Post)
+                        {
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                            mockedResponse.Content = ValidCreateNotification();
+                        }
+                        else if (request.RequestUri.AbsolutePath.Contains("/api/data/v9.2/rpa_activitymetadatas") && request.Method == HttpMethod.Post)
+                        {
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                            mockedResponse.Content = ValidCreateMetadata();
+                        }
                     }
                     return mockedResponse;
                 };
@@ -128,7 +131,28 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
 
             using (ITestRunner testRunner = CreateTestRunner(settingsToOverride))
             {
-                // No need to mock any API calls as none will be called in this flow
+                // Mock the HTTP calls and customize responses
+                testRunner.AddApiMocks = (request) =>
+                {
+                    HttpResponseMessage mockedResponse = new HttpResponseMessage();
+                    if (request?.RequestUri != null)
+                    {
+                        if (request.RequestUri.AbsolutePath.Contains("/oauth2/token") && request.Method == HttpMethod.Post)
+                        {
+                            // Email auth token
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                            mockedResponse.Content = ValidAuthToken();
+                        }
+                        else if (request.RequestUri.AbsolutePath.Contains("/api/AzureFunctionGovNotify") && request.Method == HttpMethod.Post)
+                        {
+                            // Email function call
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                        }
+                    }
+                    return mockedResponse;
+                };
 
                 // Run the workflow
                 var workflowResponse = testRunner.TriggerWorkflow(
@@ -136,7 +160,7 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
                     HttpMethod.Post);
 
                 // Check workflow run status
-                Assert.AreEqual(WorkflowRunStatus.Failed, testRunner.WorkflowRunStatus);
+                Assert.AreEqual(WorkflowRunStatus.Succeeded, testRunner.WorkflowRunStatus);
 
                 // Check workflow response
                 testRunner.ExceptionWrapper(() => Assert.AreEqual(HttpStatusCode.Accepted, workflowResponse.StatusCode));
@@ -158,6 +182,8 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("CRM_Create_Meta_Data"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Strip_sensitive_data"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Dead-letter_the_message"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_email_auth_token"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Send_email"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Complete_the_message"));
 
                 // Check request to CRM via Dataserve connector never happened
@@ -181,7 +207,28 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
 
             using (ITestRunner testRunner = CreateTestRunner(settingsToOverride))
             {
-                // No need to mock any API calls as none will be called in this flow
+                // Mock the HTTP calls and customize responses
+                testRunner.AddApiMocks = (request) =>
+                {
+                    HttpResponseMessage mockedResponse = new HttpResponseMessage();
+                    if (request?.RequestUri != null)
+                    {
+                        if (request.RequestUri.AbsolutePath.Contains("/oauth2/token") && request.Method == HttpMethod.Post)
+                        {
+                            // Email auth token
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                            mockedResponse.Content = ValidAuthToken();
+                        }
+                        else if (request.RequestUri.AbsolutePath.Contains("/api/AzureFunctionGovNotify") && request.Method == HttpMethod.Post)
+                        {
+                            // Email function call
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                        }
+                    }
+                    return mockedResponse;
+                };
 
                 // Run the workflow
                 var workflowResponse = testRunner.TriggerWorkflow(
@@ -189,7 +236,7 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
                     HttpMethod.Post);
 
                 // Check workflow run status
-                Assert.AreEqual(WorkflowRunStatus.Failed, testRunner.WorkflowRunStatus);
+                Assert.AreEqual(WorkflowRunStatus.Succeeded, testRunner.WorkflowRunStatus);
 
                 // Check workflow response
                 testRunner.ExceptionWrapper(() => Assert.AreEqual(HttpStatusCode.Accepted, workflowResponse.StatusCode));
@@ -211,6 +258,8 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("CRM_Create_Meta_Data"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Strip_sensitive_data"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Dead-letter_the_message"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_email_auth_token"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Send_email"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Complete_the_message"));
 
                 // Check request to CRM via Dataserve connector never happened
@@ -238,20 +287,29 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
                 testRunner.AddApiMocks = (request) =>
                 {
                     HttpResponseMessage mockedResponse = new HttpResponseMessage();
-                    if (request?.RequestUri != null && request.RequestUri.AbsolutePath.Contains("/oauth2/token") && request.Method == HttpMethod.Post)
+                    if (request?.RequestUri != null)
                     {
-                        mockedResponse.RequestMessage = request;
-                        mockedResponse.StatusCode = HttpStatusCode.OK;
-                        mockedResponse.Content = ValidAuthToken();
-                    }
-                    else if (request?.RequestUri != null && request.RequestUri.AbsolutePath.Contains("/api/data/v9.2/"))
-                    {
-                        // As this is a connector (and not an action HTTP call), the Unit Test Framework
-                        // will not automatically remove the retry policy. Therefore we must use a code that is not 408, 429 or 5xx
-                        // so BadRequest (400) is chosen to ensure the unit test completes without long retries.
-                        mockedResponse.RequestMessage = request;
-                        mockedResponse.StatusCode = HttpStatusCode.BadRequest;
-                        mockedResponse.Content = ContentHelper.CreatePlainStringContent("bad request specific error");
+                        if (request.RequestUri.AbsolutePath.Contains("/oauth2/token") && request.Method == HttpMethod.Post)
+                        {
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                            mockedResponse.Content = ValidAuthToken();
+                        }
+                        else if (request.RequestUri.AbsolutePath.Contains("/api/data/v9.2/"))
+                        {
+                            // As this is a connector (and not an action HTTP call), the Unit Test Framework
+                            // will not automatically remove the retry policy. Therefore we must use a code that is not 408, 429 or 5xx
+                            // so BadRequest (400) is chosen to ensure the unit test completes without long retries.
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.BadRequest;
+                            mockedResponse.Content = ContentHelper.CreatePlainStringContent("bad request specific error");
+                        }
+                        else if (request.RequestUri.AbsolutePath.Contains("/api/AzureFunctionGovNotify") && request.Method == HttpMethod.Post)
+                        {
+                            // Email function call
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                        }
                     }
                     return mockedResponse;
                 };
@@ -262,7 +320,7 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
                     HttpMethod.Post);
 
                 // Check workflow run status
-                Assert.AreEqual(WorkflowRunStatus.Failed, testRunner.WorkflowRunStatus);
+                Assert.AreEqual(WorkflowRunStatus.Succeeded, testRunner.WorkflowRunStatus);
 
                 // Check workflow response
                 testRunner.ExceptionWrapper(() => Assert.AreEqual(HttpStatusCode.Accepted, workflowResponse.StatusCode));
@@ -284,6 +342,8 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("CRM_Create_Meta_Data"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Strip_sensitive_data"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Dead-letter_the_message"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_email_auth_token"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Send_email"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Complete_the_message"));
 
                 // Check request to CRM
@@ -306,17 +366,39 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
             // Override one of the settings in the local settings file
             var settingsToOverride = new Dictionary<string, string>();
 
+            var firstAuthCall = true;
+
             using (ITestRunner testRunner = CreateTestRunner(settingsToOverride))
             {
                 // Mock the HTTP calls and customize responses
                 testRunner.AddApiMocks = (request) =>
                 {
                     HttpResponseMessage mockedResponse = new HttpResponseMessage();
-                    if (request?.RequestUri != null && request.RequestUri.AbsolutePath.Contains("/oauth2/token") && request.Method == HttpMethod.Post)
+                    if (request?.RequestUri != null)
                     {
-                        mockedResponse.RequestMessage = request;
-                        mockedResponse.StatusCode = HttpStatusCode.BadRequest;
-                        mockedResponse.Content = ContentHelper.CreatePlainStringContent("bad request specific error");
+                        if (request.RequestUri.AbsolutePath.Contains("/oauth2/token") && request.Method == HttpMethod.Post)
+                        {
+                            // First call is CRM auth token - should fail
+                            // Second call is email auth token - should be successful
+                            mockedResponse.RequestMessage = request;
+                            if (firstAuthCall)
+                            {
+                                mockedResponse.StatusCode = HttpStatusCode.BadRequest;
+                                mockedResponse.Content = ContentHelper.CreatePlainStringContent("bad request specific error");
+                                firstAuthCall = false;
+                            }
+                            else
+                            {
+                                mockedResponse.StatusCode = HttpStatusCode.OK;
+                                mockedResponse.Content = ValidAuthToken();
+                            }
+                        }
+                        else if (request.RequestUri.AbsolutePath.Contains("/api/AzureFunctionGovNotify") && request.Method == HttpMethod.Post)
+                        {
+                            // Email function call
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                        }
                     }
                     return mockedResponse;
                 };
@@ -327,7 +409,7 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
                     HttpMethod.Post);
 
                 // Check workflow run status
-                Assert.AreEqual(WorkflowRunStatus.Failed, testRunner.WorkflowRunStatus);
+                Assert.AreEqual(WorkflowRunStatus.Succeeded, testRunner.WorkflowRunStatus);
 
                 // Check workflow response
                 testRunner.ExceptionWrapper(() => Assert.AreEqual(HttpStatusCode.Accepted, workflowResponse.StatusCode));
@@ -349,6 +431,8 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("CRM_Create_Meta_Data"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Strip_sensitive_data"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Dead-letter_the_message"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_email_auth_token"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Send_email"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Complete_the_message"));
 
                 // Check masking
