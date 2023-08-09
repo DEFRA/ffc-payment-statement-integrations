@@ -50,6 +50,13 @@
                             "Get_error_stack": [
                                 "SUCCEEDED"
                             ]
+                        },
+                        "runtimeConfiguration": {
+                            "secureData": {
+                                "properties": [
+                                    "inputs"
+                                ]
+                            }
                         }
                     },
                     "Throw_final_error": {
@@ -100,7 +107,7 @@
                 "trackedProperties": {
                     "WorkflowName": "RleCrmInsert"
                 }
-            },
+           },
             "Init_NewCaseId": {
                 "type": "InitializeVariable",
                 "inputs": {
@@ -427,6 +434,12 @@
                         "runtimeConfiguration": {
                             "contentTransfer": {
                                 "transferMode": "Chunked"
+                            },
+                            "secureData": {
+                                "properties": [
+                                    "inputs",
+                                    "outputs"
+                                ]
                             }
                         }
                     },
@@ -607,13 +620,7 @@
                                     "Append_progress_folder": [
                                         "SUCCEEDED"
                                     ]
-                                },
-                                "runtimeConfiguration": {
-                                    "concurrency": {
-                                        "repetitions": 1
-                                    }
-                                },
-                                "trackedProperties": {}
+                                }
                             },
                             "Get_Sharepoint_Token": {
                                 "type": "Http",
@@ -628,6 +635,12 @@
                                 "runtimeConfiguration": {
                                     "contentTransfer": {
                                         "transferMode": "Chunked"
+                                    },
+                                    "secureData": {
+                                        "properties": [
+                                            "inputs",
+                                            "outputs"
+                                        ]
                                     }
                                 }
                             },

@@ -163,9 +163,13 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                 Assert.IsTrue(sbiStr.Contains("\"value\": \"123456789\""));
 
                 // Check request to CRM for 'create metadata'
-                var crmRequest = testRunner.MockRequests.First(r => r.RequestUri.AbsolutePath.Contains("/api/data/v9.2/rpa_activitymetadatas"));
-                Assert.AreEqual(HttpMethod.Post, crmRequest.Method);
-                Assert.IsTrue(crmRequest.Content.Contains("\"rpa_filename\":\"File1.txt\""));
+                // The 'For-Each' loop runs in parallel so we can't guarantee the order or results here
+                var crmMetadataRequests = testRunner.MockRequests.Where(r => r.RequestUri.AbsolutePath.Contains("/api/data/v9.2/rpa_activitymetadatas")).ToList();
+                Assert.AreEqual(3, crmMetadataRequests.Count);
+                Assert.IsTrue(crmMetadataRequests.All(x => x.Method == HttpMethod.Post));
+                Assert.AreEqual(1, crmMetadataRequests.Count(x => x.Content.Contains("\"rpa_filename\":\"File1.txt\"")));
+                Assert.AreEqual(1, crmMetadataRequests.Count(x => x.Content.Contains("\"rpa_filename\":\"File2.txt\"")));
+                Assert.AreEqual(1, crmMetadataRequests.Count(x => x.Content.Contains("\"rpa_filename\":\"File3.txt\"")));
 
                 // Check tracked properties
                 var trackedProps = testRunner.GetWorkflowActionTrackedProperties("Init_FileList");
@@ -302,9 +306,13 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
 
 
                 // Check request to CRM for 'create metadata'
-                var crmRequest = testRunner.MockRequests.First(r => r.RequestUri.AbsolutePath.Contains("/api/data/v9.2/rpa_activitymetadatas"));
-                Assert.AreEqual(HttpMethod.Post, crmRequest.Method);
-                Assert.IsTrue(crmRequest.Content.Contains("\"rpa_filename\":\"File1.txt\""));
+                // The 'For-Each' loop runs in parallel so we can't guarantee the order or results here
+                var crmMetadataRequests = testRunner.MockRequests.Where(r => r.RequestUri.AbsolutePath.Contains("/api/data/v9.2/rpa_activitymetadatas")).ToList();
+                Assert.AreEqual(3, crmMetadataRequests.Count);
+                Assert.IsTrue(crmMetadataRequests.All(x => x.Method == HttpMethod.Post));
+                Assert.AreEqual(1, crmMetadataRequests.Count(x => x.Content.Contains("\"rpa_filename\":\"File1.txt\"")));
+                Assert.AreEqual(1, crmMetadataRequests.Count(x => x.Content.Contains("\"rpa_filename\":\"File2.txt\"")));
+                Assert.AreEqual(1, crmMetadataRequests.Count(x => x.Content.Contains("\"rpa_filename\":\"File3.txt\"")));
 
                 // Check which SBI value was used - should be from Organisation call (not CTL file)
                 var sbiStr = testRunner.GetWorkflowActionOutput("Set_SBI_from_Org").ToString();
