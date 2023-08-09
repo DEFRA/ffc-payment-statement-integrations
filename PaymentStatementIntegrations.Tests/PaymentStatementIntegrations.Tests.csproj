@@ -23,6 +23,7 @@
     <None Remove="FfcCrmInsertTest\" />
     <None Remove="FfcCrmRetrievalTest\" />
     <None Remove="Helpers\" />
+    <None Remove="SendErrorEmailTest\" />
   </ItemGroup>
 <ItemGroup>
     <None Update="testConfiguration.json">
@@ -34,5 +35,6 @@
   <Folder Include="FfcCrmInsertTest\" />
   <Folder Include="FfcCrmRetrievalTest\" />
   <Folder Include="Helpers\" />
+  <Folder Include="SendErrorEmailTest\" />
 </ItemGroup>
 </Project>
