@@ -25,11 +25,11 @@ steps:
   inputs:
     rootFolderOrFile: "$(System.DefaultWorkingDirectory)/project_func_app_output"
     includeRootFolder: false
-    archiveFile: "$(System.DefaultWorkingDirectory)/build_func_app$(Build.BuildId).zip"
+    archiveFile: "$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip"
 
 - task: PublishPipelineArtifact@1
   displayName: 'Publish project zip artifact'
   inputs:
-    targetPath: '$(System.DefaultWorkingDirectory)/$(Build.BuildId).zip'
+    targetPath: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
     artifact: $(functionAppArtifactName)
     publishLocation: 'pipeline'
