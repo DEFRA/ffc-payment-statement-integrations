@@ -20,12 +20,6 @@
     "appInsightsName": {
       "type": "string"
     },
-    "userManagedIdentityName": {
-      "type": "string"
-    },
-    "userManagedIdentityResourceGroupName": {
-      "type": "string"
-    },
     "storageName": {
       "type": "string",
       "minLength": 3,

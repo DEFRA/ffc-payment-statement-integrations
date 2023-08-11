@@ -33,12 +33,6 @@ variables:
   dnsServer: '10.178.0.4'
   dnsAltServer: '10.178.0.5'
 
-  # Full url is specified here as opposed to just the MI name.
-  # User-assigned Managed Identity to be attributed to the Logic App.
-  # Resource Group is supplied in case it is in a different resource group to the Logic App.
-  userManagedIdentityName: '$(resourcePrefix)MI1401'
-  userManagedIdentityResourceGroupName: '$(resourceGroupName)'
-
   # Connector details
   # Although MID details are specified, the tenantId should be the one where the service bus exists and, if this
   # is cross-tenant, will be different to the tenant that the Logic App sits in.
