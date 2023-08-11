@@ -31,7 +31,7 @@ stages:
   variables:
   - template: ../variables/pipeline-vars-test.yml
   jobs:
-  - template: templates/template-iac-logicapp.yml
+  - template: templates/template-iac-funcapp.yml
     parameters:
       environment: ${{ variables.envShortName }}
       serviceConnection: ${{ variables.serviceConnection }}
