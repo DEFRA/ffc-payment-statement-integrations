@@ -42,10 +42,3 @@ variables:
   # The following are in KeyVault secrets
   # - serviceBusUserManagedIdentityTenantId - may be in a different tenant to the Logic App
   # - serviceBusUserManagedIdentityObjectId
-  
-
-  # Function App used for sending customised emails on error
-  functionAppName: '$(resourcePrefix)FA1403'
-  functionAppServicePlanName: '$(resourcePrefix)ASP1403'
-   # Gets converted to lowercase later in the pipeline. No spaces or hyphens allowed
-  functionAppStorageName: '$(resourcePrefix)ST1403'

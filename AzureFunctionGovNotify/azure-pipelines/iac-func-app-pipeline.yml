@@ -7,7 +7,7 @@ trigger: none
 pr: none
 
 variables:
-- template: variables/pipeline-vars-common.yml
+- template: azure-pipelines/variables/pipeline-vars-common.yml
 
 resources:
   pipelines:
@@ -18,9 +18,9 @@ stages:
 - stage: DEV
   displayName: 'DEV Deployment'
   variables:
-  - template: variables/pipeline-vars-dev.yml
+  - template: azure-pipelines/variables/pipeline-vars-dev.yml
   jobs:
-  - template: templates/template-iac-funcapp.yml
+  - template: azure-pipelines/templates/template-iac-funcapp.yml
     parameters:
       environment: ${{ variables.envShortName }}
       serviceConnection: ${{ variables.serviceConnection }}
@@ -29,9 +29,9 @@ stages:
 - stage: TEST
   displayName: 'TEST Deployment'
   variables:
-  - template: variables/pipeline-vars-test.yml
+  - template: azure-pipelines/variables/pipeline-vars-test.yml
   jobs:
-  - template: templates/template-iac-funcapp.yml
+  - template: azure-pipelines/templates/template-iac-funcapp.yml
     parameters:
       environment: ${{ variables.envShortName }}
       serviceConnection: ${{ variables.serviceConnection }}

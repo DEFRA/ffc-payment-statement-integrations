@@ -1,0 +1,22 @@
+# IaC variables
+
+variables:
+
+  # MUST BE UPPERCASE
+  envShortName: 'TST'
+
+  resourcePrefix: '$(envShortName)$(projectNameUpper)$(functionCode)'
+
+  functionAppAppName: '$(resourcePrefix)FA1403'
+  
+  resourceGroupLocation: 'uksouth'
+  resourceGroupName: '$(resourcePrefix)RG1401'
+  
+  serviceConnection: 'AZD-RLE-DEV1'
+
+  functionAppServicePlanName: '$(resourcePrefix)ASP1403'
+  
+   # Gets converted to lowercase later in the pipeline. No spaces or hyphens allowed
+  functionAppStorageName: '$(resourcePrefix)ST1403'
+
+  appInsightsName: '$(resourcePrefix)AIS1402'

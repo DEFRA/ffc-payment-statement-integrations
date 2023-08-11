@@ -1,0 +1,10 @@
+# IaC variables
+
+variables:
+
+  # Use uppercase, with no hyphens or spaces
+  projectNameUpper: 'RLE'
+
+  functionCode: 'INF'
+
+  functionAppArtifactName: 'funcapp_artifacts'
