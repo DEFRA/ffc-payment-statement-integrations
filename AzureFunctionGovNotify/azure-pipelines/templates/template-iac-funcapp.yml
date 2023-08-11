@@ -50,9 +50,16 @@ jobs:
             scriptType: 'bash'
             scriptLocation: 'inlineScript'
             inlineScript: |
-              az resource update --name $(functionAppName) --resource-group  $(resourceGroupName) --resource-type "Microsoft.Web/sites" --set properties.siteConfig.ipSecurityRestrictionsDefaultAction=Deny
-              az resource update --name $(functionAppName) --resource-group  $(resourceGroupName) --resource-type "Microsoft.Web/sites" --set properties.siteConfig.scmIpSecurityRestrictionsDefaultAction=Deny
-              az webapp config access-restriction add --name $(functionAppName) --resource-group  $(resourceGroupName) --rule-name 'PaloAlto IP whitelist1' --action Allow --ip-address 40.81.153.120/32 --priority 100
-              az webapp config access-restriction add --name $(functionAppName) --resource-group  $(resourceGroupName) --rule-name 'PaloAlto IP whitelist2' --action Allow --ip-address 40.81.156.55/32 --priority 100
+              whitelist="$(allowedIps)"
+              echo "$whitelist"
+              for ip in ${whitelist//,/ }
+              do
+                  echo "$1"
+              done
             addSpnToEnvironment: true
             useGlobalConfig: true
+
+#az resource update --name $(functionAppName) --resource-group  $(resourceGroupName) --resource-type "Microsoft.Web/sites" --set properties.siteConfig.ipSecurityRestrictionsDefaultAction=Deny
+#az resource update --name $(functionAppName) --resource-group  $(resourceGroupName) --resource-type "Microsoft.Web/sites" --set properties.siteConfig.scmIpSecurityRestrictionsDefaultAction=Deny
+#az webapp config access-restriction add --name $(functionAppName) --resource-group  $(resourceGroupName) --rule-name 'PaloAlto IP whitelist' --action Allow --ip-address 40.81.153.120/32 --priority 100
+#az webapp config access-restriction add --name $(functionAppName) --resource-group  $(resourceGroupName) --rule-name 'PaloAlto IP whitelist' --action Allow --ip-address 40.81.156.55/32 --priority 100
