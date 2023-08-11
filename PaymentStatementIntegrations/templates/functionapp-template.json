@@ -20,7 +20,7 @@
         "hostingPlanName": {
             "type": "string"
         },
-        "skuSize": {
+        "skuName": {
             "type": "string"
         },
         "skuTier": {
@@ -99,9 +99,8 @@
                 "numberOfWorkers": 0
             },
             "sku": {
-                "Tier": "[parameters('skuTier')]",
-                "Name": "[parameters('skuSize')]",
-                "Size": "[parameters('skuSize')]"
+                "tier": "[parameters('skuTier')]",
+                "name": "[parameters('skuName')]"
             }
         },
         {
