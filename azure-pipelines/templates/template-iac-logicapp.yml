@@ -40,7 +40,7 @@ jobs:
               -storageAccountName $(functionAppStorageName)
               -hostingPlanName $(functionAppServicePlanName)
               -skuTier 'Dynamic'
-              -skuName 'Y1'
+              -skuSize 'Y1'
             deploymentMode: $(deploymentMode)
             deploymentOutputs: 'FunctionAppArmOutputs'
 
