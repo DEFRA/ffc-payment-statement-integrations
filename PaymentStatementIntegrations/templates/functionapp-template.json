@@ -68,7 +68,7 @@
                         },
                         {
                             "name": "WEBSITE_CONTENTSHARE",
-                            "value": "[concat([toLower(parameters('functionAppName'))], 'ac01']"
+                            "value": "[concat(toLower(parameters('functionAppName')), 'cs01']"
                         }
                     ],
                     "cors": {
