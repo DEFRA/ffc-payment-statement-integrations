@@ -21,10 +21,9 @@ steps:
     zipAfterPublish: false
 
 - bash: |
-    pwd
-    ls -al
     cp -r azure-pipelines/variables $(System.DefaultWorkingDirectory)/project_func_app_output
-  displayName: 'Copy env vars into artefact'
+    cp -r AzureFunctionGovNotify/azure-pipelines/templates $(System.DefaultWorkingDirectory)/project_func_app_output
+  displayName: 'Copy env vars and templates into artefact'
 
 - task: ArchiveFiles@2
   displayName: "Archive files"
