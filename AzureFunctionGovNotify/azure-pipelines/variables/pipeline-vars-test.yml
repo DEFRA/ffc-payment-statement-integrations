@@ -7,7 +7,7 @@ variables:
 
   resourcePrefix: '$(envShortName)$(projectNameUpper)$(functionCode)'
 
-  functionAppAppName: '$(resourcePrefix)FA1403'
+  functionAppName: '$(resourcePrefix)FA1403'
   
   resourceGroupLocation: 'uksouth'
   resourceGroupName: '$(resourcePrefix)RG1401'
