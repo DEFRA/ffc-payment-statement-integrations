@@ -42,4 +42,3 @@ jobs:
               -skuName "Y1"
               -skuTier "Dynamic"
             deploymentMode: $(deploymentMode)
-            deploymentOutputs: 'FunctionAppArmOutputs'
