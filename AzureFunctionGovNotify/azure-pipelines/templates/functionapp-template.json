@@ -81,7 +81,17 @@
                 "virtualNetworkSubnetId": null,
                 "publicNetworkAccess": "Enabled",
                 "httpsOnly": true,
-                "serverFarmId": "[concat('/subscriptions/', subscription().subscriptionId,'/resourcegroups/', parameters('resourceGroupName'), '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
+                "serverFarmId": "[concat('/subscriptions/', subscription().subscriptionId,'/resourcegroups/', parameters('resourceGroupName'), '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
+                "siteAuthSettings": {
+                    "enabled": true,
+                    "unauthenticatedClientAction": "RedirectToLoginPage",
+                    "tokenStoreEnabled": true,
+                    "defaultProvider": "AzureActiveDirectory",
+                    "clientId": "[parameters('portalServicePrincipalClientId')]",
+                    "allowedAudiences": [
+                        "https://rpadevv9.crm4.dynamics.com"
+                    ]
+                }
             }
         },
         {
