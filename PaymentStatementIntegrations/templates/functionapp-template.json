@@ -89,18 +89,19 @@
             "name": "[parameters('hostingPlanName')]",
             "type": "Microsoft.Web/serverfarms",
             "location": "[parameters('location')]",
-            "kind": "",
+            "kind": "functionapp",
             "tags": {},
             "dependsOn": [],
             "properties": {
                 "name": "[parameters('hostingPlanName')]",
-                "workerSize": 0,
+                "workerSize": "Default",
                 "workerSizeId": 0,
                 "numberOfWorkers": 0
             },
             "sku": {
                 "Tier": "[parameters('skuTier')]",
-                "Name": "[parameters('skuName')]"
+                "Name": "[parameters('skuName')]",
+                "Size": "[parameters('skuName')]"
             }
         },
         {
