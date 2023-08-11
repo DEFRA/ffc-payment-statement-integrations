@@ -79,7 +79,7 @@
                 },
                 "clientAffinityEnabled": false,
                 "virtualNetworkSubnetId": null,
-                "publicNetworkAccess": "Disabled",
+                "publicNetworkAccess": "Enabled",
                 "httpsOnly": true,
                 "serverFarmId": "[concat('/subscriptions/', subscription().subscriptionId,'/resourcegroups/', parameters('resourceGroupName'), '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
             }
