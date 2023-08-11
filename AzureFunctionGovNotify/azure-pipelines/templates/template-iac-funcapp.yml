@@ -53,11 +53,11 @@ jobs:
               az resource update --name $(functionAppName) --resource-group  $(resourceGroupName) --resource-type "Microsoft.Web/sites" --set properties.siteConfig.ipSecurityRestrictionsDefaultAction=Deny
               az resource update --name $(functionAppName) --resource-group  $(resourceGroupName) --resource-type "Microsoft.Web/sites" --set properties.siteConfig.scmIpSecurityRestrictionsDefaultAction=Deny
               whitelist="$(allowedIps)"
-              echo "$whitelist"
+              i=0
               for ip in ${whitelist//,/ }
               do
-                  echo "$ip"
-                  az webapp config access-restriction add --name $(functionAppName) --resource-group $(resourceGroupName) --rule-name 'PaloAlto IP whitelist' --action Allow --ip-address "$ip" --priority 100
+                  i=$(( i + 1 ))
+                  az webapp config access-restriction add --name $(functionAppName) --resource-group $(resourceGroupName) --rule-name "PaloAlto IP whitelist $i" --action Allow --ip-address "$ip" --priority 100
               done
             addSpnToEnvironment: true
             useGlobalConfig: true
