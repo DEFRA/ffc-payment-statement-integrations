@@ -540,7 +540,7 @@
                                                 "rpa_contact@odata.bind": "/contacts(@{variables('ContactId')})",
                                                 "rpa_crn": "@{body('Parse_CTL_File')?['crn']}",
                                                 "rpa_direction": "false",
-                                                "rpa_docrefproxy": "@{if(endsWith(toLower(outputs('Get_filename')),'.pdf'), 'LNDINV', 'LNDMAP')}",
+                                                "rpa_docrefproxy": "@{if(endsWith(toLower(outputs('Get_filename')),'.pdf'), 'PDFREC', 'LNDMAP')}",
                                                 "rpa_fileabsoluteurl": "@{parameters('SharepointBaseUrl')}@{body('Copy_To_Sharepoint')['ServerRelativeUrl']}",
                                                 "rpa_filename": "@{outputs('Get_filename')}",
                                                 "rpa_organisation@odata.bind": "/accounts(@{variables('OrganisationId')})",
