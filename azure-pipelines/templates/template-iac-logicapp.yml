@@ -37,7 +37,7 @@ jobs:
               -location $(resourceGroupLocation)
               -appInsightsName $(appInsightsName)
               -resourceGroupName $(resourceGroupName)
-              -storageName $(functionAppStorageName)
+              -storageAccountName $(functionAppStorageName)
               -hostingPlanName $(functionAppServicePlanName)
               -sku 'Dynamic'
               -skuCode 'Y1'
