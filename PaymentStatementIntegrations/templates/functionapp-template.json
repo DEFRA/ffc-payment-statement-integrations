@@ -85,22 +85,14 @@
             }
         },
         {
-            "apiVersion": "2018-11-01",
+            "apiVersion": "2021-03-01",
             "name": "[parameters('hostingPlanName')]",
             "type": "Microsoft.Web/serverfarms",
             "location": "[parameters('location')]",
-            "kind": "functionapp",
-            "tags": {},
-            "dependsOn": [],
-            "properties": {
-                "name": "[parameters('hostingPlanName')]",
-                "workerSize": "Default",
-                "workerSizeId": 0,
-                "numberOfWorkers": 0
-            },
+            "properties": {},
             "sku": {
-                "tier": "[parameters('skuTier')]",
-                "name": "[parameters('skuName')]"
+                "name": "[parameters('skuName')]",
+                "tier": "[parameters('skuTier')]"
             }
         },
         {
@@ -108,6 +100,7 @@
             "type": "Microsoft.Storage/storageAccounts",
             "name": "[toLower(parameters('storageAccountName'))]",
             "location": "[parameters('location')]",
+            "kind": "Storage",
             "tags": {},
             "sku": {
                 "name": "Standard_LRS"
