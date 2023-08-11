@@ -31,7 +31,7 @@
     "resources": [
         {
             "apiVersion": "2018-11-01",
-            "name": "[parameters('functionAppName)]",
+            "name": "[parameters('functionAppName')]",
             "type": "Microsoft.Web/sites",
             "kind": "functionapp",
             "location": "[parameters('location')]",
