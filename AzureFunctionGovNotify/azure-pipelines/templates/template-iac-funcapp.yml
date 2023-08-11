@@ -32,7 +32,7 @@ jobs:
             azureSubscription: ${{ parameters.serviceConnection }}
             resourceGroupName: $(resourceGroupName)
             location: $(resourceGroupLocation)
-            csmFile: './unpacked/templates/functionapp-template.json'
+            csmFile: './unpacked/azure-pipelines/templates/functionapp-template.json'
             overrideParameters:
               -functionAppName $(functionAppName)
               -location $(resourceGroupLocation)
