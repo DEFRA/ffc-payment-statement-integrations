@@ -25,6 +25,9 @@
         },
         "skuTier": {
             "type": "string"
+        },
+        "portalServicePrincipalClientId": {
+            "type": "string"
         }
     },
     "variables": {},
