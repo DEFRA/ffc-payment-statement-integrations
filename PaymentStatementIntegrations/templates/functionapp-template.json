@@ -36,7 +36,7 @@
             "kind": "functionapp",
             "location": "[parameters('location')]",
             "tags": {
-                "hidden-link: /app-insights-resource-id": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', parameters('resourceGroupName') ,'/providers/microsoft.insights/components/', parameters('appInsightsName')]"
+                "hidden-link: /app-insights-resource-id": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', parameters('resourceGroupName') ,'/providers/microsoft.insights/components/', parameters('appInsightsName'))]"
             },
             "dependsOn": [
                 "[concat('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
