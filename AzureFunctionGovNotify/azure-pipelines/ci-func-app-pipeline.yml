@@ -5,7 +5,7 @@
 trigger: none
 
 variables:
-  - template: ../variables/pipeline-vars-common.yml
+  - template: ../../azure-pipelines/variables/pipeline-vars-common.yml
 
 pool:
   vmImage: 'ubuntu-latest'
