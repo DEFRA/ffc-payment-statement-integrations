@@ -19,14 +19,17 @@ steps:
     publishWebProjects: false
     modifyOutputPath: false
     zipAfterPublish: false
+
 - task: ArchiveFiles@2
   displayName: "Archive files"
   inputs:
     rootFolderOrFile: "$(System.DefaultWorkingDirectory)/project_func_app_output"
     includeRootFolder: false
     archiveFile: "$(System.DefaultWorkingDirectory)/build_func_app$(Build.BuildId).zip"
-- task: PublishBuildArtifacts@1
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Publish project zip artifact'
   inputs:
-    PathtoPublish: '$(System.DefaultWorkingDirectory)/build_func_app$(Build.BuildId).zip'
-    artifactName: '$(functionAppArtifactName)'
+    targetPath: '$(System.DefaultWorkingDirectory)/build_func_app$(Build.BuildId).zip'
+    artifact: $(functionAppArtifactName)
     publishLocation: 'pipeline'
