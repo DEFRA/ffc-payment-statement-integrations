@@ -81,7 +81,7 @@
                 "virtualNetworkSubnetId": null,
                 "publicNetworkAccess": "Disabled",
                 "httpsOnly": true,
-                "serverFarmId": "[concat('/subscriptions/', parameters('subscriptionId'),'/resourcegroups/', parameters('resourceGroupName'), '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
+                "serverFarmId": "[concat('/subscriptions/', subscription().subscriptionId,'/resourcegroups/', parameters('resourceGroupName'), '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
             }
         },
         {
@@ -91,8 +91,8 @@
             "location": "[parameters('location')]",
             "properties": {},
             "sku": {
-                "name": "Y1",
-                "tier": "Dynamic"
+                "name": "[parameters('skuName')]",
+                "tier": "[parameters('skuTier')]"
             }
         },
         {
