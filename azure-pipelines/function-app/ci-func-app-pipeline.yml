@@ -1,0 +1,32 @@
+# Azure pipeline to build a Function App with source in GitHub
+# The Function App is used by the Logic App workflows to send customised emails via GovNotify.
+
+# Trigger is manual currently
+trigger: none
+
+variables:
+  - template: ../variables/pipeline-vars-common.yml
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: DotNetCoreCLI@2
+  inputs:
+    command: publish
+    arguments: '--configuration Release --output project_func_app_output'
+    projects: 'AzureFunctionGovNotify/AzureFunctionGovNotify.csproj'
+    publishWebProjects: false
+    modifyOutputPath: false
+    zipAfterPublish: false
+- task: ArchiveFiles@2
+  displayName: "Archive files"
+  inputs:
+    rootFolderOrFile: "$(System.DefaultWorkingDirectory)/project_func_app_output"
+    includeRootFolder: false
+    archiveFile: "$(System.DefaultWorkingDirectory)/build_func_app$(Build.BuildId).zip"
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(System.DefaultWorkingDirectory)/build_func_app$(Build.BuildId).zip'
+    artifactName: '$(functionAppArtifactName)'
+    publishLocation: 'pipeline'

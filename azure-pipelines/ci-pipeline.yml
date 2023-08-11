@@ -73,5 +73,5 @@ steps:
     displayName: 'Publish project zip artifact'
     inputs:
       targetPath: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
-      artifact: $(artifactName)
+      artifact: $(logicAppArtifactName)
       publishLocation: 'pipeline'

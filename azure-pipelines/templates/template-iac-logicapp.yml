@@ -16,7 +16,7 @@ jobs:
   environment: ${{ parameters.environment }}
   variables:
     deploymentMode: 'Incremental'
-    artifactPath: '$(Pipeline.Workspace)/cipipeline/$(artifactName)'
+    artifactPath: '$(Pipeline.Workspace)/cipipeline/$(logicAppArtifactName)'
   strategy:
     runOnce:
       deploy:
@@ -24,25 +24,6 @@ jobs:
         - bash: |
             unzip -q '${{ variables.artifactPath}}/${{ parameters.runID }}.zip' -d ./unpacked
           displayName: Unzip artifact
-
-        - task: AzureResourceGroupDeployment@2
-          displayName: 'Deploy Function App for emails'
-          inputs:
-            azureSubscription: ${{ parameters.serviceConnection }}
-            resourceGroupName: $(resourceGroupName)
-            location: $(resourceGroupLocation)
-            csmFile: './unpacked/templates/functionapp-template.json'
-            overrideParameters:
-              -functionAppName $(functionAppName)
-              -location $(resourceGroupLocation)
-              -appInsightsName $(appInsightsName)
-              -resourceGroupName $(resourceGroupName)
-              -storageAccountName $(functionAppStorageName)
-              -hostingPlanName $(functionAppServicePlanName)
-              -skuName "Y1"
-              -skuTier "Dynamic"
-            deploymentMode: $(deploymentMode)
-            deploymentOutputs: 'FunctionAppArmOutputs'
 
         - task: AzureResourceGroupDeployment@2
           displayName: 'Deploy Logic App'

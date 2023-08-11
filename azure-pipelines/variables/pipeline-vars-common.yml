@@ -7,7 +7,8 @@ variables:
 
   functionCode: 'INF'
   
-  artifactName: 'deploy_artifacts'
+  logicAppArtifactName: 'logicapp_artifacts'
+  functionAppArtifactName: 'funcapp_artifacts'
 
   # CSV list of any additional trusted CA certificate roots thumbprints
   # Palo Alto CSC Root CA, and *.defra.azure.cloud CA

@@ -1,0 +1,45 @@
+# IaC Logic App resources deployment template
+
+parameters:
+- name: environment
+  type: string
+- name: serviceConnection
+  type: string
+- name: runId
+  type: string
+
+jobs:
+- deployment: deploy_funcapp_resources
+  displayName: Deploy Function App Resources
+  pool:
+    vmImage: ubuntu-latest
+  environment: ${{ parameters.environment }}
+  variables:
+    deploymentMode: 'Incremental'
+    artifactPath: '$(Pipeline.Workspace)/ci-func-app-pipeline/$(functionAppArtifactName)'
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        - bash: |
+            unzip -q '${{ variables.artifactPath}}/${{ parameters.runID }}.zip' -d ./unpacked
+          displayName: Unzip artifact
+
+        - task: AzureResourceGroupDeployment@2
+          displayName: 'Deploy Function App for emails'
+          inputs:
+            azureSubscription: ${{ parameters.serviceConnection }}
+            resourceGroupName: $(resourceGroupName)
+            location: $(resourceGroupLocation)
+            csmFile: './unpacked/templates/functionapp-template.json'
+            overrideParameters:
+              -functionAppName $(functionAppName)
+              -location $(resourceGroupLocation)
+              -appInsightsName $(appInsightsName)
+              -resourceGroupName $(resourceGroupName)
+              -storageAccountName $(functionAppStorageName)
+              -hostingPlanName $(functionAppServicePlanName)
+              -skuName "Y1"
+              -skuTier "Dynamic"
+            deploymentMode: $(deploymentMode)
+            deploymentOutputs: 'FunctionAppArmOutputs'
