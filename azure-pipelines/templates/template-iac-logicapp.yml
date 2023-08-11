@@ -39,8 +39,8 @@ jobs:
               -resourceGroupName $(resourceGroupName)
               -storageAccountName $(functionAppStorageName)
               -hostingPlanName $(functionAppServicePlanName)
-              -sku 'Dynamic'
-              -skuCode 'Y1'
+              -skuTier 'Dynamic'
+              -skuName 'Y1'
             deploymentMode: $(deploymentMode)
             deploymentOutputs: 'FunctionAppArmOutputs'
 
