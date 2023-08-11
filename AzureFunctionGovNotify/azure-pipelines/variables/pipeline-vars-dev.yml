@@ -17,6 +17,6 @@ variables:
   functionAppServicePlanName: '$(resourcePrefix)ASP1403'
   
    # Gets converted to lowercase later in the pipeline. No spaces or hyphens allowed
-  functionAppStorageName: '$(resourcePrefix)ST1403'
+  functionAppStorageName: '$(resourcePrefix)ST1403jb'
 
   appInsightsName: '$(resourcePrefix)AIS1402'
