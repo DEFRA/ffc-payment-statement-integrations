@@ -30,6 +30,6 @@ steps:
 - task: PublishPipelineArtifact@1
   displayName: 'Publish project zip artifact'
   inputs:
-    targetPath: '$(System.DefaultWorkingDirectory)/build_func_app$(Build.BuildId).zip'
+    targetPath: '$(System.DefaultWorkingDirectory)/$(Build.BuildId).zip'
     artifact: $(functionAppArtifactName)
     publishLocation: 'pipeline'
