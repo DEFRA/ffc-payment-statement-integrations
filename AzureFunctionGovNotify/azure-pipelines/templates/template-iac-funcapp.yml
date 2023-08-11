@@ -61,3 +61,12 @@ jobs:
               done
             addSpnToEnvironment: true
             useGlobalConfig: true
+
+        - task: AzureFunctionApp@2
+          displayName: 'Deploy Function App function'
+          inputs:
+            azureSubscription: ${{ parameters.serviceConnection }}
+            appType: 'functionApp'
+            appName: $(functionAppName)
+            package: '${{ variables.artifactPath}}/${{ parameters.runID }}.zip'
+            deploymentMethod: 'zipDeploy'
