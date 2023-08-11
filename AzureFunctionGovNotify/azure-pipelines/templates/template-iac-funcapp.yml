@@ -23,6 +23,7 @@ jobs:
         steps:
         - bash: |
             unzip -q '${{ variables.artifactPath}}/${{ parameters.runID }}.zip' -d ./unpacked
+            ls -al ./unpacked
           displayName: Unzip artifact
 
         - task: AzureResourceGroupDeployment@2
