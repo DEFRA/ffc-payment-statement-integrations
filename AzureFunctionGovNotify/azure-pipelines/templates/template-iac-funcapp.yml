@@ -9,16 +9,6 @@ parameters:
   type: string
 - name: settingsFile
   type: string
-- name: subscriptionId
-  type: string
-- name: resourceGroupName
-  type: string
-- name: location
-  type: string
-- name: functionAppName
-  type: string
-- name: clientId
-  type: string
 
 jobs:
 - deployment: deploy_funcapp_resources
@@ -29,9 +19,6 @@ jobs:
   variables:
     deploymentMode: 'Incremental'
     artifactPath: '$(Pipeline.Workspace)/ci-func-app-pipeline/$(functionAppArtifactName)'
-    id: "/subscriptions/${{ parameters.subscriptionId }}/resourceGroups/${{ parameters.resourceGroupName }}/providers/Microsoft.Web/sites/${{ parameters.functionAppName }}/config/authsettings"
-    location: "${{ parameters.location }}"
-    properties.clientId: "${{ parameters.clientId }}"
   strategy:
     runOnce:
       deploy:
@@ -66,10 +53,16 @@ jobs:
             inlineScript: |
               az functionapp config appsettings set --name $(functionAppName) --resource-group  $(resourceGroupName) --slot-settings \
               @./unpacked/${{ parameters.settingsFile }}
-              echo "##vso[task.setvariable variable=subscriptionId;]$(az account show --query id --output tsv)"
+              echo "##vso[task.setvariable variable=location;]$(resourceGroupLocation)"
+              echo "##vso[task.setvariable variable=properties.clientId;]$(portalServicePrincipalClientId)"
+              subscriptionId=$(az account show --query id --output tsv)
+              idPath="/subscriptions/$(subscriptionId)/resourceGroups/$(resourceGroupName)/providers/Microsoft.Web/sites/$(functionAppName)/config/authsettings"
+              echo "idPath=$(idPath)"
+              echo "##vso[task.setvariable variable=id;]$(idPath)"
+
             addSpnToEnvironment: true
             useGlobalConfig: true
-            displayName: 'Add appsetting and find subscriptionId'
+            displayName: 'Add appsetting and set reaplcement values'
 
         # Update auth-settings.json via FileTransform task.
         - task: FileTransform@1
