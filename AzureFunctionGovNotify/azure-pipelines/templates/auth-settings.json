@@ -2,50 +2,29 @@
     "id": "to-be-replaced",
     "name": "authsettingsV2",
     "type": "Microsoft.Web/sites/config",
-    "location": "to-be-replaced",
+    "apiVersion": "2022-03-01",
     "properties": {
-        "aadClaimsAuthorization": "{\"allowed_groups\":null,\"allowed_client_applications\":null}",
-        "additionalLoginParams": null,
-        "allowedAudiences": [
-          "to-be-replaced"
-        ],
-        "allowedExternalRedirectUrls": null,
-        "authFilePath": null,
-        "clientId": "to-be-replaced",
-        "clientSecret": null,
-        "clientSecretCertificateThumbprint": null,
-        "clientSecretSettingName": "PortalClientSecret",
-        "configVersion": "v2",
-        "defaultProvider": null,
-        "enabled": true,
-        "facebookAppId": null,
-        "facebookAppSecret": null,
-        "facebookAppSecretSettingName": null,
-        "facebookOAuthScopes": null,
-        "gitHubClientId": null,
-        "gitHubClientSecret": null,
-        "gitHubClientSecretSettingName": null,
-        "gitHubOAuthScopes": null,
-        "googleClientId": null,
-        "googleClientSecret": null,
-        "googleClientSecretSettingName": null,
-        "googleOAuthScopes": null,
-        "isAuthFromFile": "False",
-        "issuer": null,
-        "kind": null,
-        "location": "to-be-replaced",
-        "microsoftAccountClientId": null,
-        "microsoftAccountClientSecret": null,
-        "microsoftAccountClientSecretSettingName": null,
-        "microsoftAccountOAuthScopes": null,
-        "resourceGroup": "to-be-replaced",
-        "runtimeVersion": "~1",
-        "tokenRefreshExtensionHours": 72.0,
-        "tokenStoreEnabled": true,
-        "twitterConsumerKey": null,
-        "twitterConsumerSecret": null,
-        "twitterConsumerSecretSettingName": null,
-        "unauthenticatedClientAction": "RedirectToLoginPage",
-        "validateIssuer": null
+        "globalValidation": {
+            "unauthenticatedClientAction": "RedirectToLoginPage"
+        },
+        "identityProviders": {
+            "azureActiveDirectory": {
+                "enabled": true,
+                "registration": {
+                    "clientId": "to-be-replaced",
+                    "clientSecretSettingName": "PortalClientSecret"
+                },
+                "validation": {
+                    "allowedAudiences": [
+                        "to-be-replaced"
+                    ]
+                }
+            }
+        },
+        "login": {
+            "toeknStore": {
+                "enabled": true
+            }
+        }
     }   
 }
