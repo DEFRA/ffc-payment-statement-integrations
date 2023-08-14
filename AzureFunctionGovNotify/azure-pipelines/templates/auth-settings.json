@@ -22,7 +22,7 @@
             }
         },
         "login": {
-            "toeknStore": {
+            "tokenStore": {
                 "enabled": true
             }
         }
