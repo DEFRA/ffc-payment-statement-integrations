@@ -46,7 +46,7 @@ jobs:
             deploymentMode: $(deploymentMode)
 
         - task: AzureCLI@2
-          displayName: 'Add appsetting and set reaplcement values'
+          displayName: 'Add appsetting and set replacement values'
           inputs:
             azureSubscription: ${{ parameters.serviceConnection }}
             scriptType: 'bash'
@@ -58,8 +58,8 @@ jobs:
               echo "##vso[task.setvariable variable=properties.clientId;]$(portalServicePrincipalClientId)"
               SUBSCRIPTION_ID=`az account show --query id --output tsv`
               ID_PATH="/subscriptions/$SUBSCRIPTION_ID/resourceGroups/$(resourceGroupName)/providers/Microsoft.Web/sites/$(functionAppName)/config/authsettings"
-              echo "idPath=$(idPath)"
-              echo "##vso[task.setvariable variable=id;]$(idPath)"
+              echo "ID_PATH=$(ID_PATH)"
+              echo "##vso[task.setvariable variable=id;]$(ID_PATH)"
 
             addSpnToEnvironment: true
             useGlobalConfig: true
