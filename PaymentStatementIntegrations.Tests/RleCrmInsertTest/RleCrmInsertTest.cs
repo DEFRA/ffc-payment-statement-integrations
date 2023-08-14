@@ -136,6 +136,7 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Create_CRM_Case"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Extract_NewCaseId"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Convert_Date_Format"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Determine_submission_type"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Create_Online_Submission_Activity"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Extract_ActivityId"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_Sharepoint_Token"));
@@ -286,6 +287,7 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Create_CRM_Case"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Extract_NewCaseId"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Convert_Date_Format"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Determine_submission_type"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Create_Online_Submission_Activity"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Extract_ActivityId"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_Sharepoint_Token"));
@@ -609,12 +611,6 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                             mockedResponse.StatusCode = HttpStatusCode.OK;
                             mockedResponse.Content = ValidAuthToken();
                         }
-                        else if (request.RequestUri.AbsolutePath.Contains("/api/AzureFunctionGovNotify") && request.Method == HttpMethod.Post)
-                        {
-                            // Email function call
-                            mockedResponse.RequestMessage = request;
-                            mockedResponse.StatusCode = HttpStatusCode.OK;
-                        }
                     }
                     return mockedResponse;
                 };
@@ -719,7 +715,7 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
             // Since a property beginning with '$' cannot be defined in an anonymous type,
             // this JSON is created using strings
 
-            var jsonStr = "{ \"name\": \"myfilename.ctrl\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"frn\": \"1102077240\", \"crn\": \"11020219620000000\", \"uosr\": \"UOSR123456\", ";
+            var jsonStr = "{ \"name\": \"myfilename.ctrl\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"frn\": \"1102077240\", \"crn\": \"11020219620000000\", \"uosr\": \"UOSR123456\", \"type\": \"LANDCOVER_CHANGE\", ";
             jsonStr += "\"submissionDate\": \"25/01/2023 07:55:40\", \"filesInSubmission\": 3, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
 
             return UnitTestHelper.EncodeAsStringContent(jsonStr, true, "content", "$content");
@@ -730,7 +726,7 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
             // Since a property beginning with '$' cannot be defined in an anonymous type,
             // this JSON is created using strings
 
-            var jsonStr = "{ \"name\": \"myfilename.ctrl\", \"content\": { \"$content\": { \"frn\": \"1102077240\", \"crn\": \"11020219620000000\", \"uosr\": \"UOSR123456\", ";
+            var jsonStr = "{ \"name\": \"myfilename.ctrl\", \"content\": { \"$content\": { \"frn\": \"1102077240\", \"crn\": \"11020219620000000\", \"uosr\": \"UOSR123456\", \"type\": \"LANDCOVER_CHANGE\", ";
             jsonStr += "\"submissionDate\": \"25/01/2023 07:55:40\", \"filesInSubmission\": 3, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
 
             return UnitTestHelper.EncodeAsStringContent(jsonStr, true, "content", "$content");
@@ -741,7 +737,7 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
             // Since a property beginning with '$' cannot be defined in an anonymous type,
             // this JSON is created using strings
 
-            var jsonStr = "{ \"name\": \"myfilename.ctrl\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"crn\": \"11020219620000000\", \"uosr\": \"UOSR123456\", ";
+            var jsonStr = "{ \"name\": \"myfilename.ctrl\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"crn\": \"11020219620000000\", \"uosr\": \"UOSR123456\", \"type\": \"LANDCOVER_CHANGE\", ";
             jsonStr += "\"submissionDate\": \"25/01/2023 07:55:40\", \"filesInSubmission\": 3, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
 
             return UnitTestHelper.EncodeAsStringContent(jsonStr, true, "content", "$content");
@@ -752,7 +748,7 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
             // Since a property beginning with '$' cannot be defined in an anonymous type,
             // this JSON is created using strings
 
-            var jsonStr = "{ \"name\": \"myfilename.ctrl\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"frn\": \"1102077240\", \"uosr\": \"UOSR123456\", ";
+            var jsonStr = "{ \"name\": \"myfilename.ctrl\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"frn\": \"1102077240\", \"uosr\": \"UOSR123456\", \"type\": \"LANDCOVER_CHANGE\", ";
             jsonStr += "\"submissionDate\": \"25/01/2023 07:55:40\", \"filesInSubmission\": 3, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
 
             return UnitTestHelper.EncodeAsStringContent(jsonStr, true, "content", "$content");
@@ -763,7 +759,7 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
             // Since a property beginning with '$' cannot be defined in an anonymous type,
             // this JSON is created using strings
 
-            var jsonStr = "{ \"name\": \"myfilename.ctrl\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"frn\": \"1102077240\", \"crn\": \"11020219620000000\", ";
+            var jsonStr = "{ \"name\": \"myfilename.ctrl\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"frn\": \"1102077240\", \"crn\": \"11020219620000000\", \"type\": \"LANDCOVER_CHANGE\", ";
             jsonStr += "\"submissionDate\": \"25/01/2023 07:55:40\", \"filesInSubmission\": 3, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
 
             return UnitTestHelper.EncodeAsStringContent(jsonStr, true, "content", "$content");
@@ -774,7 +770,7 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
             // Since a property beginning with '$' cannot be defined in an anonymous type,
             // this JSON is created using strings
 
-            var jsonStr = "{ \"name\": \"myfilename.ctrl\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"frn\": \"1102077240\", \"crn\": \"11020219620000000\", \"uosr\": \"UOSR123456\", ";
+            var jsonStr = "{ \"name\": \"myfilename.ctrl\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"frn\": \"1102077240\", \"crn\": \"11020219620000000\", \"uosr\": \"UOSR123456\", \"type\": \"LANDCOVER_CHANGE\", ";
             jsonStr += " \"filesInSubmission\": 3, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
 
             return UnitTestHelper.EncodeAsStringContent(jsonStr, true, "content", "$content");
@@ -785,7 +781,7 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
             // Since a property beginning with '$' cannot be defined in an anonymous type,
             // this JSON is created using strings
 
-            var jsonStr = "{ \"name\": \"myfilename.ctrl\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"frn\": \"1102077240\", \"crn\": \"11020219620000000\", \"uosr\": \"UOSR123456\", ";
+            var jsonStr = "{ \"name\": \"myfilename.ctrl\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"frn\": \"1102077240\", \"crn\": \"11020219620000000\", \"uosr\": \"UOSR123456\", \"type\": \"LANDCOVER_CHANGE\", ";
             jsonStr += "\"submissionDate\": \"25/01/2023 07:55:40\", \"filesInSubmission\": 2, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
 
             return UnitTestHelper.EncodeAsStringContent(jsonStr, true, "content", "$content");

@@ -1,0 +1,124 @@
+# IaC Logic App resources deployment template
+
+parameters:
+- name: environment
+  type: string
+- name: serviceConnection
+  type: string
+- name: runId
+  type: string
+- name: settingsFile
+  type: string
+
+jobs:
+- deployment: deploy_funcapp_resources
+  displayName: Deploy Function App Resources
+  pool:
+    vmImage: ubuntu-latest
+  environment: ${{ parameters.environment }}
+  variables:
+    deploymentMode: 'Incremental'
+    artifactPath: '$(Pipeline.Workspace)/ci-func-app-pipeline/$(functionAppArtifactName)'
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        - bash: |
+            unzip -q '${{ variables.artifactPath}}/${{ parameters.runID }}.zip' -d ./unpacked
+          displayName: Unzip artifact
+
+        - task: AzureResourceGroupDeployment@2
+          displayName: 'Deploy Function App for emails'
+          inputs:
+            azureSubscription: ${{ parameters.serviceConnection }}
+            resourceGroupName: $(resourceGroupName)
+            location: $(resourceGroupLocation)
+            csmFile: './unpacked/azure-pipelines/templates/functionapp-template.json'
+            overrideParameters:
+              -functionAppName $(functionAppName)
+              -location $(resourceGroupLocation)
+              -appInsightsName $(appInsightsName)
+              -resourceGroupName $(resourceGroupName)
+              -storageAccountName $(functionAppStorageName)
+              -hostingPlanName $(functionAppServicePlanName)
+              -skuName "Y1"
+              -skuTier "Dynamic"
+            deploymentMode: $(deploymentMode)
+
+        - task: AzureCLI@2
+          displayName: 'Add appsetting and set replacement values'
+          inputs:
+            azureSubscription: ${{ parameters.serviceConnection }}
+            scriptType: 'bash'
+            scriptLocation: 'inlineScript'
+            inlineScript: |
+              az functionapp config appsettings set --name $(functionAppName) --resource-group  $(resourceGroupName) --slot-settings \
+              @./unpacked/${{ parameters.settingsFile }}
+              echo "##vso[task.setvariable variable=location;]$(resourceGroupLocation)"
+              echo "##vso[task.setvariable variable=properties.identityProviders.azureActiveDirectory.registration.clientId;]$(portalServicePrincipalClientId)"
+              SUBSCRIPTION_ID=`az account show --query id --output tsv`
+              ID_PATH="/subscriptions/$SUBSCRIPTION_ID/resourceGroups/$(resourceGroupName)/providers/Microsoft.Web/sites/$(functionAppName)/config/authsettings"
+              echo "##vso[task.setvariable variable=id;]$ID_PATH"
+              echo "##vso[task.setvariable variable=properties.identityProviders.azureActiveDirectory.validation.allowedAudiences.0;]$(portalServicePrincipalAllowedAudience)"
+            addSpnToEnvironment: true
+            useGlobalConfig: true
+
+        # Update auth-settings.json via FileTransform task.
+        - task: FileTransform@1
+          displayName: 'File transformation: auth-settings.json'
+          inputs:
+            folderPath: './unpacked/azure-pipelines/templates'
+            targetFiles: '**/auth-settings.json'
+            fileType: json
+
+        # Apply auth settings
+        - task: AzureCLI@2
+          displayName: 'Apply auth settings'
+          inputs:
+            azureSubscription: ${{ parameters.serviceConnection }}
+            scriptType: 'bash'
+            scriptLocation: 'inlineScript'
+            inlineScript: |
+              az rest --method PUT --url "$(id)v2?api-version=2020-06-01" --body @./unpacked/azure-pipelines/templates/auth-settings.json
+            addSpnToEnvironment: true
+            useGlobalConfig: true
+
+        # Unrestrict SCM for deployment of Function App code
+        - task: AzureCLI@2
+          displayName: 'Unrestrict SCM for deployment'
+          inputs:
+            azureSubscription: ${{ parameters.serviceConnection }}
+            scriptType: 'bash'
+            scriptLocation: 'inlineScript'
+            inlineScript: |
+              az resource update --name $(functionAppName) --resource-group  $(resourceGroupName) --resource-type "Microsoft.Web/sites" --set properties.siteConfig.scmIpSecurityRestrictionsDefaultAction=Allow
+            addSpnToEnvironment: true
+            useGlobalConfig: true
+
+        - task: AzureFunctionApp@2
+          displayName: 'Deploy Function App function'
+          inputs:
+            azureSubscription: ${{ parameters.serviceConnection }}
+            appType: 'functionApp'
+            appName: $(functionAppName)
+            package: '${{ variables.artifactPath}}/${{ parameters.runID }}.zip'
+            deploymentMethod: 'zipDeploy'
+
+        - task: AzureCLI@2
+          displayName: 'Restrict access to network and whitelist Palo Alto IPs'
+          inputs:
+            azureSubscription: ${{ parameters.serviceConnection }}
+            scriptType: 'bash'
+            scriptLocation: 'inlineScript'
+            inlineScript: |
+              az resource update --name $(functionAppName) --resource-group  $(resourceGroupName) --resource-type "Microsoft.Web/sites" --set properties.siteConfig.ipSecurityRestrictionsDefaultAction=Deny
+              az resource update --name $(functionAppName) --resource-group  $(resourceGroupName) --resource-type "Microsoft.Web/sites" --set properties.siteConfig.scmIpSecurityRestrictionsDefaultAction=Deny
+              whitelist="$(allowedIps)"
+              i=0
+              for ip in ${whitelist//,/ }
+              do
+                  i=$(( i + 1 ))
+                  az webapp config access-restriction add --name $(functionAppName) --resource-group $(resourceGroupName) --rule-name "PaloAlto IP whitelist $i" --action Allow --ip-address "$ip" --priority 100
+              done
+            addSpnToEnvironment: true
+            useGlobalConfig: true

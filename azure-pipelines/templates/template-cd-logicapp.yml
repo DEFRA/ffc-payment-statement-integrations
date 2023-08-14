@@ -22,7 +22,7 @@ jobs:
     environment: ${{ parameters.environment }}
     variables:
       deploymentMode: 'Incremental'
-      artifactPath: '$(Pipeline.Workspace)/cipipeline/$(artifactName)'
+      artifactPath: '$(Pipeline.Workspace)/cipipeline/$(logicAppArtifactName)'
     strategy:
       runOnce:
         deploy:

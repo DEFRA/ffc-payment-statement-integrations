@@ -259,11 +259,12 @@
                                 "rpa_filesinsubmission": "@{body('Parse_CTL_File')?['filesInSubmission']}",
                                 "rpa_onlinesubmissiondate": "@{outputs('Convert_Date_Format')}",
                                 "rpa_onlinesubmissionid": "@{body('Parse_CTL_File')?['uosr']}",
-                                "subject": "eRLE1 @{body('Parse_CTL_File')?['type']} (@{body('Parse_CTL_File')['uosr']})"
+                                "subject": "eRLE1 @{body('Parse_CTL_File')?['type']} (@{body('Parse_CTL_File')['uosr']})",
+                                "rpa_SubmissionType_rpa_onlinesubmission@odata.bind": "/rpa_documenttypeses(@{outputs('Determine_submission_type')})"
                             }
                         },
                         "runAfter": {
-                            "Convert_Date_Format": [
+                            "Determine_submission_type": [
                                 "SUCCEEDED"
                             ]
                         },
@@ -281,6 +282,17 @@
                                 "SUCCEEDED"
                             ]
                         }
+                    },
+                    "Determine_submission_type": {
+                        "inputs": {
+                            "code": "// Looks up submission type codes based on hard-coded list\nconst lookupsJson = {\n    \"LANDCOVER_CHANGE\": \"db363964-c906-ee11-8f6e-0022489ede2f\",\n    \"MERGE\": \"05ea5085-c906-ee11-8f6e-0022489ede2f\",\n    \"REGISTERING_NEW_LAND\": \"ff7b3b00-cb06-ee11-8f6e-0022489ede2f\",\n    \"ALL_OTHERS\": \"1fdded19-cb06-ee11-8f6e-0022489ede2f\"\n    };\nconst lookups = JSON.parse(JSON.stringify(lookupsJson));\nvar result = lookups[(workflowContext.actions.Parse_CTL_File.outputs.body['type']).toUpperCase()];\nreturn result !== \"\" ? result : lookups['ALL_OTHERS'];"
+                        },
+                        "runAfter": {
+                            "Convert_Date_Format": [
+                                "SUCCEEDED"
+                            ]
+                        },
+                        "type": "JavaScriptCode"
                     },
                     "Extract_ActivityId": {
                         "type": "SetVariable",
@@ -527,8 +539,8 @@
                                                 "rpa_RelatedOnlineSubmissionId@odata.bind": "/rpa_onlinesubmissions(@{variables('ActivityId')})",
                                                 "rpa_contact@odata.bind": "/contacts(@{variables('ContactId')})",
                                                 "rpa_crn": "@{body('Parse_CTL_File')?['crn']}",
-                                                "rpa_direction": "true",
-                                                "rpa_docrefproxy": "SFIPS",
+                                                "rpa_direction": "false",
+                                                "rpa_docrefproxy": "@{if(endsWith(toLower(outputs('Get_filename')),'.pdf'), 'PDFREC', 'LNDMAP')}",
                                                 "rpa_fileabsoluteurl": "@{parameters('SharepointBaseUrl')}@{body('Copy_To_Sharepoint')['ServerRelativeUrl']}",
                                                 "rpa_filename": "@{outputs('Get_filename')}",
                                                 "rpa_organisation@odata.bind": "/accounts(@{variables('OrganisationId')})",

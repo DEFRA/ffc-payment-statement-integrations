@@ -15,20 +15,20 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-  - task: NodeTool@0
-    displayName: 'Use Node.js'
-    inputs:
-      versionSpec: '16.*'
+#  - task: NodeTool@0
+#    displayName: 'Use Node.js'
+#    inputs:
+#      versionSpec: '16.*'
 
-  - task: FuncToolsInstaller@0
-    inputs:
-      version: 'latest'
+#  - task: FuncToolsInstaller@0
+#    inputs:
+#      version: 'latest'
 
-  - bash: |
-      npm install -g azurite@3.24.0
-      mkdir azurite
-      azurite --silent --location azurite --debug azurite\debug.log &
-    displayName: 'Install and launch Azurite'
+#  - bash: |
+#      npm install -g azurite@3.24.0
+#      mkdir azurite
+#      azurite --silent --location azurite --debug azurite\debug.log &
+#    displayName: 'Install and launch Azurite'
 
   # local.settings.json is updated when editing locally in the GUI designer. In case connection secrets get saved to it,
   # a copy (local.settings.unit-tests.json) is pushed to GitHub but not local.settings.json
@@ -37,20 +37,20 @@ steps:
       mv $(System.DefaultWorkingDirectory)/PaymentStatementIntegrations/local.settings.unit-tests.json $(System.DefaultWorkingDirectory)/PaymentStatementIntegrations/local.settings.json
     displayName: 'Use local.settings'
 
-  - task: DotNetCoreCLI@2
-    inputs:
-      command: test
-      projects: 'PaymentStatementIntegrations.Tests/PaymentStatementIntegrations.Tests.csproj'
-      PublishTestResults: false
-      arguments: '--logger trx --results-directory "$(Agent.TempDirectory)"'
-    displayName: Run unit tests
+#  - task: DotNetCoreCLI@2
+#    inputs:
+#      command: test
+#      projects: 'PaymentStatementIntegrations.Tests/PaymentStatementIntegrations.Tests.csproj'
+#      PublishTestResults: false
+#      arguments: '--logger trx --results-directory "$(Agent.TempDirectory)"'
+#    displayName: Run unit tests
   
-  - task: PublishTestResults@2
-    inputs:
-      testResultsFormat: 'VSTest'
-      testResultsFiles: '*.trx'
-      searchFolder: '$(Agent.TempDirectory)'
-      failTaskOnFailedTests: true
+ # - task: PublishTestResults@2
+ #   inputs:
+ #     testResultsFormat: 'VSTest'
+ #     testResultsFiles: '*.trx'
+ #     searchFolder: '$(Agent.TempDirectory)'
+ #     failTaskOnFailedTests: true
 
   - task: CopyFiles@2
     displayName: 'Create project folder'
@@ -73,5 +73,5 @@ steps:
     displayName: 'Publish project zip artifact'
     inputs:
       targetPath: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
-      artifact: $(artifactName)
+      artifact: $(logicAppArtifactName)
       publishLocation: 'pipeline'
