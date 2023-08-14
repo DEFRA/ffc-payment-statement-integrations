@@ -56,7 +56,6 @@ jobs:
               -hostingPlanName $(functionAppServicePlanName)
               -skuName "Y1"
               -skuTier "Dynamic"
-              -portalServicePrincipalClientId $(portalServicePrincipalClientId)
             deploymentMode: $(deploymentMode)
 
         - task: AzureCLI@2
