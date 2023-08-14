@@ -14,7 +14,6 @@
         "clientSecret": "",
         "clientSecretSettingName": "PortalClientSecret",
         "clientSecretCertificateThumbprint": null,
-        "issuer": "https://sts.windows.net/0b2ef922-672a-4707-9643-9a5726eec524/",
         "allowedAudiences": [
             "https://rpadevv9.crm4.dynamics.com"
         ],
