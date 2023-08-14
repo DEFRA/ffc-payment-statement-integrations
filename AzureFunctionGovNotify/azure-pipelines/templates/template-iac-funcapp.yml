@@ -60,6 +60,7 @@ jobs:
               ID_PATH="/subscriptions/$SUBSCRIPTION_ID/resourceGroups/$(resourceGroupName)/providers/Microsoft.Web/sites/$(functionAppName)/config/authsettings"
               echo "##vso[task.setvariable variable=id;]$ID_PATH"
               echo "##vso[task.setvariable variable=properties.allowedAudiences.0;]$(portalServicePrincipalAllowedAudience)"
+              echo "##vso[task.setvariable variable=resourceGroup;]$(resourceGroupName)"
             addSpnToEnvironment: true
             useGlobalConfig: true
 
@@ -79,8 +80,6 @@ jobs:
             scriptType: 'bash'
             scriptLocation: 'inlineScript'
             inlineScript: |
-              cat ./unpacked/azure-pipelines/templates/auth-settings.json
-              echo "id=$(id)"
               az rest --method PUT --url "$(id)?api-version=2020-06-01" --body @./unpacked/azure-pipelines/templates/auth-settings.json
             addSpnToEnvironment: true
             useGlobalConfig: true
