@@ -15,7 +15,7 @@
         "clientSecretSettingName": "PortalClientSecret",
         "clientSecretCertificateThumbprint": null,
         "allowedAudiences": [
-            "https://rpadevv9.crm4.dynamics.com"
+            "to-be-replaced"
         ],
         "additionalLoginParams": null,
         "isAadAutoProvisioned": true,

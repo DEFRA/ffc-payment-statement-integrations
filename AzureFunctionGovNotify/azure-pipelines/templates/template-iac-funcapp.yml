@@ -57,11 +57,9 @@ jobs:
               echo "##vso[task.setvariable variable=location;]$(resourceGroupLocation)"
               echo "##vso[task.setvariable variable=properties.clientId;]$(portalServicePrincipalClientId)"
               SUBSCRIPTION_ID=`az account show --query id --output tsv`
-              echo "SUBSCRIPTION_ID=$SUBSCRIPTION_ID"
               ID_PATH="/subscriptions/$SUBSCRIPTION_ID/resourceGroups/$(resourceGroupName)/providers/Microsoft.Web/sites/$(functionAppName)/config/authsettings"
-              echo "ID_PATH=$ID_PATH"
               echo "##vso[task.setvariable variable=id;]$ID_PATH"
-
+              echo "##vso[task.setvariable variable=properties.allowedAudiences.0;]$(portalServicePrincipalAllowedAudience)"
             addSpnToEnvironment: true
             useGlobalConfig: true
 
