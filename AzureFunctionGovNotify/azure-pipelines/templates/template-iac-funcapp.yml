@@ -45,6 +45,8 @@ jobs:
               -skuTier "Dynamic"
             deploymentMode: $(deploymentMode)
 
+#              az functionapp config appsettings set --name $(functionAppName) --resource-group  $(resourceGroupName) --slot-settings \
+#              @./unpacked/${{ parameters.settingsFile }}
         - task: AzureCLI@2
           displayName: 'Add appsetting and set replacement values'
           inputs:
@@ -52,8 +54,6 @@ jobs:
             scriptType: 'bash'
             scriptLocation: 'inlineScript'
             inlineScript: |
-              az functionapp config appsettings set --name $(functionAppName) --resource-group  $(resourceGroupName) --slot-settings \
-              @./unpacked/${{ parameters.settingsFile }}
               echo "##vso[task.setvariable variable=location;]$(resourceGroupLocation)"
               echo "##vso[task.setvariable variable=properties.clientId;]$(portalServicePrincipalClientId)"
               SUBSCRIPTION_ID=`az account show --query id --output tsv`
