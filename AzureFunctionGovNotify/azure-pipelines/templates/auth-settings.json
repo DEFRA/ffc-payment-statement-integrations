@@ -1,6 +1,6 @@
 {
     "id": "to-be-replaced",
-    "name": "authsettings",
+    "name": "authsettingsV2",
     "type": "Microsoft.Web/sites/config",
     "location": "to-be-replaced",
     "properties": {
