@@ -16,7 +16,7 @@ jobs:
   environment: ${{ parameters.environment }}
   variables:
     deploymentMode: 'Incremental'
-    artifactPath: '$(Pipeline.Workspace)/cipipeline/$(artifactName)'
+    artifactPath: '$(Pipeline.Workspace)/cipipeline/$(logicAppArtifactName)'
   strategy:
     runOnce:
       deploy:
@@ -40,8 +40,6 @@ jobs:
               -appServicePlanName $(appServicePlanName)
               -storageName $(storageName)
               -appInsightsName $(appInsightsName)
-              -userManagedIdentityName $(userManagedIdentityName)
-              -userManagedIdentityResourceGroupName $(userManagedIdentityResourceGroupName)
               -subnetResourceId $(subnetResourceId)
               -dnsServer $(dnsServer)
               -dnsAltServer $(dnsAltServer)

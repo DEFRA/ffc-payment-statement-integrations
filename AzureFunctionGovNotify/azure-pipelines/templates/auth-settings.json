@@ -1,0 +1,30 @@
+{
+    "id": "to-be-replaced",
+    "name": "authsettingsV2",
+    "type": "Microsoft.Web/sites/config",
+    "apiVersion": "2022-03-01",
+    "properties": {
+        "globalValidation": {
+            "unauthenticatedClientAction": "RedirectToLoginPage"
+        },
+        "identityProviders": {
+            "azureActiveDirectory": {
+                "enabled": true,
+                "registration": {
+                    "clientId": "to-be-replaced",
+                    "clientSecretSettingName": "PortalClientSecret"
+                },
+                "validation": {
+                    "allowedAudiences": [
+                        "to-be-replaced"
+                    ]
+                }
+            }
+        },
+        "login": {
+            "tokenStore": {
+                "enabled": true
+            }
+        }
+    }   
+}
