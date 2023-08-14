@@ -81,7 +81,7 @@ jobs:
             scriptLocation: 'inlineScript'
             inlineScript: |
               cat ./unpacked/azure-pipelines/templates/auth-settings.json
-              az rest --method PUT --url "$(id)?api-version=2020-06-01" --body @./unpacked/azure-pipelines/templates/auth-settings.json
+              az rest --method PUT --url "$(id)v2?api-version=2020-06-01" --body @./unpacked/azure-pipelines/templates/auth-settings.json
             addSpnToEnvironment: true
             useGlobalConfig: true
 
