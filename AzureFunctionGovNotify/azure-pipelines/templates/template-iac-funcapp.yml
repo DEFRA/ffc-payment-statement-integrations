@@ -60,7 +60,7 @@ jobs:
               ID_PATH="/subscriptions/$SUBSCRIPTION_ID/resourceGroups/$(resourceGroupName)/providers/Microsoft.Web/sites/$(functionAppName)/config/authsettings"
               echo "##vso[task.setvariable variable=id;]$ID_PATH"
               echo "##vso[task.setvariable variable=properties.allowedAudiences.0;]$(portalServicePrincipalAllowedAudience)"
-              echo "##vso[task.setvariable variable=resourceGroup;]$(resourceGroupName)"
+              echo "##vso[task.setvariable variable=properties.resourceGroup;]$(resourceGroupName)"
             addSpnToEnvironment: true
             useGlobalConfig: true
 
