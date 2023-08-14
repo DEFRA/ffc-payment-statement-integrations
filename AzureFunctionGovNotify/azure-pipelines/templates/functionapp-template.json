@@ -42,6 +42,9 @@
                 "[concat('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
                 "[concat('Microsoft.Storage/storageAccounts/', toLower(parameters('storageAccountName')))]"
             ],
+            "identity": {
+                "type": "SystemAssigned"
+            },
             "properties": {
                 "name": "[parameters('functionAppName')]",
                 "siteConfig": {
