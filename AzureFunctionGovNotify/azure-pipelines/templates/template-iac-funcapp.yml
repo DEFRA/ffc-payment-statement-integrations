@@ -46,6 +46,7 @@ jobs:
             deploymentMode: $(deploymentMode)
 
         - task: AzureCLI@2
+          displayName: 'Add appsetting and set reaplcement values'
           inputs:
             azureSubscription: ${{ parameters.serviceConnection }}
             scriptType: 'bash'
@@ -55,14 +56,13 @@ jobs:
               @./unpacked/${{ parameters.settingsFile }}
               echo "##vso[task.setvariable variable=location;]$(resourceGroupLocation)"
               echo "##vso[task.setvariable variable=properties.clientId;]$(portalServicePrincipalClientId)"
-              subscriptionId=$(az account show --query id --output tsv)
-              idPath="/subscriptions/$(subscriptionId)/resourceGroups/$(resourceGroupName)/providers/Microsoft.Web/sites/$(functionAppName)/config/authsettings"
+              SUBSCRIPTION_ID=`az account show --query id --output tsv`
+              ID_PATH="/subscriptions/$SUBSCRIPTION_ID/resourceGroups/$(resourceGroupName)/providers/Microsoft.Web/sites/$(functionAppName)/config/authsettings"
               echo "idPath=$(idPath)"
               echo "##vso[task.setvariable variable=id;]$(idPath)"
 
             addSpnToEnvironment: true
             useGlobalConfig: true
-            displayName: 'Add appsetting and set reaplcement values'
 
         # Update auth-settings.json via FileTransform task.
         - task: FileTransform@1
@@ -74,6 +74,7 @@ jobs:
 
         # Apply auth settings
         - task: AzureCLI@2
+          displayName: 'Apply auth settings'
           inputs:
             azureSubscription: ${{ parameters.serviceConnection }}
             scriptType: 'bash'
@@ -83,7 +84,6 @@ jobs:
               az rest --method PUT --url "${{ variables.id }}?api-version=2020-06-01" --body @./unpacked/azure-pipelines/templates/auth-settings.json
             addSpnToEnvironment: true
             useGlobalConfig: true
-            displayName: 'Apply auth settings'
 
         - task: AzureFunctionApp@2
           displayName: 'Deploy Function App function'
