@@ -72,7 +72,7 @@ jobs:
             displayName: 'Add appsetting and find subscriptionId'
 
         # Update auth-settings.json via FileTransform task.
-        - task: FileTransform@2
+        - task: FileTransform@1
           displayName: 'File transformation: auth-settings.json'
           inputs:
             folderPath: './unpacked/azure-pipelines/templates'
