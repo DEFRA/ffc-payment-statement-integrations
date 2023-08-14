@@ -65,7 +65,7 @@ jobs:
             scriptLocation: 'inlineScript'
             inlineScript: |
               az functionapp config appsettings set --name $(functionAppName) --resource-group  $(resourceGroupName) --slot-settings \
-              @./unpacked/$(settingsFile)
+              @./unpacked/${{ parameters.settingsFile }}
             addSpnToEnvironment: true
             useGlobalConfig: true
 
