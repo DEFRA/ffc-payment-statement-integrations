@@ -33,7 +33,7 @@
     "variables": {},
     "resources": [
         {
-            "apiVersion": "2018-11-01",
+            "apiVersion": "2019-08-01",
             "name": "[parameters('functionAppName')]",
             "type": "Microsoft.Web/sites",
             "kind": "functionapp",
@@ -78,23 +78,23 @@
                         "allowedOrigins": [
                             "https://portal.azure.com"
                         ]
+                    },
+                    "siteAuthSettings": {
+                        "enabled": true,
+                        "unauthenticatedClientAction": "RedirectToLoginPage",
+                        "tokenStoreEnabled": true,
+                        "defaultProvider": "AzureActiveDirectory",
+                        "clientId": "[parameters('portalServicePrincipalClientId')]",
+                        "allowedAudiences": [
+                            "https://rpadevv9.crm4.dynamics.com"
+                        ]
                     }
                 },
                 "clientAffinityEnabled": false,
                 "virtualNetworkSubnetId": null,
                 "publicNetworkAccess": "Enabled",
                 "httpsOnly": true,
-                "serverFarmId": "[concat('/subscriptions/', subscription().subscriptionId,'/resourcegroups/', parameters('resourceGroupName'), '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
-                "siteAuthSettings": {
-                    "enabled": true,
-                    "unauthenticatedClientAction": "RedirectToLoginPage",
-                    "tokenStoreEnabled": true,
-                    "defaultProvider": "AzureActiveDirectory",
-                    "clientId": "[parameters('portalServicePrincipalClientId')]",
-                    "allowedAudiences": [
-                        "https://rpadevv9.crm4.dynamics.com"
-                    ]
-                }
+                "serverFarmId": "[concat('/subscriptions/', subscription().subscriptionId,'/resourcegroups/', parameters('resourceGroupName'), '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
             }
         },
         {
