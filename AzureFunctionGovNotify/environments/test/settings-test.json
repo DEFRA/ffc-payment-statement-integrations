@@ -1,0 +1,7 @@
+[
+  {
+    "name": "PortalClientSecret",
+    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/PortalClientSecret/612179932d9c481aaa7531704488102a)",
+    "slotSetting": true
+  }
+]

@@ -25,6 +25,13 @@ stages:
       environment: ${{ variables.envShortName }}
       serviceConnection: ${{ variables.serviceConnection }}
       runId: $(resources.pipeline.ci-func-app-pipeline.runID)
+      settingsFile: 'environments/dev/settings-dev.json'
+      subscriptionId: ${{ variables.subscriptionId }}
+      resourceGroupName: ${{ variables.resourceGroupName }}
+      location: ${{ variables.resourceGroupLocation }}
+      functionAppName: ${{ variables.functionAppName }}
+      clientId: ${{ variables.portalServicePrincipalClientId }}
+
 
 - stage: TEST
   displayName: 'TEST Deployment'
@@ -36,3 +43,9 @@ stages:
       environment: ${{ variables.envShortName }}
       serviceConnection: ${{ variables.serviceConnection }}
       runId: $(resources.pipeline.ci-func-app-pipeline.runID)
+      settingsFile: 'environments/dev/settings-test.json' 
+      subscriptionId: ${{ variables.subscriptionId }}
+      resourceGroupName: ${{ variables.resourceGroupName }}
+      location: ${{ variables.resourceGroupLocation }}
+      functionAppName: ${{ variables.functionAppName }}
+      clientId: ${{ variables.portalServicePrincipalClientId }}

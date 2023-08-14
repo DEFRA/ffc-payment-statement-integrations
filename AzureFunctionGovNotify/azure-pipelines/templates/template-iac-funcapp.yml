@@ -7,6 +7,18 @@ parameters:
   type: string
 - name: runId
   type: string
+- name: settingsFile
+  type: string
+- name: subscriptionId
+  type: string
+- name: resourceGroupName
+  type: string
+- name: location
+  type: string
+- name: functionAppName
+  type: string
+- name: clientId
+  type: string
 
 jobs:
 - deployment: deploy_funcapp_resources
@@ -17,6 +29,9 @@ jobs:
   variables:
     deploymentMode: 'Incremental'
     artifactPath: '$(Pipeline.Workspace)/ci-func-app-pipeline/$(functionAppArtifactName)'
+    id: "/subscriptions/${{ parameters.subscriptionId }}/resourceGroups/${{ parameters.resourceGroupName }}/providers/Microsoft.Web/sites/${{ parameters.functionAppName }}/config/authsettings"
+    location: "${{ parameters.location }}"
+    properties.clientId: "${{ parameters.clientId }}"
   strategy:
     runOnce:
       deploy:
@@ -43,6 +58,37 @@ jobs:
               -skuTier "Dynamic"
               -portalServicePrincipalClientId $(portalServicePrincipalClientId)
             deploymentMode: $(deploymentMode)
+
+        - task: AzureCLI@2
+          inputs:
+            azureSubscription: ${{ parameters.serviceConnection }}
+            scriptType: 'bash'
+            scriptLocation: 'inlineScript'
+            inlineScript: |
+              az functionapp config appsettings set --name $(functionAppName) --resource-group  $(resourceGroupName) --slot-settings \
+              @./unpacked/$(settingsFile)
+            addSpnToEnvironment: true
+            useGlobalConfig: true
+
+        # Update auth-settings.json via FileTransform task.
+        - task: FileTransform@1
+          displayName: 'File transformation: auth-settings.json'
+          inputs:
+            folderPath: './unpacked/azure-pipelines/templates'
+            targetFiles: '**/auth-settings.json'
+            fileType: json
+
+        # Apply auth settings
+        - task: AzureCLI@2
+          inputs:
+            azureSubscription: ${{ parameters.serviceConnection }}
+            scriptType: 'bash'
+            scriptLocation: 'inlineScript'
+            inlineScript: |
+              cat @./unpacked/azure-pipelines/templates/auth-settings.json
+              az rest --method PUT --url "${{ variables.id }}?api-version=2020-06-01" --body @./unpacked/azure-pipelines/templates/auth-settings.json
+            addSpnToEnvironment: true
+            useGlobalConfig: true
 
         - task: AzureFunctionApp@2
           displayName: 'Deploy Function App function'
