@@ -20,6 +20,9 @@
     "appInsightsName": {
       "type": "string"
     },
+    "resourceGroupName": {
+      "type": "string"
+    },
     "storageName": {
       "type": "string",
       "minLength": 3,
@@ -45,6 +48,9 @@
     "skuTier": {
       "type": "string",
       "defaultValue": "Standard"
+    },
+    "userManagedIdentityName": {
+      "type": "string"
     }
   },
   "resources": [
@@ -422,7 +428,10 @@
       ],
       "kind": "workflowapp,functionapp",
       "identity": {
-        "type": "SystemAssigned"
+        "type": "SystemAssigned, UserAssigned",
+        "userAssignedIdentities": {
+            "[concat('/subscriptions/', subscription().subscriptionId, '/resourcegroups/', parameters('resourceGroupName'), '/providers/Microsoft.ManagedIdentity/userAssignedIdentities/', parameters('userManagedIdentityName'))]": {}
+        }
       },
       "tags": {
         "Environment": "[parameters('environmentName')]",
@@ -555,7 +564,8 @@
             }
           ]
         },
-        "clientAffinityEnabled": false
+        "clientAffinityEnabled": false,
+        "keyVaultReferenceIdentity": "[concat('/subscriptions/', subscription().subscriptionId, '/resourcegroups/', parameters('resourceGroupName'), '/providers/Microsoft.ManagedIdentity/userAssignedIdentities/', parameters('userManagedIdentityName'))]"
       },
       "resources": [
         {
