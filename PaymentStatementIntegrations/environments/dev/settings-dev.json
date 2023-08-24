@@ -15,13 +15,13 @@
     "slotSetting": false
   },
   {
-    "name": "EmailAzureFunctionEndpoint",
-    "value": "https://devrleinffa1401.azurewebsites.net/api/AzureFunctionGovNotify",
+    "name": "CrmDocTypeLookup",
+    "value": "{ \"LANDCOVER_CHANGE\": { \"id\": \"db363964-c906-ee11-8f6e-0022489ede2f\", \"desc\": \"Land Cover\" }, \"MERGE\": { \"id\": \"05ea5085-c906-ee11-8f6e-0022489ede2f\", \"desc\": \"Merge\" }, \"REGISTERING_NEW_LAND\": { \"id\": \"ff7b3b00-cb06-ee11-8f6e-0022489ede2f\", \"desc\": \"Registering New Land\" }, \"ALL_OTHERS\": { \"id\": \"1fdded19-cb06-ee11-8f6e-0022489ede2f\", \"desc\": \"All Other Land Changes\" } }",
     "slotSetting": false
   },
   {
-    "name": "EmailAzureFunctionSasToken",
-    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/EmailAzureFunctionSasToken/1b6ce561d81b42b88cd28f340edd40a1)",
+    "name": "EmailAzureFunctionEndpoint",
+    "value": "https://devrleinffa1401.azurewebsites.net/api/AzureFunctionGovNotify",
     "slotSetting": false
   },
   {

@@ -1,0 +1,74 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "scheduledQueryRuleName": {
+        "type": "string"
+      },
+      "location": {
+        "type": "string"
+      },
+      "resourceGroupName": {
+        "type": "string"
+      },
+      "actionGroupName": {
+        "type": "string"
+      },
+      "appInsightsName": {
+        "type": "string"
+      }
+    },
+    "resources": [
+    {
+        "type": "Microsoft.Insights/scheduledQueryRules",
+        "apiVersion": "2022-08-01-preview",
+        "name": "[parameters('scheduledQueryRuleName')]",
+        "location": "[parameters('location')]",
+        "tags": {
+            "ServiceCode": "RLE"
+        },
+        "kind": "LogAlert",
+        "properties": {
+            "actions": {
+                "actionGroups": [
+                     "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',parameters('resourceGroupName'),'/providers/microsoft.insights/actionGroups/',parameters('actionGroupName'))]"
+                    ],
+                "customProperties": {}
+            },
+            "autoMitigate": false,
+            "checkWorkspaceAlertsStorageConfigured": false,
+            "criteria": {
+                "allOf": [
+                {
+                    "dimensions": [],
+                    "failingPeriods": {
+                        "minFailingPeriodsToAlert": 1,
+                        "numberOfEvaluationPeriods": 1
+                    },
+                    "operator": "GreaterThan",
+                    "query": "    traces\n| where message startswith \"Workflow run ends\"\n| where customDimensions.EventName == \"WorkflowRunEnd\"\n| where customDimensions.status contains \"Failed\"",
+                    "resourceIdColumn": "",
+                    "threshold": 1.0,
+                    "timeAggregation": "Count"
+                }
+                ]
+            },
+            "description": "Email support if a Logic App workflow fails. Normally all workflows should succeed but email any errors. This rule catches the situation where there is a catastrophic failure which prevents the normal error email being sent.",
+            "displayName": "[parameters('scheduledQueryRuleName')]",
+            "enabled": true,
+            "evaluationFrequency": "PT5M",
+            "scopes": [
+                "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',parameters('resourceGroupName'),'/providers/microsoft.insights/components/',parameters('appInsightsName'))]"
+            ],
+            "severity": 3,
+            "tags": {
+                "ServiceCode": "RLE"
+            },
+            "targetResourceTypes": [
+                "microsoft.insights/components"
+            ],
+            "windowSize": "PT5M"
+            }
+        }
+    ]
+}

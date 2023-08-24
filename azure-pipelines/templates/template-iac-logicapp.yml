@@ -43,6 +43,8 @@ jobs:
               -subnetResourceId $(subnetResourceId)
               -dnsServer $(dnsServer)
               -dnsAltServer $(dnsAltServer)
+              -userManagedIdentityName $(userManagedIdentityName)
+              -resourceGroupName $(resourceGroupName)
             deploymentMode: $(deploymentMode)
             deploymentOutputs: 'LogicAppArmOutputs'
 
@@ -56,6 +58,7 @@ jobs:
 
         # These settings cannot be applied as part of the Logic App template (for some reason) so have to be applied afterwards here
         - task: AzureCLI@2
+          displayName: 'Configure extra app settings'
           inputs:
             azureSubscription: ${{ parameters.serviceConnection }}
             scriptType: 'bash'
@@ -72,12 +75,13 @@ jobs:
         # https://learn.microsoft.com/en-us/answers/questions/1333946/azure-standard-logic-app-service-bus-built-in-conn
         # https://techcommunity.microsoft.com/t5/azure-integration-services-blog/enabling-service-bus-and-sap-built-in-connectors-for-stateful/ba-p/3820381
         - task: AzureCLI@2
+          displayName: 'Workaround for Service Bus and VNET'
           inputs:
             azureSubscription: ${{ parameters.serviceConnection }}
             scriptType: 'bash'
             scriptLocation: 'inlineScript'
             inlineScript: |
-              az webapp config set --name $(LAname) --resource-group  $(resourceGroupName) --generic-configurations '{"vnetPrivatePortsCount": 2}'
+              az webapp config set --name $(logicAppName) --resource-group  $(resourceGroupName) --generic-configurations '{"vnetPrivatePortsCount": 2}'
             addSpnToEnvironment: true
             useGlobalConfig: true
 
@@ -96,3 +100,31 @@ jobs:
               -dashboardName $(dashboardName)
               -dashboardDisplayName "$(dashboardDisplayName)"
             deploymentMode: $(deploymentMode)
+
+        - task: AzureResourceGroupDeployment@2
+          displayName: 'Create ActionGroup for alert emails'
+          inputs:
+            azureSubscription: ${{ parameters.serviceConnection }}
+            resourceGroupName: $(resourceGroupName)
+            location: $(resourceGroupLocation)
+            csmFile: './unpacked/templates/action-group-template.json'
+            overrideParameters:
+              -actionGroupName $(actionGroupName)
+              -alertingEmailAddress $(alertingEmailAddress)
+            deploymentMode: $(deploymentMode)
+
+        - task: AzureResourceGroupDeployment@2
+          displayName: 'Create Alert rule for failed workflow emails'
+          inputs:
+            azureSubscription: ${{ parameters.serviceConnection }}
+            resourceGroupName: $(resourceGroupName)
+            location: $(resourceGroupLocation)
+            csmFile: './unpacked/templates/scheduled-query-rule-template.json'
+            overrideParameters:
+              -scheduledQueryRuleName $(scheduledQueryRuleName)
+              -location $(resourceGroupLocation)
+              -actionGroupName $(actionGroupName)
+              -resourceGroupName $(resourceGroupName)
+              -appInsightsName $(appInsightsName)
+            deploymentMode: $(deploymentMode)
+
