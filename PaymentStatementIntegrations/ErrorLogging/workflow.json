@@ -78,14 +78,14 @@
             "Create_CRM_Error_Log": {
                 "type": "Http",
                 "inputs": {
-                    "uri": "@{parameters('CrmBaseUrl')}/api/data/v9.2/rpa_integrationinbound",
+                    "uri": "@{parameters('CrmBaseUrl')}/api/data/v9.2/rpa_integrationinboundqueues",
                     "method": "POST",
                     "headers": {
                         "Authorization": "Bearer @{body('Parse_CRM_Token')?['access_token']}"
                     },
                     "body": {
                         "rpa_name": "@{triggerBody().workflowRunId}",
-                        "rpa_processingentity": "927350013",
+                        "rpa_processingentity": "@{if(startsWith(toLower(triggerBody().workflowRunId),'rle'), 927350005, 927350006)}",
                         "rpa_xmlmessage": "Failed workflow: @{triggerBody().callingWorkflowName} \nFailed run: @{concat('https://portal.azure.com/#blade/Microsoft_Azure_EMA/DesignerEditor.ReactView/id/', encodeUriComponent(concat('/subscriptions/',appsetting('WORKFLOWS_SUBSCRIPTION_ID'), '/resourceGroups/', appsetting('WORKFLOWS_RESOURCE_GROUP_NAME'),'/providers/Microsoft.Web/sites/',appsetting('WORKFLOWS_LOGIC_APP_NAME'),'/workflows/',triggerBody().callingWorkflowName)),'/location/',appsetting('WORKFLOWS_LOCATION_NAME'),'/isReadOnly/true/isMonitoringView/true/runId/',triggerBody().workflowRunId)} \nError text: @{triggerBody().progressText}"
                     }
                 },
