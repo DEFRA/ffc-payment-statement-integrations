@@ -44,7 +44,6 @@ variables:
   externalServiceBusSubscriptionName: 'AZD-RLE-DEV1'
   
   # Details for Azure Alerting when workflow catastrophic fails
-  # Normal error alert emails use an app setting 'ErrorEmailToAddresses' CSV list of emails to send to targets
   actionGroupName: '$(resourcePrefix)AG1403'
   scheduledQueryRuleName: '$(resourcePrefix)AIAR1403'
   alertingEmailAddress: 'jeremy.barnsley@defra.gov.uk'
