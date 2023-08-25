@@ -2,39 +2,6 @@
     "definition": {
         "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
         "actions": {
-            "For_each_email_address": {
-                "type": "Foreach",
-                "foreach": "@split(appsetting('ErrorEmailToAddresses'),',')",
-                "actions": {
-                    "Send_email": {
-                        "type": "Http",
-                        "inputs": {
-                            "uri": "@{parameters('EmailAzureFunctionEndpoint')}",
-                            "method": "POST",
-                            "body": {
-                                "apiKey": "@{triggerBody().apiKey}",
-                                "personalisations": {
-                                    "fail_body": "@{concat(triggerBody().progressText, ': ', outputs('Strip_sensitive_data'))}",
-                                    "fail_run_link": "@{concat('https://portal.azure.com/#blade/Microsoft_Azure_EMA/DesignerEditor.ReactView/id/', encodeUriComponent(concat('/subscriptions/',appsetting('WORKFLOWS_SUBSCRIPTION_ID'), '/resourceGroups/', appsetting('WORKFLOWS_RESOURCE_GROUP_NAME'),'/providers/Microsoft.Web/sites/',appsetting('WORKFLOWS_LOGIC_APP_NAME'),'/workflows/',triggerBody().callingWorkflowName)),'/location/',appsetting('WORKFLOWS_LOCATION_NAME'),'/isReadOnly/true/isMonitoringView/true/runId/',triggerBody().workflowRunId)}",
-                                    "process_name": "RleCrmInsert"
-                                },
-                                "templateId": "9cf49f31-d557-4a78-beeb-27fe87553ae7",
-                                "toAddress": "@{item()}"
-                            }
-                        },
-                        "runtimeConfiguration": {
-                            "contentTransfer": {
-                                "transferMode": "Chunked"
-                            }
-                        }
-                    }
-                },
-                "runAfter": {
-                    "Strip_sensitive_data": [
-                        "SUCCEEDED"
-                    ]
-                }
-            },
             "Get_error_stack": {
                 "type": "Query",
                 "inputs": {
@@ -58,7 +25,7 @@
                     "statusCode": 200
                 },
                 "runAfter": {
-                    "For_each_email_address": [
+                    "Create_CRM_Error_Log": [
                         "SUCCEEDED"
                     ]
                 }
@@ -80,6 +47,95 @@
                         ]
                     }
                 }
+            },
+            "Get_CRM_Token": {
+                "type": "Http",
+                "inputs": {
+                    "uri": "@{parameters('AdLoginBaseUrl')}/@{parameters('PortalTenantId')}/oauth2/token",
+                    "method": "POST",
+                    "headers": {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    "body": "grant_type=client_credentials\n&client_id=@{parameters('PortalClientId')}\n&client_secret=@{encodeUriComponent(parameters('PortalClientSecret'))}\n&resource=@{encodeUriComponent(parameters('CrmBaseUrl'))}"
+                },
+                "runAfter": {
+                    "Strip_sensitive_data": [
+                        "SUCCEEDED"
+                    ]
+                },
+                "runtimeConfiguration": {
+                    "contentTransfer": {
+                        "transferMode": "Chunked"
+                    },
+                    "secureData": {
+                        "properties": [
+                            "inputs",
+                            "outputs"
+                        ]
+                    }
+                }
+            },
+            "Create_CRM_Error_Log": {
+                "type": "Http",
+                "inputs": {
+                    "uri": "@{parameters('CrmBaseUrl')}/api/data/v9.2/rpa_integrationinbound",
+                    "method": "POST",
+                    "headers": {
+                        "Authorization": "Bearer @{body('Parse_CRM_Token')?['access_token']}"
+                    },
+                    "body": {
+                        "rpa_name": "@{triggerBody().workflowRunId}",
+                        "rpa_processingentity": "927350013",
+                        "rpa_xmlmessage": "Failed workflow: @{triggerBody().callingWorkflowName} \nFailed run: @{concat('https://portal.azure.com/#blade/Microsoft_Azure_EMA/DesignerEditor.ReactView/id/', encodeUriComponent(concat('/subscriptions/',appsetting('WORKFLOWS_SUBSCRIPTION_ID'), '/resourceGroups/', appsetting('WORKFLOWS_RESOURCE_GROUP_NAME'),'/providers/Microsoft.Web/sites/',appsetting('WORKFLOWS_LOGIC_APP_NAME'),'/workflows/',triggerBody().callingWorkflowName)),'/location/',appsetting('WORKFLOWS_LOCATION_NAME'),'/isReadOnly/true/isMonitoringView/true/runId/',triggerBody().workflowRunId)} \nError text: @{triggerBody().progressText}"
+                    }
+                },
+                "runAfter": {
+                    "Parse_CRM_Token": [
+                        "SUCCEEDED"
+                    ]
+                },
+                "runtimeConfiguration": {
+                    "contentTransfer": {
+                        "transferMode": "Chunked"
+                    }
+                }
+            },
+            "Parse_CRM_Token": {
+                "type": "ParseJson",
+                "inputs": {
+                    "content": "@body('Get_CRM_Token')",
+                    "schema": {
+                        "properties": {
+                            "access_token": {
+                                "type": "string"
+                            },
+                            "expires_in": {
+                                "type": "string"
+                            },
+                            "expires_on": {
+                                "type": "string"
+                            },
+                            "ext_expires_in": {
+                                "type": "string"
+                            },
+                            "not_before": {
+                                "type": "string"
+                            },
+                            "resource": {
+                                "type": "string"
+                            },
+                            "token_type": {
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "runAfter": {
+                    "Get_CRM_Token": [
+                        "SUCCEEDED"
+                    ]
+                }
             }
         },
         "contentVersion": "1.0.0.0",
@@ -95,15 +151,10 @@
                 "value": "@appsetting('CrmBaseUrl')",
                 "defaultValue": "@appsetting('CrmBaseUrl')"
             },
-            "EmailAzureFunctionEndpoint": {
+            "CrmDocTypeLookup": {
                 "type": "String",
-                "value": "@appsetting('EmailAzureFunctionEndpoint')",
-                "defaultValue": "@appsetting('EmailAzureFunctionEndpoint')"
-            },
-            "ErrorEmailTempateId": {
-                "type": "String",
-                "value": "@appsetting('ErrorEmailTempateId')",
-                "defaultValue": "@appsetting('ErrorEmailTempateId')"
+                "value": "@appsetting('CrmDocTypeLookup')",
+                "defaultValue": "@appsetting('CrmDocTypeLookup')"
             },
             "FfcRetrievalWorkflowSasToken": {
                 "type": "String",
@@ -114,11 +165,6 @@
                 "type": "String",
                 "value": "@appsetting('FfcRetrievalWorkflowEndpoint')",
                 "defaultValue": "@appsetting('FfcRetrievalWorkflowEndpoint')"
-            },
-            "GovNotifyApiKey": {
-                "type": "String",
-                "value": "@appsetting('GovNotifyApiKey')",
-                "defaultValue": "@appsetting('GovNotifyApiKey')"
             },
             "PdfServiceUrl": {
                 "type": "String",
