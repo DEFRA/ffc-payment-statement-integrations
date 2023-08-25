@@ -401,10 +401,16 @@
         "Project": "[parameters('projectName')]"
       },
       "properties": {
-        "publicNetworkAccess": "Enabled",
+        "publicNetworkAccess": "Disabled",
         "networkAcls": {
           "bypass": "AzureServices",
-          "defaultAction": "Deny"
+          "defaultAction": "Deny",
+          "virtualNetworkRules": [
+            {
+                "id": "[concat('/subscriptions/', subscription().subscriptionId, parameters('subnetResourceId'))]",
+                "action": "Allow"
+            }
+          ]
         },
         "supportsHttpsTrafficOnly": true,
         "encryption": {
