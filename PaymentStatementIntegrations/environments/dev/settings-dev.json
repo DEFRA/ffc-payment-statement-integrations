@@ -20,21 +20,6 @@
     "slotSetting": false
   },
   {
-    "name": "EmailAzureFunctionEndpoint",
-    "value": "https://devrleinffa1401.azurewebsites.net/api/AzureFunctionGovNotify",
-    "slotSetting": false
-  },
-  {
-    "name": "ErrorEmailToAddresses",
-    "value": "jeremy.barnsley@defra.gov.uk",
-    "slotSetting": false
-  },
-  {
-    "name": "ErrorEmailTemplateId",
-    "value": "9cf49f31-d557-4a78-beeb-27fe87553ae7",
-    "slotSetting": false
-  },
-  {
     "name": "FfcRetrievalWorkflowEndpoint",
     "value": "https://devrleinfla1402.azurewebsites.net:443/api/FfcCrmRetrieval/triggers/HTTP_GET/invoke?api-version=2022-05-01&sp=%2Ftriggers%2FHTTP_GET%2Frun&sv=1.0&sig=",
     "slotSetting": false
@@ -42,11 +27,6 @@
   {
     "name": "FfcRetrievalWorkflowSasToken",
     "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/FfcRetrievalWorkflowSasToken/898d55c115534253b00d2e6538c623be)",
-    "slotSetting": false
-  },
-  {
-    "name": "GovNotifyApiKey",
-    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/GovNotifyApiKey/17b4bb50a66d41fe936e83e7470bba75)",
     "slotSetting": false
   },
   {

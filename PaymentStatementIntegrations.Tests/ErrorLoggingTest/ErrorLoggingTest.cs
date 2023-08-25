@@ -9,18 +9,18 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 
-namespace PaymentStatementIntegrations.Tests.SendErrorEmailTest
+namespace PaymentStatementIntegrations.Tests.ErrorLoggingTest
 {
     /// <summary>
-    /// Test cases for the <i>SendErrorEmail</i> workflow.
+    /// Test cases for the <i>ErrorLogging</i> workflow.
     /// </summary>
     [TestClass]
-    public class SendErrorEmailTest : WorkflowTestBase
+    public class ErrorLoggingTest : WorkflowTestBase
     {
         [TestInitialize]
         public void TestInitialize()
         {
-            Initialize(Constants.LOGIC_APP_BASE_PATH, "SendErrorEmail");
+            Initialize(Constants.LOGIC_APP_BASE_PATH, "ErrorLogging");
         }
 
         [ClassCleanup]
@@ -33,7 +33,7 @@ namespace PaymentStatementIntegrations.Tests.SendErrorEmailTest
         /// Tests that the correct response is returned when successful.
         /// </summary>
         [TestMethod]
-        public void SendErrorEmail_Masks_Sensitive_Data()
+        public void LogError_Masks_Sensitive_Data()
         {
             // Override one of the settings in the local settings file
             var settingsToOverride = new Dictionary<string, string>();
@@ -46,11 +46,17 @@ namespace PaymentStatementIntegrations.Tests.SendErrorEmailTest
                     HttpResponseMessage mockedResponse = new HttpResponseMessage();
                     if (request?.RequestUri != null)
                     {
-                        if (request.RequestUri.AbsolutePath.Contains("/api/Email") && request.Method == HttpMethod.Post)
+                        if (request.RequestUri.AbsolutePath.Contains("/oauth2/token") && request.Method == HttpMethod.Post)
                         {
-                            // Email function call
                             mockedResponse.RequestMessage = request;
                             mockedResponse.StatusCode = HttpStatusCode.OK;
+                            mockedResponse.Content = ValidAuthToken();
+                        }
+                        else if (request.RequestUri.AbsolutePath.Contains("/api/data/v9.2/accounts") && request.Method == HttpMethod.Get)
+                        {
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                            mockedResponse.Content = ValidCreateCrmLogRecord();
                         }
                     }
                     return mockedResponse;
@@ -71,7 +77,9 @@ namespace PaymentStatementIntegrations.Tests.SendErrorEmailTest
                 // Check action result
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_error_stack"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Strip_sensitive_data"));
-                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Send_email"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_CRM_Token"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Parse_CRM_Token"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Create_CRM_Error_Log"));
 
                 // Check masking
                 var outputs = testRunner.GetWorkflowActionOutput("Strip_sensitive_data");
@@ -89,7 +97,6 @@ namespace PaymentStatementIntegrations.Tests.SendErrorEmailTest
                 callingWorkflowName = "RleCrmInsert",
                 workflowRunId = "ff421d65-5be6-4084-b748-af490100c9a5",
                 progressText = "we got this far",
-                apiKey = "apiKey",
                 stack = new []
                 {
                     new { status = "Failed", otherText = "otherTextFailure with client_secret=secret-SENSITIVE-data&Authorization:SENSITIVE-TOKEN}&client_id=12345SENSITIVE" },
@@ -99,5 +106,32 @@ namespace PaymentStatementIntegrations.Tests.SendErrorEmailTest
 
             return UnitTestHelper.EncodeAsStringContent(json);
         }
+
+        private static StringContent ValidAuthToken()
+        {
+            var json = new
+            {
+                token_type = "Bearer",
+                expires_in = "3599",
+                ext_expires_in = "3599",
+                expires_on = "1690535569",
+                not_before = "1690531669",
+                resource = "https://rpadevv9.crm4.dynamics.com",
+                access_token = "eyJ0eXAiOiJKV1Qaaaaaaa"
+            };
+
+            return UnitTestHelper.EncodeAsStringContent(json);
+        }
+
+        private static StringContent ValidCreateCrmLogRecord()
+        {
+            // Return value not used, so blank is ok here
+            var json = new
+            {
+            };
+
+            return UnitTestHelper.EncodeAsStringContent(json);
+        }
+
     }
 }
