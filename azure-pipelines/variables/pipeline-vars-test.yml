@@ -18,7 +18,7 @@ variables:
 
    # Gets converted to lowercase later in the pipeline. No spaces or hyphens allowed
   storageName: '$(resourcePrefix)ST1402'
-  fileShareName: '$(resourcePrefix)LA14098c3d'
+  fileShareName: '$(resourcePrefix)ST1402fs'
 
   appInsightsName: '$(resourcePrefix)AIS1402'
 
@@ -44,7 +44,6 @@ variables:
   externalServiceBusSubscriptionName: 'AZD-RLE-DEV1'
   
   # Details for Azure Alerting when workflow catastrophic fails
-  # Normal error alert emails use an app setting 'ErrorEmailToAddresses' CSV list of emails to send to targets
-  actionGroupName: '$(resourcePrefix)AG1401'
-  scheduledQueryRuleName: '$(resourcePrefix)AIAR1401'
+  actionGroupName: '$(resourcePrefix)AG1402'
+  scheduledQueryRuleName: '$(resourcePrefix)AIAR1402'
   alertingEmailAddress: 'jeremy.barnsley@defra.gov.uk'
