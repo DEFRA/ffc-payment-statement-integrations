@@ -20,7 +20,7 @@ variables:
 
    # Gets converted to lowercase later in the pipeline. No spaces or hyphens allowed
   storageName: '$(resourcePrefix)ST1402'
-  fileShareName: '$(resourcePrefix)ST14098c3d'
+  fileShareName: '$(resourcePrefix)LA14098c3d'
 
   appInsightsName: '$(resourcePrefix)AIS1402'
 
