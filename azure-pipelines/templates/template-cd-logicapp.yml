@@ -11,6 +11,8 @@ parameters:
   type: string
 - name: connectionsFile
   type: string
+- name: externalServiceBusSubscriptionName
+  type: string
 
 jobs:
   - deployment: deploy_logicapp_resources
@@ -71,7 +73,7 @@ jobs:
           - task: AzureCLI@2
             displayName: 'Get Managed Identity details (in different subscription)'
             inputs:
-              azureSubscription: $(externalServiceBusSubscriptionName)
+              azureSubscription: ${{ parameters.externalServiceBusSubscriptionName }}
               scriptType: 'bash'
               scriptLocation: 'inlineScript'
               inlineScript: |
