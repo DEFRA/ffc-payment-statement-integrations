@@ -7,7 +7,7 @@ variables:
 
   resourcePrefix: '$(envShortName)$(projectNameUpper)$(functionCode)'
   
-  logicAppName: '$(resourcePrefix)LA1405'
+  logicAppName: '$(resourcePrefix)LA1402'
   
   resourceGroupLocation: 'uksouth'
   resourceGroupName: '$(resourcePrefix)RG1401'
@@ -17,19 +17,19 @@ variables:
   appServicePlanName: '$(resourcePrefix)ASP1401'
 
    # Gets converted to lowercase later in the pipeline. No spaces or hyphens allowed
-  storageName: '$(resourcePrefix)ST1405'
-  fileShareName: '$(resourcePrefix)ST1405fs'
+  storageName: '$(resourcePrefix)ST1402'
+  fileShareName: '$(resourcePrefix)ST1402fs'
 
   appInsightsName: '$(resourcePrefix)AIS1402'
 
-  dashboardName: '$(resourcePrefix)DSH1405'
+  dashboardName: '$(resourcePrefix)DSH1402'
   dashboardDisplayName: '$(logicAppName) dashboard'
 
   # User-assigned Managed Identity - used to access Key Vault (permissions for this can be pre-assigned before this IaC is run)
   userManagedIdentityName: '$(resourcePrefix)UAMID1401'
 
   # VNET integration is required for Private Endpoint blob storage
-  subnetResourceId: '/resourceGroups/TSTRLENETRG1401/providers/Microsoft.Network/virtualNetworks/TSTRLENETVN1401/subnets/TSTRLENETSU1403'
+  subnetResourceId: '/resourceGroups/TSTRLENETRG1401/providers/Microsoft.Network/virtualNetworks/TSTRLENETVN1401/subnets/TSTRLENETSU1402'
   # Subnet resource ID excluding '/subscriptions/<subscriptionId>', for example: /resourceGroups/<RGname>/providers/Microsoft.Network/virtualNetworks/<VnetName>/subnets/subnetName>
   dnsServer: '10.178.0.4'
   dnsAltServer: '10.178.0.5'
@@ -44,6 +44,6 @@ variables:
   externalServiceBusSubscriptionName: 'AZD-RLE-DEV1'
   
   # Details for Azure Alerting when workflow catastrophic fails
-  actionGroupName: '$(resourcePrefix)AG1403'
-  scheduledQueryRuleName: '$(resourcePrefix)AIAR1403'
+  actionGroupName: '$(resourcePrefix)AG1402'
+  scheduledQueryRuleName: '$(resourcePrefix)AIAR1402'
   alertingEmailAddress: 'jeremy.barnsley@defra.gov.uk'
