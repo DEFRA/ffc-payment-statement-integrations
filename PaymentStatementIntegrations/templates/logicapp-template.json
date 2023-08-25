@@ -426,7 +426,7 @@
       "apiVersion": "2021-04-01",
       "name": "[concat(parameters('storageName'), '/default/', toLower(parameters('fileShareName')))]",
       "dependsOn": [
-        "[parameters('contentStorageAccountName')]"
+        "[parameters('storageName')]"
       ]
     },
     {
