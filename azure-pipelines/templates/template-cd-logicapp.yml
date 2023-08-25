@@ -70,18 +70,6 @@ jobs:
               package: './unpacked/newArtifact.zip'
               deploymentMethod: 'zipDeploy'
 
-          - task: AzureCLI@2
-            displayName: 'Whitelist agent IP for Key Vault access'
-            inputs:
-              azureSubscription: ${{ parameters.serviceConnection }}
-              scriptType: 'bash'
-              scriptLocation: 'inlineScript'
-              inlineScript: |
-                az keyvault network-rule add --resource-group $(resourceGroupName) --name ${{ parameters.keyVaultName }} --ip-address "4.234.202.10/32"
-              addSpnToEnvironment: true
-              useGlobalConfig: true
-
-
           - task: AzureKeyVault@2
             inputs:
               azureSubscription: ${{ parameters.serviceConnection }}
