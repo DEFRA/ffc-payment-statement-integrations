@@ -401,8 +401,33 @@
         "Project": "[parameters('projectName')]"
       },
       "properties": {
-        "publicNetworkAccess": "Disabled"
+        "networkAcls": {
+          "bypass": "AzureServices",
+          "defaultAction": "Deny"
+        },
+        "supportsHttpsTrafficOnly": true,
+        "encryption": {
+          "services": {
+            "file": {
+              "keyType": "Account",
+              "enabled": true
+            },
+            "blob": {
+              "keyType": "Account",
+              "enabled": true
+            }
+          },
+          "keySource": "Microsoft.Storage"
+        }
       }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
+      "apiVersion": "2021-04-01",
+      "name": "[concat(parameters('storageName'), '/default/', toLower(parameters('fileShareName')))]",
+      "dependsOn": [
+        "[parameters('contentStorageAccountName')]"
+      ]
     },
     {
       "type": "Microsoft.Web/serverfarms",
@@ -417,7 +442,10 @@
         "name": "WS1",
         "tier": "WorkflowStandard"
       },
-      "kind": "windows"
+      "kind": "",
+      "properties": {
+        "name": "[parameters('appServicePlanName')]"
+      }
     },
     {
       "type": "Microsoft.Web/sites",
