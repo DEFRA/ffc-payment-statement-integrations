@@ -80,6 +80,7 @@ jobs:
                 az identity show --name $(externalServiceBusManagedIdentityName) --resource-group $(externalServiceBusResourceGroupName) > tempId1.json
                 echo "##vso[task.setvariable variable=externalServiceBusUserManagedIdentityObjectId]$(cat tempId1.json | grep 'principalId' | tr -d ',' | awk '{ print $2; }' | tr -d '"')"
                 echo "##vso[task.setvariable variable=externalServiceBusUserManagedIdentityTenantId]$(cat tempId1.json | grep 'tenantId' | tr -d ',' | awk '{ print $2; }' | tr -d '"')"
+                cat tempId1.json
                 rm tempId1.json
               addSpnToEnvironment: true
               useGlobalConfig: true
