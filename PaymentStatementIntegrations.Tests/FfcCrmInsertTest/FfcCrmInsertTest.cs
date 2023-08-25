@@ -175,7 +175,7 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Extract_activity_id"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("CRM_Create_Meta_Data"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Dead-letter_the_message"));
-                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Send_error_email"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Log_error"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Complete_the_message"));
 
                 // Check request to CRM via Dataserve connector never happened
@@ -243,7 +243,7 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Extract_activity_id"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("CRM_Create_Meta_Data"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Dead-letter_the_message"));
-                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Send_error_email"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Log_error"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Complete_the_message"));
 
                 // Check request to CRM via Dataserve connector never happened
@@ -319,7 +319,7 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Extract_activity_id"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("CRM_Create_Meta_Data"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Dead-letter_the_message"));
-                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Send_error_email"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Log_error"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Complete_the_message"));
 
                 // Check request to CRM

@@ -4,10 +4,9 @@
         "actions": {
             "Catch_Scope": {
                 "actions": {
-                    "Send_error_email": {
+                    "Log_error": {
                         "inputs": {
                             "body": {
-                                "apiKey": "@parameters('GovNotifyApiKey')",
                                 "callingWorkflowName": "@{workflow().name}",
                                 "progressText": "@variables('ProgressText')",
                                 "stack": "@result('Try_Scope')",
@@ -15,7 +14,7 @@
                             },
                             "host": {
                                 "workflow": {
-                                    "id": "SendErrorEmail"
+                                    "id": "ErrorLogging"
                                 }
                             }
                         },

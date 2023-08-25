@@ -148,7 +148,7 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Copy_To_Sharepoint"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Create_Meta_Data"));
 
-                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Send_error_email"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Log_error"));
 
                 // Check 'create folder' only ran once
                 Assert.AreEqual(1, testRunner.GetWorkflowActionRepetitionCount("Create_Folder"));
@@ -299,7 +299,7 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Copy_To_Sharepoint"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Create_Meta_Data"));
 
-                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Send_error_email"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Log_error"));
 
                 // Check 'create folder' only ran once
                 Assert.AreEqual(1, testRunner.GetWorkflowActionRepetitionCount("Create_Folder"));
@@ -383,10 +383,10 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Get_CRM_Token"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Is_File_Number_Match"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Append_file_mismatch_error"));
-                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Send_error_email"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Log_error"));
 
                 // Check error message
-                var finalError = testRunner.GetWorkflowActionInput("Send_error_email").ToString();
+                var finalError = testRunner.GetWorkflowActionInput("Log_error").ToString();
                 Assert.IsTrue(finalError.Contains("schema validation failed"));
 
                 // Check tracked properties
@@ -447,10 +447,10 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Get_CRM_Token"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Is_File_Number_Match"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Append_file_mismatch_error"));
-                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Send_error_email"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Log_error"));
 
                 // Check error message
-                var finalError = testRunner.GetWorkflowActionInput("Send_error_email").ToString();
+                var finalError = testRunner.GetWorkflowActionInput("Log_error").ToString();
                 Assert.IsTrue(finalError.Contains("schema validation failed"));
 
                 // Check tracked properties
@@ -511,10 +511,10 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Get_CRM_Token"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Is_File_Number_Match"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Append_file_mismatch_error"));
-                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Send_error_email"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Log_error"));
 
                 // Check error message
-                var finalError = testRunner.GetWorkflowActionInput("Send_error_email").ToString();
+                var finalError = testRunner.GetWorkflowActionInput("Log_error").ToString();
                 Assert.IsTrue(finalError.Contains("schema validation failed"));
 
                 // Check tracked properties
@@ -575,10 +575,10 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Get_CRM_Token"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Is_File_Number_Match"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Append_file_mismatch_error"));
-                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Send_error_email"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Log_error"));
 
                 // Check error message
-                var finalError = testRunner.GetWorkflowActionInput("Send_error_email").ToString();
+                var finalError = testRunner.GetWorkflowActionInput("Log_error").ToString();
                 Assert.IsTrue(finalError.Contains("schema validation failed"));
 
                 // Check tracked properties
@@ -633,10 +633,10 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                 Assert.AreEqual(ActionStatus.Failed, testRunner.GetWorkflowActionStatus("Is_File_Number_Match"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Append_file_mismatch_error"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Get_CRM_Token"));
-                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Send_error_email"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Log_error"));
 
                 // Check error message
-                var finalError = testRunner.GetWorkflowActionInput("Send_error_email").ToString();
+                var finalError = testRunner.GetWorkflowActionInput("Log_error").ToString();
                 Assert.IsTrue(finalError.Contains("mismatch of file numbers"));
 
                 // Check tracked properties
@@ -697,7 +697,7 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_CRM_Token"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Parse_CRM_Token"));
                 Assert.AreEqual(ActionStatus.Failed, testRunner.GetWorkflowActionStatus("Get_CRM_Org"));
-                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Send_error_email"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Log_error"));
 
                 // Check request to CRM
                 var crmRequest = testRunner.MockRequests.First(r => r.RequestUri.AbsolutePath.Contains("/api/data/v9.2/accounts"));
