@@ -7,7 +7,7 @@ variables:
 
   resourcePrefix: '$(envShortName)$(projectNameUpper)$(functionCode)'
   
-  logicAppName: '$(resourcePrefix)LA1404'
+  logicAppName: '$(resourcePrefix)LA1405'
   
   resourceGroupLocation: 'uksouth'
   resourceGroupName: '$(resourcePrefix)RG1401'
@@ -17,12 +17,12 @@ variables:
   appServicePlanName: '$(resourcePrefix)ASP1401'
 
    # Gets converted to lowercase later in the pipeline. No spaces or hyphens allowed
-  storageName: '$(resourcePrefix)ST1404'
-  fileShareName: '$(resourcePrefix)ST1404fs'
+  storageName: '$(resourcePrefix)ST1405'
+  fileShareName: '$(resourcePrefix)ST1405fs'
 
   appInsightsName: '$(resourcePrefix)AIS1402'
 
-  dashboardName: '$(resourcePrefix)DSH1404'
+  dashboardName: '$(resourcePrefix)DSH1405'
   dashboardDisplayName: '$(logicAppName) dashboard'
 
   # User-assigned Managed Identity - used to access Key Vault (permissions for this can be pre-assigned before this IaC is run)
