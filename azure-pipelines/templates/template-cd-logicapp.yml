@@ -49,6 +49,18 @@ jobs:
               zip -r newArtifact.zip *
             displayName: 'Use environment-specific connections.json - create new artifact'
 
+          - task: AzureCLI@2
+            displayName: 'Allow temp access to advanced tool site for deploy'
+            inputs:
+              azureSubscription: ${{ parameters.serviceConnection }}
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                az resource update --resource-group $(resourceGroupName) --name $(logicAppName) --resource-type "Microsoft.Web/sites" \
+                --set properties.siteConfig.scmIpSecurityRestrictionsDefaultAction=Allow
+              addSpnToEnvironment: true
+              useGlobalConfig: true
+
           - task: AzureFunctionApp@2
             displayName: 'Deploy logic app workflows'
             inputs:
@@ -116,5 +128,17 @@ jobs:
               inlineScript: |
                 az functionapp config appsettings set --name $(logicAppName) --resource-group  $(resourceGroupName) --settings \
                 "SERVICEBUS_CONNECTION_SP_RUNTIMEURL=$(servicebusendpointurlsp)"
+              addSpnToEnvironment: true
+              useGlobalConfig: true
+
+          - task: AzureCLI@2
+            displayName: 'Disable access to advanced tool site'
+            inputs:
+              azureSubscription: ${{ parameters.serviceConnection }}
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                az resource update --resource-group $(resourceGroupName) --name $(logicAppName) --resource-type "Microsoft.Web/sites" \
+                --set properties.siteConfig.scmIpSecurityRestrictionsDefaultAction=Deny
               addSpnToEnvironment: true
               useGlobalConfig: true

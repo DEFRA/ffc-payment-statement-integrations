@@ -45,6 +45,7 @@ jobs:
               -dnsAltServer $(dnsAltServer)
               -userManagedIdentityName $(userManagedIdentityName)
               -resourceGroupName $(resourceGroupName)
+              -fileShareName $(fileShareName)
             deploymentMode: $(deploymentMode)
             deploymentOutputs: 'LogicAppArmOutputs'
 

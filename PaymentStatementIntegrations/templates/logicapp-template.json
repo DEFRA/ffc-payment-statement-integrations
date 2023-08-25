@@ -28,6 +28,9 @@
       "minLength": 3,
       "maxLength": 24
     },
+    "fileShareName": {
+      "type": "string"
+    },
     "subnetResourceId": {
       "type": "string"
     },
@@ -528,7 +531,7 @@
             },
             {
               "name": "WEBSITE_CONTENTSHARE",
-              "value": "[toLower(parameters('logicAppName'))]"
+              "value": "[toLower(parameters('fileShareName'))]"
             },
             {
               "name": "WEBSITE_NODE_DEFAULT_VERSION",
