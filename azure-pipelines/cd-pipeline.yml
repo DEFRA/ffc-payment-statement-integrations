@@ -28,7 +28,6 @@ stages:
       runId: $(resources.pipeline.cipipeline.runID)
       settingsFile: 'environments/dev/settings-dev.json' 
       connectionsFile: 'environments/dev/connections-dev.json' 
-      keyVaultName: ${{ variables.keyVaultName }}
 
 - stage: TEST
   displayName: 'TEST Deployment'
@@ -42,4 +41,3 @@ stages:
       runId: $(resources.pipeline.cipipeline.runID)
       settingsFile: 'environments/test/settings-test.json' 
       connectionsFile: 'environments/test/connections-test.json' 
-      keyVaultName: ${{ variables.keyVaultName }}

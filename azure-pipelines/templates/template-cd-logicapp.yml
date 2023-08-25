@@ -11,8 +11,6 @@ parameters:
   type: string
 - name: connectionsFile
   type: string
-- name: keyVaultName
-  type: string
 
 jobs:
   - deployment: deploy_logicapp_resources
@@ -70,12 +68,19 @@ jobs:
               package: './unpacked/newArtifact.zip'
               deploymentMethod: 'zipDeploy'
 
-          - task: AzureKeyVault@2
+          - task: AzureCLI@2
+            displayName: 'Get Managed Identity details (in different subscription)'
             inputs:
-              azureSubscription: ${{ parameters.serviceConnection }}
-              KeyVaultName: ${{ parameters.keyVaultName }}
-              SecretsFilter: '*'
-              RunAsPreJob: false
+              azureSubscription: $(externalServiceBusSubscriptionName)
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                az identity show --name $(externalServiceBusManagedIdentityName) --resource-group $(externalServiceBusResourceGroupName) > tempId1.json
+                echo "##vso[task.setvariable variable=externalServiceBusUserManagedIdentityObjectId]$(cat tempId1.json | grep 'principalId' | tr -d ',' | awk '{ print $2; }' | tr -d '"')"
+                echo "##vso[task.setvariable variable=externalServiceBusUserManagedIdentityTenantId]$(cat tempId1.json | grep 'tenantId' | tr -d ',' | awk '{ print $2; }' | tr -d '"')"
+                rm tempId2.json
+              addSpnToEnvironment: true
+              useGlobalConfig: true
 
           - task: AzureCLI@2
             inputs:
@@ -83,10 +88,10 @@ jobs:
               scriptType: 'bash'
               scriptLocation: 'inlineScript'
               inlineScript: |
-                az resource show --name $(logicAppName) --resource-group  $(resourceGroupName) --resource-type "Microsoft.Web/sites" --query "identity" > tempId.json
-                echo "##vso[task.setvariable variable=logicAppSystemAssignedIdentityObjectId]$(cat tempId.json | grep 'principalId' | tr -d ',' | awk '{ print $2; }' | tr -d '"')"
-                echo "##vso[task.setvariable variable=logicAppSystemAssignedIdentityTenantId]$(cat tempId.json | grep 'tenantId' | tr -d ',' | awk '{ print $2; }' | tr -d '"')"
-                rm tempId.json
+                az resource show --name $(logicAppName) --resource-group  $(resourceGroupName) --resource-type "Microsoft.Web/sites" --query "identity" > tempId2.json
+                echo "##vso[task.setvariable variable=logicAppSystemAssignedIdentityObjectId]$(cat tempId2.json | grep 'principalId' | tr -d ',' | awk '{ print $2; }' | tr -d '"')"
+                echo "##vso[task.setvariable variable=logicAppSystemAssignedIdentityTenantId]$(cat tempId2.json | grep 'tenantId' | tr -d ',' | awk '{ print $2; }' | tr -d '"')"
+                rm tempId2.json
               addSpnToEnvironment: true
               useGlobalConfig: true
             displayName: 'Read System-Assigned Managed Identity'
@@ -102,8 +107,8 @@ jobs:
                 -location $(resourceGroupLocation)
                 -connections_servicebus_name_sp $(servicebusConnectionNameSP)
                 -servicebus_connection_string_sp $(ServiceBusConnectionStringDev)
-                -serviceBusUserManagedIdentityTenantId $(ServiceBusUserManagedIdentityTenantIdDev)
-                -serviceBusUserManagedIdentityObjectId $(ServiceBusUserManagedIdentityObjectIdDev)
+                -serviceBusUserManagedIdentityTenantId $(externalServiceBusUserManagedIdentityTenantId)
+                -serviceBusUserManagedIdentityObjectId $(externalServiceBusUserManagedIdentityObjectId)
                 -logicAppSystemAssignedIdentityTenantId $(logicAppSystemAssignedIdentityTenantId)
                 -logicAppSystemAssignedIdentityObjectId $(logicAppSystemAssignedIdentityObjectId)
                 -portal_client_id $(PortalClientId)

@@ -14,8 +14,6 @@ variables:
   
   serviceConnection: 'AZR-RLE-TST1'
 
-  keyVaultName: '$(resourcePrefix)KV1401'
-
   appServicePlanName: '$(resourcePrefix)ASP1401'
 
    # Gets converted to lowercase later in the pipeline. No spaces or hyphens allowed
@@ -36,16 +34,14 @@ variables:
   dnsServer: '10.178.0.4'
   dnsAltServer: '10.178.0.5'
 
-  # Connector details
-  # Although MID details are specified, the tenantId should be the one where the service bus exists and, if this
+    # Connector details for external Service Bus
+  # These details refer to the tenant and resource group where the service bus identity exists and, if this
   # is cross-tenant, will be different to the tenant that the Logic App sits in.
-
-  # The following are in KeyVault secrets
-  # - serviceBusUserManagedIdentityTenantId - may be in a different tenant to the Logic App
-  # - serviceBusUserManagedIdentityObjectId
-
   servicebusConnectionNameSP: 'serviceBus'
-  servicebusNamespaceSP: 'TSTFFCINFSB1001.servicebus.windows.net'
+  servicebusNamespaceSP: 'SNDFFCINFSB1001.servicebus.windows.net'
+  externalServiceBusManagedIdentityName: 'DEVRLEINFMI1401'
+  externalServiceBusResourceGroupName: 'DEVRLEINFRG1401'
+  externalServiceBusSubscriptionName: 'AZD-RLE-DEV1'
   
   # Details for Azure Alerting when workflow catastrophic fails
   # Normal error alert emails use an app setting 'ErrorEmailToAddresses' CSV list of emails to send to targets
