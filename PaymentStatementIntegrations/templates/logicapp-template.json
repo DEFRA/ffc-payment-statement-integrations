@@ -20,10 +20,16 @@
     "appInsightsName": {
       "type": "string"
     },
+    "resourceGroupName": {
+      "type": "string"
+    },
     "storageName": {
       "type": "string",
       "minLength": 3,
       "maxLength": 24
+    },
+    "fileShareName": {
+      "type": "string"
     },
     "subnetResourceId": {
       "type": "string"
@@ -45,6 +51,9 @@
     "skuTier": {
       "type": "string",
       "defaultValue": "Standard"
+    },
+    "userManagedIdentityName": {
+      "type": "string"
     }
   },
   "resources": [
@@ -422,7 +431,10 @@
       ],
       "kind": "workflowapp,functionapp",
       "identity": {
-        "type": "SystemAssigned"
+        "type": "SystemAssigned, UserAssigned",
+        "userAssignedIdentities": {
+            "[concat('/subscriptions/', subscription().subscriptionId, '/resourcegroups/', parameters('resourceGroupName'), '/providers/Microsoft.ManagedIdentity/userAssignedIdentities/', parameters('userManagedIdentityName'))]": {}
+        }
       },
       "tags": {
         "Environment": "[parameters('environmentName')]",
@@ -519,11 +531,11 @@
             },
             {
               "name": "WEBSITE_CONTENTSHARE",
-              "value": "[toLower(parameters('logicAppName'))]"
+              "value": "[toLower(parameters('fileShareName'))]"
             },
             {
               "name": "WEBSITE_NODE_DEFAULT_VERSION",
-              "value": "~14"
+              "value": "~18"
             }, 
             {
               "name": "WORKFLOWS_SUBSCRIPTION_ID", 
@@ -555,7 +567,8 @@
             }
           ]
         },
-        "clientAffinityEnabled": false
+        "clientAffinityEnabled": false,
+        "keyVaultReferenceIdentity": "[concat('/subscriptions/', subscription().subscriptionId, '/resourcegroups/', parameters('resourceGroupName'), '/providers/Microsoft.ManagedIdentity/userAssignedIdentities/', parameters('userManagedIdentityName'))]"
       },
       "resources": [
         {

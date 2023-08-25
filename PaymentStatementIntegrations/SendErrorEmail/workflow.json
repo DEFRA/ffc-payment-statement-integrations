@@ -3,9 +3,14 @@
         "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
         "actions": {
             "For_each_email_address": {
+                "type": "Foreach",
+                "foreach": "@split(appsetting('ErrorEmailToAddresses'),',')",
                 "actions": {
                     "Send_email": {
+                        "type": "Http",
                         "inputs": {
+                            "uri": "@{parameters('EmailAzureFunctionEndpoint')}",
+                            "method": "POST",
                             "body": {
                                 "apiKey": "@{triggerBody().apiKey}",
                                 "personalisations": {
@@ -15,73 +20,28 @@
                                 },
                                 "templateId": "9cf49f31-d557-4a78-beeb-27fe87553ae7",
                                 "toAddress": "@{item()}"
-                            },
-                            "headers": {
-                                "Authorization": "Bearer @{body('Parse_email_auth_token')?['access_token']}",
-                                "x-functions-key": "@{parameters('EmailAzureFunctionSasToken')}"
-                            },
-                            "method": "POST",
-                            "uri": "@{parameters('EmailAzureFunctionEndpoint')}"
+                            }
                         },
                         "runtimeConfiguration": {
                             "contentTransfer": {
                                 "transferMode": "Chunked"
-                            },
-                            "secureData": {
-                                "properties": [
-                                    "inputs",
-                                    "outputs"
-                                ]
                             }
-                        },
-                        "type": "Http"
+                        }
                     }
-                },
-                "foreach": "@split(appsetting('ErrorEmailToAddresses'),',')",
-                "runAfter": {
-                    "Parse_email_auth_token": [
-                        "SUCCEEDED"
-                    ]
-                },
-                "type": "Foreach"
-            },
-            "Get_email_auth_token": {
-                "inputs": {
-                    "body": "grant_type=client_credentials\n&client_id=@{parameters('PortalClientId')}\n&client_secret=@{encodeUriComponent(parameters('PortalClientSecret'))}\n&resource=@{encodeUriComponent(parameters('CrmBaseUrl'))}",
-                    "headers": {
-                        "Content-Type": "application/x-www-form-urlencoded"
-                    },
-                    "method": "POST",
-                    "uri": "@{parameters('AdLoginBaseUrl')}/@{parameters('PortalTenantId')}/oauth2/token"
                 },
                 "runAfter": {
                     "Strip_sensitive_data": [
                         "SUCCEEDED"
                     ]
-                },
-                "runtimeConfiguration": {
-                    "contentTransfer": {
-                        "transferMode": "Chunked"
-                    },
-                    "secureData": {
-                        "properties": [
-                            "inputs",
-                            "outputs"
-                        ]
-                    }
-                },
-                "type": "Http"
+                }
             },
             "Get_error_stack": {
+                "type": "Query",
                 "inputs": {
                     "from": "@triggerBody()?['stack']",
                     "where": "@equals(item()?['status'],'Failed')"
                 },
-                "runAfter": {
-                    "Is_external_call": [
-                        "SUCCEEDED"
-                    ]
-                },
+                "runAfter": {},
                 "runtimeConfiguration": {
                     "secureData": {
                         "properties": [
@@ -89,103 +49,22 @@
                             "outputs"
                         ]
                     }
-                },
-                "type": "Query"
-            },
-            "Is_external_call": {
-                "actions": {
-                    "Terminate": {
-                        "inputs": {
-                            "runError": {
-                                "code": "400",
-                                "message": "Bad request"
-                            },
-                            "runStatus": "Failed"
-                        },
-                        "type": "Terminate"
-                    }
-                },
-                "else": {
-                    "actions": {}
-                },
-                "expression": {
-                    "or": [
-                        {
-                            "not": {
-                                "equals": [
-                                    "@string(triggerOutputs()?['headers']?['CLIENT-IP'])",
-                                    ""
-                                ]
-                            }
-                        },
-                        {
-                            "equals": [
-                                "@string(triggerOutputs()?['headers']?['x-ms-workflow-name'])",
-                                ""
-                            ]
-                        }
-                    ]
-                },
-                "runAfter": {},
-                "type": "If"
-            },
-            "Parse_email_auth_token": {
-                "inputs": {
-                    "content": "@body('Get_email_auth_token')",
-                    "schema": {
-                        "properties": {
-                            "access_token": {
-                                "type": "string"
-                            },
-                            "expires_in": {
-                                "type": "string"
-                            },
-                            "expires_on": {
-                                "type": "string"
-                            },
-                            "ext_expires_in": {
-                                "type": "string"
-                            },
-                            "not_before": {
-                                "type": "string"
-                            },
-                            "resource": {
-                                "type": "string"
-                            },
-                            "token_type": {
-                                "type": "string"
-                            }
-                        },
-                        "type": "object"
-                    }
-                },
-                "runAfter": {
-                    "Get_email_auth_token": [
-                        "SUCCEEDED"
-                    ]
-                },
-                "runtimeConfiguration": {
-                    "secureData": {
-                        "properties": [
-                            "inputs"
-                        ]
-                    }
-                },
-                "type": "ParseJson"
+                }
             },
             "Response": {
+                "type": "Response",
+                "kind": "Http",
                 "inputs": {
                     "statusCode": 200
                 },
-                "kind": "Http",
                 "runAfter": {
                     "For_each_email_address": [
                         "SUCCEEDED"
                     ]
-                },
-                "type": "Response"
+                }
             },
             "Strip_sensitive_data": {
+                "type": "JavaScriptCode",
                 "inputs": {
                     "code": "// This code snippet removes any sensitive token values if defined\n\n// List of tokens with their terminating char - defined in pairs\nvar sensitiveTokens = [ 'client_secret=', '&', 'client_id=', '&', 'Authorization', '}' ];\nvar errorStack = JSON.stringify(workflowContext.actions.Get_error_stack.outputs);\ntry {\n    for (var i=0; i < sensitiveTokens.length; i = i + 2) {\n        var tok = sensitiveTokens[i];\n        var tokLen = tok.length;\n        var tokPos = errorStack.indexOf(tok);\n        var endPos = errorStack.indexOf(sensitiveTokens[i+1],tokPos + 1);\n        if (tokPos > -1) {\n            if (endPos > -1) {\n                errorStack = errorStack.substring(0, tokPos + tokLen) +\n                    '******' +\n                    errorStack.substring(endPos);\n            } else {\n                errorStack = errorStack.substring(0, tokPos + tokLen) +\n                    '******';\n            }\n        }\n    }\n}\ncatch (err) {\n  // Do nothing\n}\nreturn errorStack;"
                 },
@@ -200,118 +79,113 @@
                             "inputs"
                         ]
                     }
-                },
-                "type": "JavaScriptCode"
+                }
             }
         },
         "contentVersion": "1.0.0.0",
         "outputs": {},
         "parameters": {
             "AdLoginBaseUrl": {
-                "defaultValue": "@appsetting('AdLoginBaseUrl')",
                 "type": "String",
-                "value": "@appsetting('AdLoginBaseUrl')"
+                "value": "@appsetting('AdLoginBaseUrl')",
+                "defaultValue": "@appsetting('AdLoginBaseUrl')"
             },
             "CrmBaseUrl": {
-                "defaultValue": "@appsetting('CrmBaseUrl')",
                 "type": "String",
-                "value": "@appsetting('CrmBaseUrl')"
+                "value": "@appsetting('CrmBaseUrl')",
+                "defaultValue": "@appsetting('CrmBaseUrl')"
             },
             "EmailAzureFunctionEndpoint": {
-                "defaultValue": "@appsetting('EmailAzureFunctionEndpoint')",
                 "type": "String",
-                "value": "@appsetting('EmailAzureFunctionEndpoint')"
-            },
-            "EmailAzureFunctionSasToken": {
-                "defaultValue": "@appsetting('EmailAzureFunctionSasToken')",
-                "type": "String",
-                "value": "@appsetting('EmailAzureFunctionSasToken')"
+                "value": "@appsetting('EmailAzureFunctionEndpoint')",
+                "defaultValue": "@appsetting('EmailAzureFunctionEndpoint')"
             },
             "ErrorEmailTempateId": {
-                "defaultValue": "@appsetting('ErrorEmailTempateId')",
                 "type": "String",
-                "value": "@appsetting('ErrorEmailTempateId')"
-            },
-            "FfcRetrievalWorkflowEndpoint": {
-                "defaultValue": "@appsetting('FfcRetrievalWorkflowEndpoint')",
-                "type": "String",
-                "value": "@appsetting('FfcRetrievalWorkflowEndpoint')"
+                "value": "@appsetting('ErrorEmailTempateId')",
+                "defaultValue": "@appsetting('ErrorEmailTempateId')"
             },
             "FfcRetrievalWorkflowSasToken": {
-                "defaultValue": "@appsetting('FfcRetrievalWorkflowSasToken')",
                 "type": "String",
-                "value": "@appsetting('FfcRetrievalWorkflowSasToken')"
+                "value": "@appsetting('FfcRetrievalWorkflowSasToken')",
+                "defaultValue": "@appsetting('FfcRetrievalWorkflowSasToken')"
+            },
+            "FfcRetrievalWorkflowEndpoint": {
+                "type": "String",
+                "value": "@appsetting('FfcRetrievalWorkflowEndpoint')",
+                "defaultValue": "@appsetting('FfcRetrievalWorkflowEndpoint')"
             },
             "GovNotifyApiKey": {
-                "defaultValue": "@appsetting('GovNotifyApiKey')",
                 "type": "String",
-                "value": "@appsetting('GovNotifyApiKey')"
+                "value": "@appsetting('GovNotifyApiKey')",
+                "defaultValue": "@appsetting('GovNotifyApiKey')"
             },
             "PdfServiceUrl": {
-                "defaultValue": "@appsetting('PdfServiceUrl')",
                 "type": "String",
-                "value": "@appsetting('PdfServiceUrl')"
+                "value": "@appsetting('PdfServiceUrl')",
+                "defaultValue": "@appsetting('PdfServiceUrl')"
             },
             "PortalClientId": {
-                "defaultValue": "@appsetting('PortalClientId')",
                 "type": "String",
-                "value": "@appsetting('PortalClientId')"
+                "value": "@appsetting('PortalClientId')",
+                "defaultValue": "@appsetting('PortalClientId')"
             },
             "PortalClientSecret": {
-                "defaultValue": "@appsetting('PortalClientSecret')",
                 "type": "String",
-                "value": "@appsetting('PortalClientSecret')"
+                "value": "@appsetting('PortalClientSecret')",
+                "defaultValue": "@appsetting('PortalClientSecret')"
             },
             "PortalTenantId": {
-                "defaultValue": "@appsetting('PortalTenantId')",
                 "type": "String",
-                "value": "@appsetting('PortalTenantId')"
+                "value": "@appsetting('PortalTenantId')",
+                "defaultValue": "@appsetting('PortalTenantId')"
             },
             "SharepointBaseUrl": {
-                "defaultValue": "@appsetting('SharepointBaseUrl')",
                 "type": "String",
-                "value": "@appsetting('SharepointBaseUrl')"
+                "value": "@appsetting('SharepointBaseUrl')",
+                "defaultValue": "@appsetting('SharepointBaseUrl')"
             },
             "SharepointClientId": {
-                "defaultValue": "@appsetting('SharepointClientId')",
                 "type": "String",
-                "value": "@appsetting('SharepointClientId')"
+                "value": "@appsetting('SharepointClientId')",
+                "defaultValue": "@appsetting('SharepointClientId')"
             },
             "SharepointClientSecret": {
-                "defaultValue": "@appsetting('SharepointClientSecret')",
                 "type": "String",
-                "value": "@appsetting('SharepointClientSecret')"
+                "value": "@appsetting('SharepointClientSecret')",
+                "defaultValue": "@appsetting('SharepointClientSecret')"
             },
             "SharepointDomain": {
-                "defaultValue": "@appsetting('SharepointDomain')",
                 "type": "String",
-                "value": "@appsetting('SharepointDomain')"
+                "value": "@appsetting('SharepointDomain')",
+                "defaultValue": "@appsetting('SharepointDomain')"
             },
             "SharepointLoginBaseUrl": {
-                "defaultValue": "@appsetting('SharepointLoginBaseUrl')",
                 "type": "String",
-                "value": "@appsetting('SharepointLoginBaseUrl')"
+                "value": "@appsetting('SharepointLoginBaseUrl')",
+                "defaultValue": "@appsetting('SharepointLoginBaseUrl')"
             },
             "SharepointSiteSubPath": {
-                "defaultValue": "@appsetting('SharepointSiteSubPath')",
                 "type": "String",
-                "value": "@appsetting('SharepointSiteSubPath')"
+                "value": "@appsetting('SharepointSiteSubPath')",
+                "defaultValue": "@appsetting('SharepointSiteSubPath')"
             },
             "SharepointTenantId": {
-                "defaultValue": "@appsetting('SharepointTenantId')",
                 "type": "String",
-                "value": "@appsetting('SharepointTenantId')"
+                "value": "@appsetting('SharepointTenantId')",
+                "defaultValue": "@appsetting('SharepointTenantId')"
             },
             "UnknownContactId": {
-                "defaultValue": "@appsetting('UnknownContactId')",
                 "type": "String",
-                "value": "@appsetting('UnknownContactId')"
+                "value": "@appsetting('UnknownContactId')",
+                "defaultValue": "@appsetting('UnknownContactId')"
             }
         },
         "triggers": {
             "When_a_HTTP_request_is_received": {
+                "type": "Request",
+                "kind": "Http",
                 "inputs": {
-                    "method": "POST",
                     "schema": {
                         "properties": {
                             "apiKey": {
@@ -331,9 +205,9 @@
                             }
                         },
                         "type": "object"
-                    }
+                    },
+                    "method": "POST"
                 },
-                "kind": "Http",
                 "runtimeConfiguration": {
                     "secureData": {
                         "properties": [
@@ -341,8 +215,7 @@
                             "outputs"
                         ]
                     }
-                },
-                "type": "Request"
+                }
             }
         }
     },

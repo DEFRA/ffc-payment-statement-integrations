@@ -7,13 +7,13 @@
     "type": "String",
     "value": "@appsetting('CrmBaseUrl')"
   },
+  "CrmDocTypeLookup": {
+    "type": "String",
+    "value": "@appsetting('CrmDocTypeLookup')"
+  },
   "EmailAzureFunctionEndpoint": {
     "type": "String",
     "value": "@appsetting('EmailAzureFunctionEndpoint')"
-  },
-  "EmailAzureFunctionSasToken": {
-    "type": "String",
-    "value": "@appsetting('EmailAzureFunctionSasToken')"
   },
   "ErrorEmailTempateId": {
     "type": "String",

@@ -1,0 +1,33 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "actionGroupName": {
+        "type": "string"
+      },
+      "alertingEmailAddress": {
+        "type": "string"
+      }
+    },
+    "resources": [
+    {
+        "type": "Microsoft.Insights/actionGroups",
+        "apiVersion": "2022-06-01",
+        "name": "[parameters('actionGroupName')]",
+        "location": "global",
+        "tags": {
+            "ServiceCode": "RLE"
+        },
+        "properties": {
+            "emailReceivers": [
+                {
+                "emailAddress": "[parameters('alertingEmailAddress')]",
+                "name": "[concat(parameters('actionGroupName'), '-EmailAction-')]",
+                "useCommonAlertSchema": false
+                }
+            ],
+            "enabled": true,
+            "groupShortName": "[substring(parameters('actionGroupName'),0,11)]"
+        }
+    }]
+  }

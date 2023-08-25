@@ -6,7 +6,7 @@
   },
   {
     "name": "AzureBlob_rleEndpoint",
-    "value": "https://devrleinfst1401.blob.core.windows.net",
+    "value": "https://tstrleinfst1401.blob.core.windows.net",
     "slotSetting": false
   },
   {
@@ -15,13 +15,13 @@
     "slotSetting": false
   },
   {
-    "name": "EmailAzureFunctionEndpoint",
-    "value": "https://devrleinffa1401.azurewebsites.net/api/AzureFunctionGovNotify",
+    "name": "CrmDocTypeLookup",
+    "value": "{ \"LANDCOVER_CHANGE\": { \"id\": \"db363964-c906-ee11-8f6e-0022489ede2f\", \"desc\": \"Land Cover\" }, \"MERGE\": { \"id\": \"05ea5085-c906-ee11-8f6e-0022489ede2f\", \"desc\": \"Merge\" }, \"REGISTERING_NEW_LAND\": { \"id\": \"ff7b3b00-cb06-ee11-8f6e-0022489ede2f\", \"desc\": \"Registering New Land\" }, \"ALL_OTHERS\": { \"id\": \"1fdded19-cb06-ee11-8f6e-0022489ede2f\", \"desc\": \"All Other Land Changes\" } }",
     "slotSetting": false
   },
   {
-    "name": "EmailAzureFunctionSasToken",
-    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/EmailAzureFunctionSasToken/1b6ce561d81b42b88cd28f340edd40a1)",
+    "name": "EmailAzureFunctionEndpoint",
+    "value": "https://tstrleinffa1401.azurewebsites.net/api/AzureFunctionGovNotify",
     "slotSetting": false
   },
   {
@@ -36,17 +36,17 @@
   },
   {
     "name": "FfcRetrievalWorkflowEndpoint",
-    "value": "https://devrleinfla1402.azurewebsites.net:443/api/FfcCrmRetrieval/triggers/HTTP_GET/invoke?api-version=2022-05-01&sp=%2Ftriggers%2FHTTP_GET%2Frun&sv=1.0&sig=",
+    "value": "https://tstrleinfla1402.azurewebsites.net:443/api/FfcCrmRetrieval/triggers/HTTP_GET/invoke?api-version=2022-05-01&sp=%2Ftriggers%2FHTTP_GET%2Frun&sv=1.0&sig=",
     "slotSetting": false
   },
   {
     "name": "FfcRetrievalWorkflowSasToken",
-    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/FfcRetrievalWorkflowSasToken/898d55c115534253b00d2e6538c623be)",
+    "value": "@Microsoft.KeyVault(SecretUri=https://tstrleinfkv1401.vault.azure.net/secrets/FfcRetrievalWorkflowSasToken/898d55c115534253b00d2e6538c623be)",
     "slotSetting": false
   },
   {
     "name": "GovNotifyApiKey",
-    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/GovNotifyApiKey/17b4bb50a66d41fe936e83e7470bba75)",
+    "value": "@Microsoft.KeyVault(SecretUri=https://tstrleinfkv1401.vault.azure.net/secrets/GovNotifyApiKey/00dd91f3be824583b218e5debb0efdd7)",
     "slotSetting": false
   },
   {
@@ -56,22 +56,22 @@
   },
   {
     "name": "PortalClientId",
-    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/PortalClientId/dfbef37c3c824044a2201543c33dc0fd)",
+    "value": "@Microsoft.KeyVault(SecretUri=https://tstrleinfkv1401.vault.azure.net/secrets/PortalClientId/47cda5b084b24795b255ab14002cf3d9)",
     "slotSetting": false
   },
   {
     "name": "PortalClientSecret",
-    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/PortalClientSecret/612179932d9c481aaa7531704488102a)",
+    "value": "@Microsoft.KeyVault(SecretUri=https://tstrleinfkv1401.vault.azure.net/secrets/PortalClientSecret/0a8c9fbc2a5e4259b6f2a442322d9821)",
     "slotSetting": false
   },
   {
     "name": "PortalTenantId",
-    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/PortalTenantId/8d65bddf48314b9ab9a7dfb112fdfe10)",
+    "value": "@Microsoft.KeyVault(SecretUri=https://tstrleinfkv1401.vault.azure.net/secrets/PortalTenantId/0cac1f6531a6400684f05024ff6deb85)",
     "slotSetting": false
   },
   {
     "name": "ServiceBus-ConnectionString",
-    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/ServiceBusConnectionStringDev/6b685b987b6144918bf46424a18a1e29)",
+    "value": "@Microsoft.KeyVault(SecretUri=https://tstrleinfkv1401.vault.azure.net/secrets/ServiceBusConnectionString/6b685b987b6144918bf46424a18a1e29)",
     "slotSetting": false
   },
   {
@@ -81,22 +81,22 @@
   },
   {
     "name": "SharepointClientId",
-    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/SharepointClientId/7e38c5976df94e0d80e045db14e30ff9)",
+    "value": "@Microsoft.KeyVault(SecretUri=https://tstrleinfkv1401.vault.azure.net/secrets/SharepointClientId/7e38c5976df94e0d80e045db14e30ff9)",
     "slotSetting": false
   },
   {
     "name": "SharepointClientSecret",
-    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/SharepointClientSecret/c9f4d737da204ecf8f2d8d39235e0abd)",
+    "value": "@Microsoft.KeyVault(SecretUri=https://tstrleinfkv1401.vault.azure.net/secrets/SharepointClientSecret/c9f4d737da204ecf8f2d8d39235e0abd)",
     "slotSetting": false
   },
   {
     "name": "SharepointSiteSubPath",
-    "value": "/sites/tempdocstore",
+    "value": "/sites/tempdocstoretst",
     "slotSetting": false
   },
   {
     "name": "SharepointTenantId",
-    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/SharepointTenantId/e27fd505f76f44b6b1f98195b68e2c8d)",
+    "value": "@Microsoft.KeyVault(SecretUri=https://tstrleinfkv1401.vault.azure.net/secrets/SharepointTenantId/e27fd505f76f44b6b1f98195b68e2c8d)",
     "slotSetting": false
   },
   {

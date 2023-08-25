@@ -12,8 +12,7 @@ variables:
   resourceGroupLocation: 'uksouth'
   resourceGroupName: '$(resourcePrefix)RG1401'
   
-  # Temporarily at DEV1 until TST1 is authorised
-  serviceConnection: 'AZD-RLE-DEV1'
+  serviceConnection: 'AZR-RLE-TST1'
 
   keyVaultName: '$(resourcePrefix)KV1401'
 
@@ -21,11 +20,15 @@ variables:
 
    # Gets converted to lowercase later in the pipeline. No spaces or hyphens allowed
   storageName: '$(resourcePrefix)ST1402'
+  fileShareName: '$(resourcePrefix)LA14098c3d'
 
   appInsightsName: '$(resourcePrefix)AIS1402'
 
   dashboardName: '$(resourcePrefix)DSH1402'
   dashboardDisplayName: '$(logicAppName) dashboard'
+
+  # User-assigned Managed Identity - used to access Key Vault (permissions for this can be pre-assigned before this IaC is run)
+  userManagedIdentityName: '$(resourcePrefix)UAMID1401'
 
   # VNET integration is required for Private Endpoint blob storage
   subnetResourceId: '/resourceGroups/TSTRLENETRG1401/providers/Microsoft.Network/virtualNetworks/TSTRLENETVN1401/subnets/TSTRLENETSU1402'
@@ -44,3 +47,8 @@ variables:
   servicebusConnectionNameSP: 'serviceBus'
   servicebusNamespaceSP: 'TSTFFCINFSB1001.servicebus.windows.net'
   
+  # Details for Azure Alerting when workflow catastrophic fails
+  # Normal error alert emails use an app setting 'ErrorEmailToAddresses' CSV list of emails to send to targets
+  actionGroupName: '$(resourcePrefix)AG1401'
+  scheduledQueryRuleName: '$(resourcePrefix)AIAR1401'
+  alertingEmailAddress: 'jeremy.barnsley@defra.gov.uk'
