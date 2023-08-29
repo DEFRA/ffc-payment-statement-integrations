@@ -52,7 +52,7 @@
         {
             "type": "Microsoft.Web/connections/accessPolicies",
             "apiVersion": "2016-06-01",
-            "name": "[concat(parameters('connections_servicebus_name_sp'),'/',parameters('serviceBusUserManagedIdentityObjectId'))]",
+            "name": "[concat(parameters('connections_servicebus_name_sp'),'/',parameters('logicAppSystemAssignedIdentityObjectId'))]",
             "location": "[parameters('location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Web/connections', parameters('connections_servicebus_name_sp'))]"
