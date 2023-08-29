@@ -9,6 +9,7 @@
     "ServiceBus-ConnectionString": "any-servicebus-connection-string-SENSITIVE",
     "PdfServiceUrl": "https://external-pdf-service.testing.net/api/v1",
     "CrmBaseUrl": "https://crm.testing.net",
+    "CrmDocTypeLookup": "{ \"LANDCOVER_CHANGE\": { \"id\": \"db363964-c906-ee11-8f6e-0022489ede2f\", \"desc\": \"Land Cover\" }, \"MERGE\": { \"id\": \"05ea5085-c906-ee11-8f6e-0022489ede2f\", \"desc\": \"Merge\" }, \"REGISTERING_NEW_LAND\": { \"id\": \"ff7b3b00-cb06-ee11-8f6e-0022489ede2f\", \"desc\": \"Registering New Land\" }, \"ALL_OTHERS\": { \"id\": \"1fdded19-cb06-ee11-8f6e-0022489ede2f\", \"desc\": \"All Other Land Changes\" } }",
     "CommonDataService-ManagedConnectionRuntimeUrl": "https://external-common-data-service.testing.net/apim/commondataservice/abcdef/",
     "AdLoginBaseUrl": "https://ad-dummy-login.net",
     "EmailAzureFunctionEndpoint": "https://emailazurefunctionendpoint.net/api/Email",

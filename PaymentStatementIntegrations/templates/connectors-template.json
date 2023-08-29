@@ -11,12 +11,6 @@
         "logicAppSystemAssignedIdentityObjectId": {
             "type": "securestring"
         },
-        "serviceBusUserManagedIdentityTenantId": {
-            "type": "securestring"
-        },
-        "serviceBusUserManagedIdentityObjectId": {
-            "type": "securestring"
-        },
         "connections_servicebus_name_sp": {
             "type": "string"
         },
@@ -67,8 +61,8 @@
                 "principal": {
                     "type": "ActiveDirectory",
                     "identity": {
-                        "tenantId": "[parameters('serviceBusUserManagedIdentityTenantId')]",
-                        "objectId": "[parameters('serviceBusUserManagedIdentityObjectId')]"
+                        "tenantId": "[parameters('logicAppSystemAssignedIdentityTenantId')]",
+                        "objectId": "[parameters('logicAppSystemAssignedIdentityObjectId')]"
                     }
                 }
             }

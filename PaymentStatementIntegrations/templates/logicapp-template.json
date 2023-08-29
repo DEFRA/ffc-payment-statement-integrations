@@ -433,7 +433,7 @@
       "apiVersion": "2021-04-01",
       "name": "[concat(parameters('storageName'), '/default/', toLower(parameters('fileShareName')))]",
       "dependsOn": [
-        "[parameters('storageName')]"
+        "[resourceId('Microsoft.Storage/storageAccounts', toLower(parameters('storageName')))]"
       ]
     },
     {
@@ -462,7 +462,8 @@
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
         "[resourceId('Microsoft.Storage/storageAccounts', toLower(parameters('storageName')))]",
-        "[resourceId('microsoft.insights/components/', parameters('appInsightsName'))]"
+        "[resourceId('microsoft.insights/components/', parameters('appInsightsName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts/fileServices/shares', parameters('storageName'), 'default', toLower(parameters('fileShareName')))]"
       ],
       "kind": "workflowapp,functionapp",
       "identity": {

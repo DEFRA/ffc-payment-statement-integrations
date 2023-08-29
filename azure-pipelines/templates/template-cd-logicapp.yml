@@ -11,8 +11,6 @@ parameters:
   type: string
 - name: connectionsFile
   type: string
-- name: externalServiceBusSubscriptionName
-  type: string
 
 jobs:
   - deployment: deploy_logicapp_resources
@@ -71,21 +69,6 @@ jobs:
               deploymentMethod: 'zipDeploy'
 
           - task: AzureCLI@2
-            displayName: 'Get Managed Identity details (in different subscription)'
-            inputs:
-              azureSubscription: ${{ parameters.externalServiceBusSubscriptionName }}
-              scriptType: 'bash'
-              scriptLocation: 'inlineScript'
-              inlineScript: |
-                az identity show --name $(externalServiceBusManagedIdentityName) --resource-group $(externalServiceBusResourceGroupName) > tempId1.json
-                echo "##vso[task.setvariable variable=externalServiceBusUserManagedIdentityObjectId]$(cat tempId1.json | grep 'principalId' | tr -d ',' | awk '{ print $2; }' | tr -d '"')"
-                echo "##vso[task.setvariable variable=externalServiceBusUserManagedIdentityTenantId]$(cat tempId1.json | grep 'tenantId' | tr -d ',' | awk '{ print $2; }' | tr -d '"')"
-                cat tempId1.json
-                rm tempId1.json
-              addSpnToEnvironment: true
-              useGlobalConfig: true
-
-          - task: AzureCLI@2
             inputs:
               azureSubscription: ${{ parameters.serviceConnection }}
               scriptType: 'bash'
@@ -110,8 +93,6 @@ jobs:
                 -location $(resourceGroupLocation)
                 -connections_servicebus_name_sp $(servicebusConnectionNameSP)
                 -servicebus_connection_string_sp $(ServiceBusConnectionStringDev)
-                -serviceBusUserManagedIdentityTenantId $(externalServiceBusUserManagedIdentityTenantId)
-                -serviceBusUserManagedIdentityObjectId $(externalServiceBusUserManagedIdentityObjectId)
                 -logicAppSystemAssignedIdentityTenantId $(logicAppSystemAssignedIdentityTenantId)
                 -logicAppSystemAssignedIdentityObjectId $(logicAppSystemAssignedIdentityObjectId)
                 -portal_client_id $(PortalClientId)
