@@ -7,7 +7,7 @@ variables:
 
   resourcePrefix: '$(envShortName)$(projectNameUpper)$(functionCode)'
   
-  logicAppName: '$(resourcePrefix)LA1408'
+  logicAppName: '$(resourcePrefix)LA1409'
   
   resourceGroupLocation: 'uksouth'
   resourceGroupName: '$(resourcePrefix)RG1401'
