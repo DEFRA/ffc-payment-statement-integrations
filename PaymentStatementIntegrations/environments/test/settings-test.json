@@ -61,12 +61,12 @@
   },
   {
     "name": "SharepointClientId",
-    "value": "@Microsoft.KeyVault(SecretUri=https://tstrleinfkv1401.vault.azure.net/secrets/SharepointClientId/7e38c5976df94e0d80e045db14e30ff9)",
+    "value": "@Microsoft.KeyVault(SecretUri=https://tstrleinfkv1401.vault.azure.net/secrets/SharepointClientId/654f7aada3644595a0e0f230413ca750)",
     "slotSetting": false
   },
   {
     "name": "SharepointClientSecret",
-    "value": "@Microsoft.KeyVault(SecretUri=https://tstrleinfkv1401.vault.azure.net/secrets/SharepointClientSecret/c9f4d737da204ecf8f2d8d39235e0abd)",
+    "value": "@Microsoft.KeyVault(SecretUri=https://tstrleinfkv1401.vault.azure.net/secrets/SharepointClientSecret/1456e175ef2c4066846be176c62773c3)",
     "slotSetting": false
   },
   {
@@ -76,7 +76,7 @@
   },
   {
     "name": "SharepointTenantId",
-    "value": "@Microsoft.KeyVault(SecretUri=https://tstrleinfkv1401.vault.azure.net/secrets/SharepointTenantId/e27fd505f76f44b6b1f98195b68e2c8d)",
+    "value": "@Microsoft.KeyVault(SecretUri=https://tstrleinfkv1401.vault.azure.net/secrets/SharepointTenantId/a1f45990611b4c988ac97c5e1af0da2c)",
     "slotSetting": false
   },
   {
