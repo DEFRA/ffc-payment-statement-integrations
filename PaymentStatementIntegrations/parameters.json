@@ -19,6 +19,10 @@
     "type": "String",
     "value": "@appsetting('FfcRetrievalWorkflowEndpoint')"
   },
+  "FfcServiceBusTopic": {
+    "type": "String",
+    "value": "@appsetting('FfcServiceBusTopic')"
+  },
   "PdfServiceUrl": {
     "type": "String",
     "value": "@appsetting('PdfServiceUrl')"

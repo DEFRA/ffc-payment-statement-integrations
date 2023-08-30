@@ -26,7 +26,12 @@
   },
   {
     "name": "FfcRetrievalWorkflowSasToken",
-    "value": "@Microsoft.KeyVault(SecretUri=https://devrleinfkv1401.vault.azure.net/secrets/FfcRetrievalWorkflowSasToken/898d55c115534253b00d2e6538c623be)",
+    "value": "@Microsoft.KeyVault(VaultName=devrleinfkv1401;SecretName=FfcRetrievalWorkflowSasToken)",
+    "slotSetting": false
+  },
+  {
+    "name": "FfcServiceBusTopic",
+    "value": "ffc-pay-statement-crm-snd",
     "slotSetting": false
   },
   {

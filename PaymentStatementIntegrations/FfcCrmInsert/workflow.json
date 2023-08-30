@@ -776,6 +776,10 @@
                 "value": "@appsetting('FfcRetrievalWorkflowEndpoint')",
                 "defaultValue": "@appsetting('FfcRetrievalWorkflowEndpoint')"
             },
+            "FfcServiceBusTopic": {
+                "type": "String",
+                "value": "@appsetting('FfcServiceBusTopic')"
+            },
             "SharepointSiteSubPath": {
                 "type": "String",
                 "value": "@appsetting('SharepointSiteSubPath')",
@@ -797,7 +801,7 @@
                 "type": "ServiceProvider",
                 "inputs": {
                     "parameters": {
-                        "topicName": "ffc-pay-statement-crm-snd",
+                        "topicName": "@appsetting('FfcServiceBusTopic')",
                         "subscriptionName": "crm",
                         "isSessionsEnabled": false
                     },
