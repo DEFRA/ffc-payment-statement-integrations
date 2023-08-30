@@ -26,7 +26,7 @@
   },
   {
     "name": "FfcRetrievalWorkflowSasToken",
-    "value": "@Microsoft.KeyVault(SecretUri=https://tstrleinfkv1401.vault.azure.net/secrets/FfcRetrievalWorkflowSasToken/ecc0be7973444a518fe2cec6b038d82c)",
+    "value": "@Microsoft.KeyVault(VaultName=tstrleinfkv1401;SecretName=FfcRetrievalWorkflowSasToken)",
     "slotSetting": false
   },
   {
