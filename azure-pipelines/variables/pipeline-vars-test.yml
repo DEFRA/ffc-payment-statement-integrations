@@ -7,7 +7,7 @@ variables:
 
   resourcePrefix: '$(envShortName)$(projectNameUpper)$(functionCode)'
   
-  logicAppName: '$(resourcePrefix)LA1409'
+  logicAppName: '$(resourcePrefix)LA1402'
   
   resourceGroupLocation: 'uksouth'
   resourceGroupName: '$(resourcePrefix)RG1401'
@@ -17,8 +17,8 @@ variables:
   appServicePlanName: '$(resourcePrefix)ASP1401'
 
    # Gets converted to lowercase later in the pipeline. No spaces or hyphens allowed
-  storageName: '$(resourcePrefix)ST1408'
-  fileShareName: '$(resourcePrefix)ST1408fs'
+  storageName: '$(resourcePrefix)ST1402'
+  fileShareName: '$(resourcePrefix)ST1402fs'
 
   appInsightsName: '$(resourcePrefix)AIS1402'
 

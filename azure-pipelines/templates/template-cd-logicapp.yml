@@ -68,19 +68,19 @@ jobs:
               package: './unpacked/newArtifact.zip'
               deploymentMethod: 'zipDeploy'
 
-          - task: AzureCLI@2
-            inputs:
-              azureSubscription: ${{ parameters.serviceConnection }}
-              scriptType: 'bash'
-              scriptLocation: 'inlineScript'
-              inlineScript: |
-                az resource show --name $(logicAppName) --resource-group  $(resourceGroupName) --resource-type "Microsoft.Web/sites" --query "identity" > tempId2.json
-                echo "##vso[task.setvariable variable=logicAppSystemAssignedIdentityObjectId]$(cat tempId2.json | grep 'principalId' | tr -d ',' | awk '{ print $2; }' | tr -d '"')"
-                echo "##vso[task.setvariable variable=logicAppSystemAssignedIdentityTenantId]$(cat tempId2.json | grep 'tenantId' | tr -d ',' | awk '{ print $2; }' | tr -d '"')"
-                rm tempId2.json
-              addSpnToEnvironment: true
-              useGlobalConfig: true
-            displayName: 'Read System-Assigned Managed Identity'
+#          - task: AzureCLI@2
+#            inputs:
+#              azureSubscription: ${{ parameters.serviceConnection }}
+#              scriptType: 'bash'
+#              scriptLocation: 'inlineScript'
+#              inlineScript: |
+#                az resource show --name $(logicAppName) --resource-group  $(resourceGroupName) --resource-type "Microsoft.Web/sites" --query "identity" > tempId2.json
+#                echo "##vso[task.setvariable variable=logicAppSystemAssignedIdentityObjectId]$(cat tempId2.json | grep 'principalId' | tr -d ',' | awk '{ print $2; }' | tr -d '"')"
+#                echo "##vso[task.setvariable variable=logicAppSystemAssignedIdentityTenantId]$(cat tempId2.json | grep 'tenantId' | tr -d ',' | awk '{ print $2; }' | tr -d '"')"
+#                rm tempId2.json
+#              addSpnToEnvironment: true
+#              useGlobalConfig: true
+#            displayName: 'Read System-Assigned Managed Identity'
 
 #          - task: AzureResourceGroupDeployment@2
 #            displayName: 'Deploy Connectors'
@@ -117,14 +117,14 @@ jobs:
 #              addSpnToEnvironment: true
 #              useGlobalConfig: true
 
-#          - task: AzureCLI@2
-#            displayName: 'Disable access to advanced tool site'
-#            inputs:
-#              azureSubscription: ${{ parameters.serviceConnection }}
-#              scriptType: 'bash'
-#              scriptLocation: 'inlineScript'
-#              inlineScript: |
-#                az resource update --resource-group $(resourceGroupName) --name $(logicAppName) --resource-type "Microsoft.Web/sites" \
-#                --set properties.siteConfig.scmIpSecurityRestrictionsDefaultAction=Deny
-#              addSpnToEnvironment: true
-#              useGlobalConfig: true
+          - task: AzureCLI@2
+            displayName: 'Disable access to advanced tool site'
+            inputs:
+              azureSubscription: ${{ parameters.serviceConnection }}
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                az resource update --resource-group $(resourceGroupName) --name $(logicAppName) --resource-type "Microsoft.Web/sites" \
+                --set properties.siteConfig.scmIpSecurityRestrictionsDefaultAction=Deny
+              addSpnToEnvironment: true
+              useGlobalConfig: true
