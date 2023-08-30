@@ -35,13 +35,8 @@ variables:
   dnsAltServer: '10.178.0.5'
 
     # Connector details for external Service Bus
-  # These details refer to the tenant and resource group where the service bus identity exists and, if this
-  # is cross-tenant, will be different to the tenant that the Logic App sits in.
   servicebusConnectionNameSP: 'serviceBus'
-  servicebusNamespaceSP: 'SNDFFCINFSB1001.servicebus.windows.net'
-  externalServiceBusManagedIdentityName: 'DEVRLEINFMI1401'
-  externalServiceBusResourceGroupName: 'DEVRLEINFRG1401'
-  externalServiceBusSubscriptionName: 'AZD-RLE-DEV1'
+  servicebusNamespaceSP: 'DEVFFCINFSB1001.servicebus.windows.net'
   
   # Details for Azure Alerting when workflow catastrophic fails
   actionGroupName: '$(resourcePrefix)AG1402'

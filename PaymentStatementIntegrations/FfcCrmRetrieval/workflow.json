@@ -269,6 +269,10 @@
                 "value": "@appsetting('FfcRetrievalWorkflowEndpoint')",
                 "defaultValue": "@appsetting('FfcRetrievalWorkflowEndpoint')"
             },
+            "FfcServiceBusTopic": {
+                "type": "String",
+                "value": "@appsetting('FfcServiceBusTopic')"
+            },
             "SharepointSiteSubPath": {
                 "type": "String",
                 "value": "@appsetting('SharepointSiteSubPath')",
