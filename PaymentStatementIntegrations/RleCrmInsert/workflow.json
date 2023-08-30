@@ -3,22 +3,23 @@
         "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
         "actions": {
             "Catch_Scope": {
+                "type": "Scope",
                 "actions": {
                     "Log_error": {
+                        "type": "Workflow",
                         "inputs": {
+                            "host": {
+                                "workflow": {
+                                    "id": "ErrorLogging"
+                                }
+                            },
                             "body": {
                                 "callingWorkflowName": "@{workflow().name}",
                                 "progressText": "@variables('ProgressText')",
                                 "stack": "@result('Try_Scope')",
                                 "workflowRunId": "@{workflow().run.name}"
-                            },
-                            "host": {
-                                "workflow": {
-                                    "id": "ErrorLogging"
-                                }
                             }
-                        },
-                        "type": "Workflow"
+                        }
                     }
                 },
                 "runAfter": {
@@ -27,8 +28,7 @@
                         "FAILED",
                         "SKIPPED"
                     ]
-                },
-                "type": "Scope"
+                }
             },
             "Init_ActivityId": {
                 "type": "InitializeVariable",
@@ -46,21 +46,6 @@
                     ]
                 }
             },
-            "Init_FileList": {
-                "type": "InitializeVariable",
-                "inputs": {
-                    "variables": [
-                        {
-                            "name": "FileList",
-                            "type": "array"
-                        }
-                    ]
-                },
-                "runAfter": {},
-                "trackedProperties": {
-                    "WorkflowName": "RleCrmInsert"
-                }
-            },
             "Init_NewCaseId": {
                 "type": "InitializeVariable",
                 "inputs": {
@@ -73,22 +58,6 @@
                 },
                 "runAfter": {
                     "Initialize_ContactId": [
-                        "SUCCEEDED"
-                    ]
-                }
-            },
-            "Init_OrganisationId": {
-                "type": "InitializeVariable",
-                "inputs": {
-                    "variables": [
-                        {
-                            "name": "OrganisationId",
-                            "type": "string"
-                        }
-                    ]
-                },
-                "runAfter": {
-                    "Init_FileList": [
                         "SUCCEEDED"
                     ]
                 }
@@ -121,7 +90,7 @@
                     ]
                 },
                 "runAfter": {
-                    "Init_SBI": [
+                    "Initialize_FilesInSubmission": [
                         "SUCCEEDED"
                     ]
                 }
@@ -163,7 +132,7 @@
                             }
                         },
                         "runAfter": {
-                            "Set_FileList": [
+                            "Set_FilesInSubmission": [
                                 "SUCCEEDED"
                             ]
                         }
@@ -255,7 +224,7 @@
                             },
                             "body": {
                                 "regardingobjectid_incident_rpa_onlinesubmission@odata.bind": "/incidents(@{variables('NewCaseId')})",
-                                "rpa_filesinsubmission": "@{body('Parse_CTL_File')?['filesInSubmission']}",
+                                "rpa_filesinsubmission": "@{variables('FilesInSubmission')}",
                                 "rpa_onlinesubmissiondate": "@{outputs('Convert_Date_Format')}",
                                 "rpa_onlinesubmissionid": "@{body('Parse_CTL_File')?['uosr']}",
                                 "subject": "eRLE1 @{outputs('Determine_doc_type')?['desc']} (@{body('Parse_CTL_File')['uosr']})",
@@ -293,6 +262,7 @@
                         }
                     },
                     "Determine_doc_type": {
+                        "type": "JavaScriptCode",
                         "inputs": {
                             "code": "const lookups = JSON.parse(workflowContext.actions.Get_Doc_Type_Lookups.outputs);\nconst typeCode = workflowContext.actions.Parse_CTL_File.outputs.body['type'];\nvar result = lookups[typeCode];\nreturn result ? result : lookups['ALL_OTHERS'];"
                         },
@@ -300,8 +270,7 @@
                             "Get_Doc_Type_Lookups": [
                                 "SUCCEEDED"
                             ]
-                        },
-                        "type": "JavaScriptCode"
+                        }
                     },
                     "Extract_ActivityId": {
                         "type": "SetVariable",
@@ -402,7 +371,7 @@
                             "body": "grant_type=client_credentials\n&client_id=@{parameters('PortalClientId')}\n&client_secret=@{encodeUriComponent(parameters('PortalClientSecret'))}\n&resource=@{encodeUriComponent(parameters('CrmBaseUrl'))}"
                         },
                         "runAfter": {
-                            "Is_File_Number_Match": [
+                            "Does_Summary_File_Exist": [
                                 "SUCCEEDED"
                             ]
                         },
@@ -419,13 +388,13 @@
                         }
                     },
                     "Get_Doc_Type_Lookups": {
+                        "type": "Compose",
                         "inputs": "@parameters('CrmDocTypeLookup')",
                         "runAfter": {
                             "Convert_Date_Format": [
                                 "SUCCEEDED"
                             ]
-                        },
-                        "type": "Compose"
+                        }
                     },
                     "Get_trigger_CTL_contents": {
                         "type": "Compose",
@@ -438,8 +407,8 @@
                                 {
                                     "not": {
                                         "equals": [
-                                            "@string(variables('ActivityId'))",
-                                            ""
+                                            "@length(trim(string(variables('ActivityId'))))",
+                                            0
                                         ]
                                     }
                                 }
@@ -862,8 +831,8 @@
                                 {
                                     "not": {
                                         "equals": [
-                                            "@string(body('Parse_CTL_File')?['sbi'])",
-                                            ""
+                                            "@length(trim(string(body('Parse_CTL_File')?['sbi'])))",
+                                            0
                                         ]
                                     }
                                 }
@@ -894,6 +863,60 @@
                                 "SUCCEEDED"
                             ]
                         }
+                    },
+                    "Set_FilesInSubmission": {
+                        "type": "SetVariable",
+                        "inputs": {
+                            "name": "FilesInSubmission",
+                            "value": "@body('Parse_CTL_File')['filesInSubmission']"
+                        },
+                        "runAfter": {
+                            "Set_FileList": [
+                                "SUCCEEDED"
+                            ]
+                        }
+                    },
+                    "Does_Summary_File_Exist": {
+                        "type": "If",
+                        "expression": {
+                            "and": [
+                                {
+                                    "contains": [
+                                        "@variables('FileList')",
+                                        "@{body('Parse_CTL_File')['uosr']}_Summary.pdf"
+                                    ]
+                                }
+                            ]
+                        },
+                        "actions": {},
+                        "else": {
+                            "actions": {
+                                "Append_to_array_variable": {
+                                    "type": "AppendToArrayVariable",
+                                    "inputs": {
+                                        "name": "FileList",
+                                        "value": "@{body('Parse_CTL_File')['uosr']}_Summary.pdf"
+                                    }
+                                },
+                                "Update_FilesInSubmission": {
+                                    "type": "SetVariable",
+                                    "inputs": {
+                                        "name": "FilesInSubmission",
+                                        "value": "@length(variables('FileList'))"
+                                    },
+                                    "runAfter": {
+                                        "Append_to_array_variable": [
+                                            "SUCCEEDED"
+                                        ]
+                                    }
+                                }
+                            }
+                        },
+                        "runAfter": {
+                            "Is_File_Number_Match": [
+                                "SUCCEEDED"
+                            ]
+                        }
                     }
                 },
                 "runAfter": {
@@ -917,6 +940,54 @@
                         "SUCCEEDED"
                     ]
                 }
+            },
+            "Initialize_FilesInSubmission": {
+                "type": "InitializeVariable",
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "FilesInSubmission",
+                            "type": "integer",
+                            "value": 0
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Init_SBI": [
+                        "SUCCEEDED"
+                    ]
+                }
+            },
+            "Init_OrganisationId": {
+                "type": "InitializeVariable",
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "OrganisationId",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Init_FileList": [
+                        "SUCCEEDED"
+                    ]
+                }
+            },
+            "Init_FileList": {
+                "type": "InitializeVariable",
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "FileList",
+                            "type": "array"
+                        }
+                    ]
+                },
+                "runAfter": {},
+                "trackedProperties": {
+                    "WorkflowName": "RleCrmInsert"
+                }
             }
         },
         "contentVersion": "1.0.0.0",
@@ -932,15 +1003,10 @@
                 "value": "@appsetting('CrmBaseUrl')",
                 "defaultValue": "@appsetting('CrmBaseUrl')"
             },
-            "EmailAzureFunctionEndpoint": {
+            "CrmDocTypeLookup": {
                 "type": "String",
-                "value": "@appsetting('EmailAzureFunctionEndpoint')",
-                "defaultValue": "@appsetting('EmailAzureFunctionEndpoint')"
-            },
-            "ErrorEmailTempateId": {
-                "type": "String",
-                "value": "@appsetting('ErrorEmailTempateId')",
-                "defaultValue": "@appsetting('ErrorEmailTempateId')"
+                "value": "@appsetting('CrmDocTypeLookup')",
+                "defaultValue": "@appsetting('CrmDocTypeLookup')"
             },
             "FfcRetrievalWorkflowSasToken": {
                 "type": "String",
@@ -954,12 +1020,8 @@
             },
             "FfcServiceBusTopic": {
                 "type": "String",
-                "value": "@appsetting('FfcServiceBusTopic')"
-            },
-            "GovNotifyApiKey": {
-                "type": "String",
-                "value": "@appsetting('GovNotifyApiKey')",
-                "defaultValue": "@appsetting('GovNotifyApiKey')"
+                "value": "@appsetting('FfcServiceBusTopic')",
+                "defaultValue": "@appsetting('FfcServiceBusTopic')"
             },
             "PdfServiceUrl": {
                 "type": "String",

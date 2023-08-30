@@ -1,4 +1,6 @@
-﻿using LogicAppUnit;
+﻿using System.Reflection.Metadata;
+using System.Reflection;
+using LogicAppUnit;
 using LogicAppUnit.Helper;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
@@ -143,6 +145,8 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_Sharepoint_Token"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Parse_Sharepoint_Token"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Create_Folder"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Append_to_array_variable"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Update_FilesInSubmission"));
 
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_filename"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Read_blob_content"));
