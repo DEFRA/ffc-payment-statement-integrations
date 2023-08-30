@@ -25,6 +25,7 @@
     "SharepointSiteSubPath": "sites/testsite",
     "SharepointBaseUrl": "https://sharepoint-test-dummy.com/sites/testsite",
     "FfcRetrievalWorkflowEndpoint": "https://ffc-workflow",
-    "FfcRetrievalWorkflowSasToken": "test-sas-token-SENSITIVE"
+    "FfcRetrievalWorkflowSasToken": "test-sas-token-SENSITIVE",
+    "FfcServiceBusTopic": "ffc-topic"
   }
 }

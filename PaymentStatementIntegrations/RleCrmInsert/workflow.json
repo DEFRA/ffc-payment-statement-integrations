@@ -952,6 +952,10 @@
                 "value": "@appsetting('FfcRetrievalWorkflowEndpoint')",
                 "defaultValue": "@appsetting('FfcRetrievalWorkflowEndpoint')"
             },
+            "FfcServiceBusTopic": {
+                "type": "String",
+                "value": "@appsetting('FfcServiceBusTopic')"
+            },
             "GovNotifyApiKey": {
                 "type": "String",
                 "value": "@appsetting('GovNotifyApiKey')",
