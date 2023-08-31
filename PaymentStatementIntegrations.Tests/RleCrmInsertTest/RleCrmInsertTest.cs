@@ -1,4 +1,6 @@
-﻿using LogicAppUnit;
+﻿using System.Reflection.Metadata;
+using System.Reflection;
+using LogicAppUnit;
 using LogicAppUnit.Helper;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
@@ -143,6 +145,8 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_Sharepoint_Token"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Parse_Sharepoint_Token"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Create_Folder"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Append_to_array_variable"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Update_FilesInSubmission"));
 
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_filename"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Read_blob_content"));
@@ -155,10 +159,10 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                 Assert.AreEqual(1, testRunner.GetWorkflowActionRepetitionCount("Create_Folder"));
 
                 // Check that loop ran 3 times
-                Assert.AreEqual(3, testRunner.GetWorkflowActionRepetitionCount("Get_filename"));
-                Assert.AreEqual(3, testRunner.GetWorkflowActionRepetitionCount("Read_blob_content"));
-                Assert.AreEqual(3, testRunner.GetWorkflowActionRepetitionCount("Copy_To_Sharepoint"));
-                Assert.AreEqual(3, testRunner.GetWorkflowActionRepetitionCount("Create_Meta_Data"));
+                Assert.AreEqual(4, testRunner.GetWorkflowActionRepetitionCount("Get_filename"));
+                Assert.AreEqual(4, testRunner.GetWorkflowActionRepetitionCount("Read_blob_content"));
+                Assert.AreEqual(4, testRunner.GetWorkflowActionRepetitionCount("Copy_To_Sharepoint"));
+                Assert.AreEqual(4, testRunner.GetWorkflowActionRepetitionCount("Create_Meta_Data"));
 
 
                 // Check which SBI value was used - should be from CTL file
@@ -169,7 +173,7 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                 // Check request to CRM for 'create metadata'
                 // The 'For-Each' loop runs in parallel so we can't guarantee the order or results here
                 var crmMetadataRequests = testRunner.MockRequests.Where(r => r.RequestUri.AbsolutePath.Contains("/api/data/v9.2/rpa_activitymetadatas")).ToList();
-                Assert.AreEqual(3, crmMetadataRequests.Count);
+                Assert.AreEqual(4, crmMetadataRequests.Count);
                 Assert.IsTrue(crmMetadataRequests.All(x => x.Method == HttpMethod.Post));
                 Assert.AreEqual(1, crmMetadataRequests.Count(x => x.Content.Contains("\"rpa_filename\":\"File1.txt\"")));
                 Assert.AreEqual(1, crmMetadataRequests.Count(x => x.Content.Contains("\"rpa_filename\":\"File2.txt\"")));
@@ -307,16 +311,16 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                 Assert.AreEqual(1, testRunner.GetWorkflowActionRepetitionCount("Create_Folder"));
 
                 // Check that loop ran 3 times
-                Assert.AreEqual(3, testRunner.GetWorkflowActionRepetitionCount("Get_filename"));
-                Assert.AreEqual(3, testRunner.GetWorkflowActionRepetitionCount("Read_blob_content"));
-                Assert.AreEqual(3, testRunner.GetWorkflowActionRepetitionCount("Copy_To_Sharepoint"));
-                Assert.AreEqual(3, testRunner.GetWorkflowActionRepetitionCount("Create_Meta_Data"));
+                Assert.AreEqual(4, testRunner.GetWorkflowActionRepetitionCount("Get_filename"));
+                Assert.AreEqual(4, testRunner.GetWorkflowActionRepetitionCount("Read_blob_content"));
+                Assert.AreEqual(4, testRunner.GetWorkflowActionRepetitionCount("Copy_To_Sharepoint"));
+                Assert.AreEqual(4, testRunner.GetWorkflowActionRepetitionCount("Create_Meta_Data"));
 
 
                 // Check request to CRM for 'create metadata'
                 // The 'For-Each' loop runs in parallel so we can't guarantee the order or results here
                 var crmMetadataRequests = testRunner.MockRequests.Where(r => r.RequestUri.AbsolutePath.Contains("/api/data/v9.2/rpa_activitymetadatas")).ToList();
-                Assert.AreEqual(3, crmMetadataRequests.Count);
+                Assert.AreEqual(4, crmMetadataRequests.Count);
                 Assert.IsTrue(crmMetadataRequests.All(x => x.Method == HttpMethod.Post));
                 Assert.AreEqual(1, crmMetadataRequests.Count(x => x.Content.Contains("\"rpa_filename\":\"File1.txt\"")));
                 Assert.AreEqual(1, crmMetadataRequests.Count(x => x.Content.Contains("\"rpa_filename\":\"File2.txt\"")));
