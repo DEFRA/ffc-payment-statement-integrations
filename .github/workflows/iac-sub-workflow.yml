@@ -41,13 +41,13 @@ jobs:
     # Set up common variables
     - name: Set up common variables
       run: |
-        ./cd/setup_vars_common.sh
+        ./.github/variables/setup_vars_common.sh
 
     # Set up environment-specific variables
     # This has to be a separate step from common vars in order for this step to use common vars
     - name: Set up env-specific variables
       run: |
-        ./cd/setup_vars_${{ inputs.env-short-name }}.sh
+        ./.github/variables/setup_vars_${{ inputs.env-short-name }}.sh
  
     - name: Unzip artifact
       run: |
@@ -55,15 +55,6 @@ jobs:
         unzip -q $ZIP_PATH_AND_FILE -d ./unpacked
         echo "ZIP_PATH_AND_FILE=$ZIP_PATH_AND_FILE" >> $GITHUB_ENV
   
-# Workflow doesn't have perms to create resource groups currently
-#    - name: Create resource group (if not exists)
-#      uses: Azure/CLI@v1
-#      with:
-#        inlineScript: |
-#          #!/bin/bash
-#          az group create --name ${{ env.RESOURCE_GROUP_NAME }} --location ${{ env.RESOURCE_GROUP_LOCATION }}
-#          echo "Azure resource group created or already exists"
-
     # Deploy the Logic App resources
     - name: Deploy Logic App resources
       uses: Azure/arm-deploy@v1.0.1
@@ -71,29 +62,58 @@ jobs:
       with:
         # You can change these environment variables for your configuration:   AZURE_SUBSCRIPTION_ID, AZURE_RESOURCE_GROUP
         scope: resourcegroup  
-        subscriptionId: ${{ env.AZURE_SUBSCRIPTION_ID }}
         resourceGroupName:  ${{ env.RESOURCE_GROUP_NAME }}
         template: ./unpacked/templates/logicapp-template.json  # Set this to the location of your template file
-        parameters: appServicePlanName=${{env.APP_SERVICE_PLAN_NAME}} environmentName=${{ env.ENV_SHORT_NAME}} location=${{ env.RESOURCE_GROUP_LOCATION }} logicAppName=${{ env.LOGIC_APP_NAME }} projectName=${{ env.PROJECT_NAME }} storageName=${{ env.STORAGE_NAME }}
-        deploymentMode: Incremental
-   
-    # Deployment of template    
-    - name: Deploy Connector Resources 
-      id: conndeploy
-      uses: Azure/arm-deploy@v1.0.1
-      with:
-        scope: resourcegroup  
-        subscriptionId: ${{ env.AZURE_SUBSCRIPTION_ID }}
-        resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
-        template: ./unpacked/templates/connectors-template.json  # Set this to the location of your template file
-        parameters: logicAppSystemAssignedIdentityTenantId=${{ steps.ladeploy.outputs.logicAppSystemAssignedIdentityTenantId }} logicAppSystemAssignedIdentityObjectId=${{ steps.ladeploy.outputs.logicAppSystemAssignedIdentityObjectId }}  location=${{ env.RESOURCE_GROUP_LOCATION }} connections_azureblob_name=${{ env.BLOB_CONNECTION_NAME }}
+        parameters: appServicePlanName=${{env.APP_SERVICE_PLAN_NAME}} environmentName=${{ env.ENV_SHORT_NAME}} location=${{ env.RESOURCE_GROUP_LOCATION }} logicAppName=${{ env.LOGIC_APP_NAME }} projectName=${{ env.PROJECT_NAME }} storageName=${{ env.STORAGE_NAME }} appInsightsName=${{env.APP_INSIGHTS_NAME}} subnetResourceId=${{env.SUBNET_RESOURCE_ID}} dnsServer=${{env.DNS_SERVER}} dnsAltServer=${{env.DNS_ALT_SERVER}} userManagedIdentityName=${{env.USER_MANAGED_IDENTITY_NAME}} resourceGroupName=${{env.RESOURCE_GROUP_NAME}} fileShareName=${{env.FILE_SHARE_NAME}}
         deploymentMode: Incremental
 
-    - name: Update Logic App Connections 
+    - name: Configure extra app settings 
       uses: azure/CLI@v1
       with:
         inlineScript: |
-          az functionapp config appsettings set --name ${{ steps.ladeploy.outputs.LAname }} --resource-group  ${{ env.RESOURCE_GROUP_NAME }} --settings "WORKFLOWS_RESOURCE_GROUP_NAME=${{ env.RESOURCE_GROUP_NAME }}"
+          az functionapp config appsettings set --name ${{ steps.ladeploy.outputs.LAname }} --resource-group  ${{ env.RESOURCE_GROUP_NAME }} --settings \
+          "WORKFLOWS_RESOURCE_GROUP_NAME=${{ env.RESOURCE_GROUP_NAME }}"
+          "WORKFLOWS_LOGIC_APP_NAME=${{env.LOGIC_APP_NAME}}" \
+          "WEBSITE_LOAD_ROOT_CERTIFICATES=${{env.TRUSTED_ROOT_THUMBPRINTS}}"
+
+    # Workaround for ServiceBus and VNET - see the following urls:
+    # https://learn.microsoft.com/en-us/answers/questions/1333946/azure-standard-logic-app-service-bus-built-in-conn
+    # https://techcommunity.microsoft.com/t5/azure-integration-services-blog/enabling-service-bus-and-sap-built-in-connectors-for-stateful/ba-p/3820381
+    - name: Workaround for Service Bus and VNET 
+      uses: azure/CLI@v1
+      with:
+        inlineScript: |
+          az webapp config set --name ${{env.LOGIC_APP_NAME}} --resource-group  ${{ env.RESOURCE_GROUP_NAME }} --generic-configurations '{"vnetPrivatePortsCount": 2}'
+
+    # Deploy dashboard
+    - name: Deploy Dashboard
+      uses: Azure/arm-deploy@v1.0.1
+      with:
+        scope: resourcegroup  
+        resourceGroupName:  ${{ env.RESOURCE_GROUP_NAME }}
+        template: ./unpacked/templates/dashboard-template.json
+        parameters: location=${{ env.RESOURCE_GROUP_LOCATION }} logicAppName=${{ env.LOGIC_APP_NAME }} appInsightsName=${{ env.APP_INSIGHTS_NAME }} logicAppResourceGroup=${{ env.RESOURCE_GROUP_NAME }} dashboardName=${{ env.DASHBOARD_NAME }} dashboardDisplayName=${{ env.DASHBOARD_DISPLAY_NAME }}
+        deploymentMode: Incremental
+
+    # Create action group
+    - name: Create Action Group for alerting emails
+      uses: Azure/arm-deploy@v1.0.1
+      with:
+        scope: resourcegroup  
+        resourceGroupName:  ${{ env.RESOURCE_GROUP_NAME }}
+        template: ./unpacked/templates/action-group-template.json
+        parameters: actionGroupName=${{ env.ACTION_GROUP_NAME }} alertingEmailAddress=${{ env.ALERTING_EMAIL_ADDRESS }}
+        deploymentMode: Incremental
+
+    # Create alert rule
+    - name: Create Alert rule for failed workflow emails
+      uses: Azure/arm-deploy@v1.0.1
+      with:
+        scope: resourcegroup  
+        resourceGroupName:  ${{ env.RESOURCE_GROUP_NAME }}
+        template: ./unpacked/templates/scheduled-query-rule-template.json
+        parameters: scheduledQueryRuleName=${{ env.SCHEDULED_QUERY_RULE_NAME }} location=${{ env.RESOURCE_GROUP_LOCATION }} actionGroupName=${{ env.ACTION_GROUP_NAME }} resourceGroupName=${{ env.RESOURCE_GROUP_NAME }} appInsightsName=${{ env.APP_INSIGHTS_NAME }}
+        deploymentMode: Incremental
 
     - name: Logout from Azure
       run: |
