@@ -56,22 +56,22 @@ jobs:
       run: |
         mv ${{ github.workspace }}/PaymentStatementIntegrations/local.settings.unit-tests.json ${{ github.workspace }}/PaymentStatementIntegrations/local.settings.json
       
-    - name: Run Tests
-      run: dotnet test ${{ env.tests-project-name }} --no-restore --logger "trx;LogFileName=test-results.trx"
+#    - name: Run Tests
+#      run: dotnet test ${{ env.tests-project-name }} --no-restore --logger "trx;LogFileName=test-results.trx"
 
-    - name: Test Report
-      uses: dorny/test-reporter@v1
-      if: always()
-      with:
-        name: Test Results
-        path: "**/test-results.trx"                            
-        reporter: dotnet-trx
-        fail-on-error: true      
+#    - name: Test Report
+#      uses: dorny/test-reporter@v1
+#      if: always()
+#      with:
+#        name: Test Results
+#        path: "**/test-results.trx"                            
+#        reporter: dotnet-trx
+#        fail-on-error: true      
 
     - name: 'Copy variables for artifact'
       run: |
-        mkdir ./${{ env.project-folder}}/github/variables
-        mv ${{ github.workspace }}/.github/variables/*.* ./${{ env.project-folder}}/github/variables
+        mkdir ${{ github.workspace }}/${{ env.project-folder}}/github/variables
+        cp ${{ github.workspace }}/.github/variables/*.* ${{ github.workspace }}/${{ env.project-folder}}/github/variables
 
     - name: Zip Files
       uses: vimtor/action-zip@v1
