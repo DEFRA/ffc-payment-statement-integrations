@@ -82,5 +82,5 @@ jobs:
     - name: Publish artifact
       uses: actions/upload-artifact@v3
       with:
-        name: ${{ env.LOGIC_APP_ARTIFACT_NAME }}
+        name: logicapp_artifacts
         path: ${{ github.run_id }}.zip
