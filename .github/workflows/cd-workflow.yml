@@ -1,5 +1,5 @@
 # GitHub Action workflow (pipeline) for deployment of underlying workflows
-name: Deploy Logic App workflows (Standard)
+name: CD - Deploy Logic App workflows
 
 # Currently only manual trigger
 on:

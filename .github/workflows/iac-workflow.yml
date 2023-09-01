@@ -1,5 +1,5 @@
 # GitHub Action workflow (pipeline) for deployment of Logic App top-level resources
-name: Deploy Logic App resources (Standard)
+name: IaC - Deploy Logic App infrastructure
 # excluding underlying workflows
 
 # Currently only manual trigger

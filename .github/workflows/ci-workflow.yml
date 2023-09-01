@@ -1,6 +1,6 @@
 # GitHub Actions workflow to build and test a Logic App (Standard)
 
-name: Build and test Logic App
+name: CI - Build and test Logic App
 
 #On create of PR into main - assuming main is a protected branch
 on: workflow_dispatch
