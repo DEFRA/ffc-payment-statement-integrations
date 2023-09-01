@@ -18,12 +18,15 @@ variables:
 
    # Gets converted to lowercase later in the pipeline. No spaces or hyphens allowed
   storageName: '$(resourcePrefix)ST1402'
-  fileShareName: '$(resourcePrefix)ST1402'
+  fileShareName: '$(resourcePrefix)ST1402fs'
 
   appInsightsName: '$(resourcePrefix)AIS1402'
 
   dashboardName: '$(resourcePrefix)DSH1402'
   dashboardDisplayName: '$(logicAppName) dashboard'
+
+  # User-assigned Managed Identity - used to access Key Vault (permissions for this can be pre-assigned before this IaC is run)
+  userManagedIdentityName: '$(resourcePrefix)UAMID1401'
 
   # VNET integration is required for Private Endpoint blob storage
   subnetResourceId: '/resourceGroups/DEVRLENETRG1401/providers/Microsoft.Network/virtualNetworks/DEVRLENETVN1401/subnets/DEVRLENETSU1402'
