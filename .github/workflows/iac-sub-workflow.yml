@@ -79,7 +79,7 @@ jobs:
       with:
         inlineScript: |
           az functionapp config appsettings set --name ${{ steps.ladeploy.outputs.LAname }} --resource-group  ${{ env.RESOURCE_GROUP_NAME }} --settings \
-          "WORKFLOWS_RESOURCE_GROUP_NAME=${{ env.RESOURCE_GROUP_NAME }}"
+          "WORKFLOWS_RESOURCE_GROUP_NAME=${{ env.RESOURCE_GROUP_NAME }}" \
           "WORKFLOWS_LOGIC_APP_NAME=${{env.LOGIC_APP_NAME}}" \
           "WEBSITE_LOAD_ROOT_CERTIFICATES=${{env.TRUSTED_ROOT_THUMBPRINTS}}"
 
