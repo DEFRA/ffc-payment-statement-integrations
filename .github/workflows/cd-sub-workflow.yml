@@ -40,22 +40,24 @@ jobs:
       with:
           creds: ${{secrets.azure-credentials}}
     
-    # Set up common variables
-    - name: Set up common variables
-      run: |
-        ./github/variables/setup_vars_common.sh
-
-    # Set up environment-specific variables
-    # This has to be a separate step from common vars in order for this step to use common vars
-    - name: Set up env-specific variables
-      run: |
-        ./github/variables/setup_vars_${{ inputs.env-short-name}}.sh
-
     - name: Unzip artifact
       run: |
         ZIP_PATH_AND_FILE=`ls ./output/logicapp_artifacts/*.zip`
         unzip -q $ZIP_PATH_AND_FILE -d ./unpacked
         echo "ZIP_PATH_AND_FILE=$ZIP_PATH_AND_FILE" >> $GITHUB_ENV
+
+    # Set up common variables
+    - name: Set up common variables
+      run: |
+        chmod +x ./unpacked/github/variables/setup_vars_common.sh
+        ./unpacked/github/variables/setup_vars_common.sh
+
+    # Set up environment-specific variables
+    # This has to be a separate step from common vars in order for this step to use common vars
+    - name: Set up env-specific variables
+      run: |
+        chmod +x ./unpacked/github/variables/setup_vars_${{ inputs.env-short-name}}.sh
+        ./unpacked/github/variables/setup_vars_${{ inputs.env-short-name}}.sh
 
     - name: Extract settings for environment
       run: |
