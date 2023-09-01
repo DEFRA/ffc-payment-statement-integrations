@@ -17,7 +17,8 @@ jobs:
    environment:
      name: ${{ inputs.env-short-name }}
    env:
-     settingsFile: settings-${{ inputs.env-short-name }}.json
+     settingsFile: environments/${{ inputs.env-short-name }}/settings-${{ inputs.env-short-name }}.json
+     connectionsFile: environments/${{ inputs.env-short-name }}/connections-${{ inputs.env-short-name }}.json
 
    steps:
 
@@ -39,22 +40,24 @@ jobs:
       with:
           creds: ${{secrets.azure-credentials}}
     
+    - name: Unzip artifact
+      run: |
+        ZIP_PATH_AND_FILE=`ls ./output/logicapp_artifacts/*.zip`
+        unzip -q $ZIP_PATH_AND_FILE -d ./unpacked
+        echo "ZIP_PATH_AND_FILE=$ZIP_PATH_AND_FILE" >> $GITHUB_ENV
+
     # Set up common variables
     - name: Set up common variables
       run: |
-        ./cd/setup_vars_common.sh
+        chmod +x ./unpacked/github/variables/setup_vars_common.sh
+        ./unpacked/github/variables/setup_vars_common.sh
 
     # Set up environment-specific variables
     # This has to be a separate step from common vars in order for this step to use common vars
     - name: Set up env-specific variables
       run: |
-        ./cd/setup_vars_${{ inputs.env-short-name}}.sh
-
-    - name: Unzip artifact
-      run: |
-        ZIP_PATH_AND_FILE=`ls ./output/${{ env.ARTIFACT_NAME }}/*.zip`
-        unzip -q $ZIP_PATH_AND_FILE -d ./unpacked
-        echo "ZIP_PATH_AND_FILE=$ZIP_PATH_AND_FILE" >> $GITHUB_ENV
+        chmod +x ./unpacked/github/variables/setup_vars_${{ inputs.env-short-name}}.sh
+        ./unpacked/github/variables/setup_vars_${{ inputs.env-short-name}}.sh
 
     - name: Extract settings for environment
       run: |
@@ -66,13 +69,33 @@ jobs:
       with:
         app-name: ${{ env.LOGIC_APP_NAME }}
         app-settings-json: '${{ env.settingsJson }}' 
-      
+
+    - name: Use environment-specific connections.json - create new artifact
+      run: |
+        cd ./unpacked
+        cp ${{ env.connectionsFile }} connections.json
+        zip -r newArtifact.zip *
+
+    - name: Allow temp access to advanced tool site for deploy
+      uses: azure/CLI@v1
+      with:
+        inlineScript: |
+          az resource update --resource-group ${{ env.RESOURCE_GROUP_NAME }} --name ${{ env.LOGIC_APP_NAME }} --resource-type "Microsoft.Web/sites" \
+          --set properties.siteConfig.scmIpSecurityRestrictionsDefaultAction=Allow
+  
     - name: Deploy to Logic App workflows
       uses: azure/functions-action@v1.3.1
       id: la
       with:
         app-name: ${{ env.LOGIC_APP_NAME }}
         package: ${{ env.ZIP_PATH_AND_FILE }}
+
+    - name: Disable access to advanced tool site
+      uses: azure/CLI@v1
+      with:
+        inlineScript: |
+          az resource update --resource-group ${{ env.RESOURCE_GROUP_NAME }} --name ${{ env.LOGIC_APP_NAME }} --resource-type "Microsoft.Web/sites" \
+          --set properties.siteConfig.scmIpSecurityRestrictionsDefaultAction=Deny
 
     - name: Logout from Azure
       run: |

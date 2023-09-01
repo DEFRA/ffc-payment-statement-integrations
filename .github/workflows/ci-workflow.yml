@@ -1,6 +1,6 @@
 # GitHub Actions workflow to build and test a Logic App (Standard)
 
-name: Build and test Logic App
+name: CI - Build and test Logic App
 
 #On create of PR into main - assuming main is a protected branch
 on: workflow_dispatch
@@ -68,6 +68,11 @@ jobs:
         reporter: dotnet-trx
         fail-on-error: true      
 
+    - name: 'Copy environment variables for artifact'
+      run: |
+        mkdir -p ${{ github.workspace }}/${{ env.project-folder}}/github/variables
+        cp ${{ github.workspace }}/.github/variables/*.* ${{ github.workspace }}/${{ env.project-folder}}/github/variables
+
     - name: Zip Files
       uses: vimtor/action-zip@v1
       with:
@@ -77,5 +82,5 @@ jobs:
     - name: Publish artifact
       uses: actions/upload-artifact@v3
       with:
-        name: build-artifact
+        name: logicapp_artifacts
         path: ${{ github.run_id }}.zip

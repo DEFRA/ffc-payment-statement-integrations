@@ -1,5 +1,5 @@
 # GitHub Action workflow (pipeline) for deployment of Logic App top-level resources
-name: Deploy Logic App resources (Standard)
+name: IaC - Deploy Logic App infrastructure
 # excluding underlying workflows
 
 # Currently only manual trigger
@@ -11,15 +11,15 @@ on:
 
 jobs:
   deploy-dev:
-    uses: DEFRA/ffc-payment-statement-integrations/.github/workflows/iac-sub-workflow.yml@main
+    uses: DEFRA/ffc-payment-statement-integrations/.github/workflows/iac-sub-workflow.yml@jb-dev-fix
     with:
       env-short-name: dev
     secrets:
-      azure-credentials: ${{ secrets.AZURE_CREDENTIALS }}
+      azure-credentials: ${{ secrets.AZURE_CREDENTIALS_DEV }}
           
   deploy-test:
     uses: DEFRA/ffc-payment-statement-integrations/.github/workflows/iac-sub-workflow.yml@main
     with:
       env-short-name: test
     secrets:
-      azure-credentials: ${{ secrets.AZURE_CREDENTIALS }}
+      azure-credentials: ${{ secrets.AZURE_CREDENTIALS_TST }}

@@ -1,5 +1,5 @@
 # GitHub Action workflow (pipeline) for deployment of underlying workflows
-name: Deploy Logic App workflows (Standard)
+name: CD - Deploy Logic App workflows
 
 # Currently only manual trigger
 on:
@@ -10,16 +10,16 @@ on:
 
 jobs:
   deploy-dev:
-    uses: DEFRA/ffc-payment-statement-integrations/.github/workflows/cd-sub-workflow.yml@main
+    uses: DEFRA/ffc-payment-statement-integrations/.github/workflows/cd-sub-workflow.yml@jb-dev-fix
     with:
       env-short-name: 'dev'
     secrets:
-      azure-credentials: ${{ secrets.AZURE_CREDENTIALS }}
+      azure-credentials: ${{ secrets.AZURE_CREDENTIALS_DEV }}
   
   deploy-test:
     uses: DEFRA/ffc-payment-statement-integrations/.github/workflows/cd-sub-workflow.yml@main
     with:
       env-short-name: 'test'
     secrets:
-      azure-credentials: ${{ secrets.AZURE_CREDENTIALS }}
+      azure-credentials: ${{ secrets.AZURE_CREDENTIALS_TST }}
     
