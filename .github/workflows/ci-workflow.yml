@@ -72,7 +72,7 @@ jobs:
       uses: vimtor/action-zip@v1
       with:
         dest: ${{ github.run_id }}.zip
-        files: ./${{ env.project-folder}}
+        files: ./${{ env.project-folder}} ./${{ env.project-folder}}/../.github
 
     - name: Publish artifact
       uses: actions/upload-artifact@v3
