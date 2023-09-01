@@ -43,13 +43,13 @@ jobs:
     # Set up common variables
     - name: Set up common variables
       run: |
-        ./.github/variables/setup_vars_common.sh
+        ./github/variables/setup_vars_common.sh
 
     # Set up environment-specific variables
     # This has to be a separate step from common vars in order for this step to use common vars
     - name: Set up env-specific variables
       run: |
-        ./.github/variables/setup_vars_${{ inputs.env-short-name}}.sh
+        ./github/variables/setup_vars_${{ inputs.env-short-name}}.sh
 
     - name: Unzip artifact
       run: |

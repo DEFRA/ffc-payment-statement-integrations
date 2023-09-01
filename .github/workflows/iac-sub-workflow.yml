@@ -47,13 +47,13 @@ jobs:
     # Set up common variables
     - name: Set up common variables
       run: |
-        ./unpacked/.github/variables/setup_vars_common.sh
+        ./unpacked/github/variables/setup_vars_common.sh
 
     # Set up environment-specific variables
     # This has to be a separate step from common vars in order for this step to use common vars
     - name: Set up env-specific variables
       run: |
-        ./unpacked/.github/variables/setup_vars_${{ inputs.env-short-name }}.sh
+        ./unpacked/github/variables/setup_vars_${{ inputs.env-short-name }}.sh
  
     # Deploy the Logic App resources
     - name: Deploy Logic App resources
