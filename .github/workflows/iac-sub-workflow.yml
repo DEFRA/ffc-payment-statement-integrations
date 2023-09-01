@@ -34,7 +34,7 @@ jobs:
 
     - name: Unzip artifact
       run: |
-        ZIP_PATH_AND_FILE=`ls ./output/${{ env.ARTIFACT_NAME }}/*.zip`
+        ZIP_PATH_AND_FILE=`ls ./output/${{ env.LOGIC_APP_ARTIFACT_NAME }}/*.zip`
         unzip -q $ZIP_PATH_AND_FILE -d ./unpacked
         echo "ZIP_PATH_AND_FILE=$ZIP_PATH_AND_FILE" >> $GITHUB_ENV
 
