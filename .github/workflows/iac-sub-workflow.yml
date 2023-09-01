@@ -99,7 +99,7 @@ jobs:
         scope: resourcegroup  
         resourceGroupName:  ${{ env.RESOURCE_GROUP_NAME }}
         template: ./unpacked/templates/dashboard-template.json
-        parameters: location=${{ env.RESOURCE_GROUP_LOCATION }} logicAppName=${{ env.LOGIC_APP_NAME }} appInsightsName=${{ env.APP_INSIGHTS_NAME }} logicAppResourceGroup=${{ env.RESOURCE_GROUP_NAME }} dashboardName=${{ env.DASHBOARD_NAME }} dashboardDisplayName=${{ env.DASHBOARD_DISPLAY_NAME }}
+        parameters: location=${{ env.RESOURCE_GROUP_LOCATION }} logicAppName=${{ env.LOGIC_APP_NAME }} appInsightsName=${{ env.APP_INSIGHTS_NAME }} logicAppResourceGroup=${{ env.RESOURCE_GROUP_NAME }} dashboardName=${{ env.DASHBOARD_NAME }} dashboardDisplayName="${{ env.DASHBOARD_DISPLAY_NAME }}"
         deploymentMode: Incremental
 
     # Create action group
