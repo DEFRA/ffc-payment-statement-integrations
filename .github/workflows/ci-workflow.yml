@@ -70,7 +70,7 @@ jobs:
 
     - name: 'Copy variables for artifact'
       run: |
-        mkdir ${{ github.workspace }}/${{ env.project-folder}}/github/variables
+        mkdir -p ${{ github.workspace }}/${{ env.project-folder}}/github/variables
         cp ${{ github.workspace }}/.github/variables/*.* ${{ github.workspace }}/${{ env.project-folder}}/github/variables
 
     - name: Zip Files
