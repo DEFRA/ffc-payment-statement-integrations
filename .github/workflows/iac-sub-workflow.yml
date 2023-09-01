@@ -57,6 +57,7 @@ jobs:
         chmod +x ./unpacked/github/variables/setup_vars_${{ inputs.env-short-name }}.sh
         ./unpacked/github/variables/setup_vars_${{ inputs.env-short-name }}.sh
  
+    # Strangely seem to need an 'az cli' call prior to using arm-deploy@v1, so this is a dummy call here
     - name: List accounts 
       uses: azure/CLI@v1
       with:
@@ -116,8 +117,7 @@ jobs:
     - name: Create Alert rule for failed workflow emails
       uses: Azure/arm-deploy@v1.0.9
       with:
-        scope: subscription
-        region: ${{ env.RESOURCE_GROUP_LOCATION }}
+        scope: resourcegroup
         resourceGroupName:  ${{ env.RESOURCE_GROUP_NAME }}
         template: ./unpacked/templates/scheduled-query-rule-template.json
         parameters: scheduledQueryRuleName=${{ env.SCHEDULED_QUERY_RULE_NAME }} location=${{ env.RESOURCE_GROUP_LOCATION }} actionGroupName=${{ env.ACTION_GROUP_NAME }} resourceGroupName=${{ env.RESOURCE_GROUP_NAME }} appInsightsName=${{ env.APP_INSIGHTS_NAME }}
