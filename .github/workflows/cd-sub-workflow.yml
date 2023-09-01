@@ -17,8 +17,8 @@ jobs:
    environment:
      name: ${{ inputs.env-short-name }}
    env:
-     settingsFile: settings-${{ inputs.env-short-name }}.json
-     connectionsFile: connections-${{ inputs.env-short-name }}.json
+     settingsFile: environments/${{ inputs.env-short-name }}/settings-${{ inputs.env-short-name }}.json
+     connectionsFile: environments/${{ inputs.env-short-name }}/connections-${{ inputs.env-short-name }}.json
 
    steps:
 
