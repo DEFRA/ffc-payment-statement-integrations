@@ -117,6 +117,7 @@ jobs:
       uses: Azure/arm-deploy@v1.0.9
       with:
         scope: subscription
+        region: ${{ env.RESOURCE_GROUP_LOCATION }}
         resourceGroupName:  ${{ env.RESOURCE_GROUP_NAME }}
         template: ./unpacked/templates/scheduled-query-rule-template.json
         parameters: scheduledQueryRuleName=${{ env.SCHEDULED_QUERY_RULE_NAME }} location=${{ env.RESOURCE_GROUP_LOCATION }} actionGroupName=${{ env.ACTION_GROUP_NAME }} resourceGroupName=${{ env.RESOURCE_GROUP_NAME }} appInsightsName=${{ env.APP_INSIGHTS_NAME }}
