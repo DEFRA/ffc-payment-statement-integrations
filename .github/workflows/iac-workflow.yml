@@ -11,7 +11,7 @@ on:
 
 jobs:
   deploy-dev:
-    uses: DEFRA/ffc-payment-statement-integrations/.github/workflows/iac-sub-workflow.yml@main
+    uses: DEFRA/ffc-payment-statement-integrations/.github/workflows/iac-sub-workflow.yml@jb-dev-fix
     with:
       env-short-name: dev
     secrets:
