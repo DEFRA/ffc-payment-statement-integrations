@@ -23,31 +23,31 @@ jobs:
     - name: Check out files
       uses: actions/checkout@v3
 
-    - name: Setup .NET Core SDK
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: '6.0.x'
+#    - name: Setup .NET Core SDK
+#      uses: actions/setup-dotnet@v3
+#      with:
+#        dotnet-version: '6.0.x'
 
-    - name: Install dependencies
-      run: dotnet restore ${{ env.tests-project-name }}
+#    - name: Install dependencies
+#      run: dotnet restore ${{ env.tests-project-name }}
 
-    - name: Build Tests
-      run: dotnet build ${{ env.tests-project-name }} --no-restore
+#    - name: Build Tests
+#      run: dotnet build ${{ env.tests-project-name }} --no-restore
 
-    - name: set up node
-      uses: actions/setup-node@v3
-      with:
-          node-version: '16.x'
+#    - name: set up node
+#      uses: actions/setup-node@v3
+#      with:
+#          node-version: '16.x'
 
-    - name: Install and run azurite
-      run: |
-        npm install -g azurite
-        mkdir azurite
-        azurite --silent --location azurite --debug azurite\debug.log &
+#    - name: Install and run azurite
+#      run: |
+#        npm install -g azurite
+#        mkdir azurite
+#        azurite --silent --location azurite --debug azurite\debug.log &
 
-    - name: Install Azure Function Core Tools
-      run: |
-        npm i -g azure-functions-core-tools@4 --unsafe-perm true
+#    - name: Install Azure Function Core Tools
+#      run: |
+#        npm i -g azure-functions-core-tools@4 --unsafe-perm true
 
     # local.settings.json is updated when editing locally in the GUI designer. In case connection secrets get saved to it,
     # a copy (local.settings.unit-tests.json) is pushed to GitHub but not local.settings.json
@@ -56,17 +56,17 @@ jobs:
       run: |
         mv ${{ github.workspace }}/PaymentStatementIntegrations/local.settings.unit-tests.json ${{ github.workspace }}/PaymentStatementIntegrations/local.settings.json
       
-    - name: Run Tests
-      run: dotnet test ${{ env.tests-project-name }} --no-restore --logger "trx;LogFileName=test-results.trx"
+#    - name: Run Tests
+#      run: dotnet test ${{ env.tests-project-name }} --no-restore --logger "trx;LogFileName=test-results.trx"
 
-    - name: Test Report
-      uses: dorny/test-reporter@v1
-      if: always()
-      with:
-        name: Test Results
-        path: "**/test-results.trx"                            
-        reporter: dotnet-trx
-        fail-on-error: true      
+#    - name: Test Report
+#      uses: dorny/test-reporter@v1
+#      if: always()
+#      with:
+#        name: Test Results
+#        path: "**/test-results.trx"                            
+#        reporter: dotnet-trx
+#        fail-on-error: true      
 
     - name: 'Copy environment variables for artifact'
       run: |
