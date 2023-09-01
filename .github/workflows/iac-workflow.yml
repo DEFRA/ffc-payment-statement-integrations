@@ -16,6 +16,7 @@ jobs:
       env-short-name: dev
     secrets:
       azure-credentials: ${{ secrets.AZURE_CREDENTIALS }}
+      azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           
   deploy-test:
     uses: DEFRA/ffc-payment-statement-integrations/.github/workflows/iac-sub-workflow.yml@main
