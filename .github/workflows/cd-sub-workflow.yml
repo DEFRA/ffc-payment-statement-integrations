@@ -88,7 +88,7 @@ jobs:
       id: la
       with:
         app-name: ${{ env.LOGIC_APP_NAME }}
-        package: ${{ env.ZIP_PATH_AND_FILE }}
+        package: ./unpacked/newArtifact.zip
 
     - name: Disable access to advanced tool site
       uses: azure/CLI@v1
