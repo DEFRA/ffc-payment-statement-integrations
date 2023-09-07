@@ -277,16 +277,6 @@
                 "type": "String",
                 "value": "@appsetting('SharepointSiteSubPath')",
                 "defaultValue": "@appsetting('SharepointSiteSubPath')"
-            },
-            "GovNotifyApiKey": {
-                "type": "String",
-                "value": "@appsetting('GovNotifyApiKey')",
-                "defaultValue": "@appsetting('GovNotifyApiKey')"
-            },
-            "ErrorEmailTempateId": {
-                "type": "String",
-                "value": "@appsetting('ErrorEmailTempateId')",
-                "defaultValue": "@appsetting('ErrorEmailTempateId')"
             }
         }
     },

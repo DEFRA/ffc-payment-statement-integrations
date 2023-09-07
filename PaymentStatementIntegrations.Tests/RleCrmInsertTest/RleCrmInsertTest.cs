@@ -361,12 +361,6 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                             mockedResponse.StatusCode = HttpStatusCode.OK;
                             mockedResponse.Content = ValidAuthToken();
                         }
-                        else if (request.RequestUri.AbsolutePath.Contains("/api/AzureFunctionGovNotify") && request.Method == HttpMethod.Post)
-                        {
-                            // Email function call
-                            mockedResponse.RequestMessage = request;
-                            mockedResponse.StatusCode = HttpStatusCode.OK;
-                        }
                     }
                     return mockedResponse;
                 };
@@ -424,12 +418,6 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                             mockedResponse.RequestMessage = request;
                             mockedResponse.StatusCode = HttpStatusCode.OK;
                             mockedResponse.Content = ValidAuthToken();
-                        }
-                        else if (request.RequestUri.AbsolutePath.Contains("/api/AzureFunctionGovNotify") && request.Method == HttpMethod.Post)
-                        {
-                            // Email function call
-                            mockedResponse.RequestMessage = request;
-                            mockedResponse.StatusCode = HttpStatusCode.OK;
                         }
                     }
                     return mockedResponse;
@@ -489,12 +477,6 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                             mockedResponse.StatusCode = HttpStatusCode.OK;
                             mockedResponse.Content = ValidAuthToken();
                         }
-                        else if (request.RequestUri.AbsolutePath.Contains("/api/AzureFunctionGovNotify") && request.Method == HttpMethod.Post)
-                        {
-                            // Email function call
-                            mockedResponse.RequestMessage = request;
-                            mockedResponse.StatusCode = HttpStatusCode.OK;
-                        }
                     }
                     return mockedResponse;
                 };
@@ -552,12 +534,6 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                             mockedResponse.RequestMessage = request;
                             mockedResponse.StatusCode = HttpStatusCode.OK;
                             mockedResponse.Content = ValidAuthToken();
-                        }
-                        else if (request.RequestUri.AbsolutePath.Contains("/api/AzureFunctionGovNotify") && request.Method == HttpMethod.Post)
-                        {
-                            // Email function call
-                            mockedResponse.RequestMessage = request;
-                            mockedResponse.StatusCode = HttpStatusCode.OK;
                         }
                     }
                     return mockedResponse;
