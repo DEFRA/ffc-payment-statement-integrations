@@ -11,7 +11,7 @@
   },
   {
     "name": "CrmBaseUrl",
-    "value": "https://rpadevv9.crm4.dynamics.com",
+    "value": "https://rpa-csc-uat.crm4.dynamics.com",
     "slotSetting": false
   },
   {
@@ -61,7 +61,7 @@
   },
   {
     "name": "SharepointBaseUrl",
-    "value": "https://defradev.sharepoint.com",
+    "value": "https://defra.sharepoint.com",
     "slotSetting": false
   },
   {
@@ -76,7 +76,7 @@
   },
   {
     "name": "SharepointSiteSubPath",
-    "value": "/sites/tempdocstoretst",
+    "value": "/sites/rpa-custdocstore-uat2",
     "slotSetting": false
   },
   {
