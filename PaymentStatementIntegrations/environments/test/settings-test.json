@@ -75,8 +75,18 @@
     "slotSetting": false
   },
   {
+    "name": "SharepointDomain",
+    "value": "defradev.sharepoint.com",
+    "slotSetting": false
+  },
+  {
+    "name": "SharepointLoginBaseUrl",
+    "value": "https://accounts.accesscontrol.windows.net",
+    "slotSetting": false
+  },
+  {
     "name": "SharepointSiteSubPath",
-    "value": "/sites/tempdocstore",
+    "value": "sites/tempdocstore",
     "slotSetting": false
   },
   {
