@@ -81,7 +81,7 @@
   },
   {
     "name": "SharepointTenantId",
-    "value": "@Microsoft.KeyVault(SecretUri=https://tstrleinfkv1401.vault.azure.net/secrets/SharepointTenantId/188d1b50954e465f96d57ee194ca8311)",
+    "value": "@Microsoft.KeyVault(SecretUri=https://tstrleinfkv1401.vault.azure.net/secrets/SharepointTenantId/87db8ace4f0f4eb69f80901636f88e45)",
     "slotSetting": false
   },
   {
