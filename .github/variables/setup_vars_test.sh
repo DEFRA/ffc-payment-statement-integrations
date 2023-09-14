@@ -40,7 +40,7 @@ SERVICEBUS_NAMESPACE_SP="DEVFFCINFSB1001.servicebus.windows.net"
 # Details for Azure Alerting when workflow catastrophic fails
 ACTION_GROUP_NAME="${RESOURCE_PREFIX}AG1401"
 SCHEDULED_QUERY_RULE_NAME="${RESOURCE_PREFIX}AIAR1401"
-ALERTING_EMAIL_ADDRESS="jeremy.barnsley@defra.gov.uk"
+ALERTING_EMAIL_ADDRESS="crmuserforum@rpa.gov.uk"
 
 # Copy to environment vars
 echo "ENV_SHORT_NAME=$ENV_SHORT_NAME" >> $GITHUB_ENV
