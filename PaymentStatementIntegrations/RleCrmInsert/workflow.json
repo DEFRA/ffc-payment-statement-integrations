@@ -264,7 +264,7 @@
                     "Determine_doc_type": {
                         "type": "JavaScriptCode",
                         "inputs": {
-                            "code": "const lookups = JSON.parse(workflowContext.actions.Get_Doc_Type_Lookups.outputs);\nconst typeCode = workflowContext.actions.Parse_CTL_File.outputs.body['type'];\nvar result = lookups[typeCode];\nreturn result ? result : lookups['ALL_OTHERS'];"
+                            "code": "const lookups = JSON.parse(workflowContext.actions.Get_Doc_Type_Lookups.outputs);\nconst typeCode = workflowContext.actions.Parse_CTL_File.outputs.body['type'];\nvar result = lookups[typeCode];\nreturn result ? result : lookups['BOUNDARY_CHANGE'];"
                         },
                         "runAfter": {
                             "Get_Doc_Type_Lookups": [

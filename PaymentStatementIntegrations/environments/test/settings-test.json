@@ -16,7 +16,7 @@
   },
   {
     "name": "CrmDocTypeLookup",
-    "value": "{ \"LANDCOVER_CHANGE\": { \"id\": \"db363964-c906-ee11-8f6e-0022489ede2f\", \"desc\": \"Land Cover\" }, \"MERGE\": { \"id\": \"05ea5085-c906-ee11-8f6e-0022489ede2f\", \"desc\": \"Merge\" }, \"REGISTERING_NEW_LAND\": { \"id\": \"ff7b3b00-cb06-ee11-8f6e-0022489ede2f\", \"desc\": \"Registering New Land\" }, \"ALL_OTHERS\": { \"id\": \"1fdded19-cb06-ee11-8f6e-0022489ede2f\", \"desc\": \"All Other Land Changes\" } }",
+    "value": "{ \"LANDCOVER_CHANGE\": { \"id\": \"db363964-c906-ee11-8f6e-0022489ede2f\", \"desc\": \"Full land cover change\" }, \"PARCEL_MERGE\": { \"id\": \"05ea5085-c906-ee11-8f6e-0022489ede2f\", \"desc\": \"Merge land parcels\" }, \"REGISTER_NEWLAND\": { \"id\": \"ff7b3b00-cb06-ee11-8f6e-0022489ede2f\", \"desc\": \"Register new land\" }, \"BOUNDARY_CHANGE\": { \"id\": \"1fdded19-cb06-ee11-8f6e-0022489ede2f\", \"desc\": \"All other land changes\" } }",
     "slotSetting": false
   },
   {
