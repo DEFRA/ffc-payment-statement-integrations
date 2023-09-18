@@ -186,6 +186,158 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
         }
 
         /// <summary>
+        /// Tests that the correct response is returned when successful but no files array - just the summary PDF
+        /// </summary>
+        [TestMethod]
+        public void CrmInsertTest_When_Successful_No_Files_Array()
+        {
+            // Override one of the settings in the local settings file
+            var settingsToOverride = new Dictionary<string, string>();
+
+            using (ITestRunner testRunner = CreateTestRunner(settingsToOverride))
+            {
+                // Mock the HTTP calls and customize responses
+                testRunner.AddApiMocks = (request) =>
+                {
+                    HttpResponseMessage mockedResponse = new HttpResponseMessage();
+                    if (request?.RequestUri != null)
+                    {
+                        if (request.RequestUri.AbsolutePath.Contains("/oauth2/token") && request.Method == HttpMethod.Post)
+                        {
+                            // CRM token
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                            mockedResponse.Content = ValidAuthToken();
+                        }
+                        else if (request.RequestUri.AbsolutePath.Contains("/tokens/OAuth/2") && request.Method == HttpMethod.Post)
+                        {
+                            // Sharepoint token
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                            mockedResponse.Content = ValidAuthToken();
+                        }
+                        else if (request.RequestUri.AbsolutePath.Contains("/api/data/v9.2/accounts") && request.Method == HttpMethod.Get)
+                        {
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                            mockedResponse.Content = ValidOrgLookup();
+                        }
+                        else if (request.RequestUri.AbsolutePath.Contains("/api/data/v9.2/contacts") && request.Method == HttpMethod.Get)
+                        {
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                            mockedResponse.Content = ValidContactLookup();
+                        }
+                        else if (request.RequestUri.AbsolutePath.Contains("/api/data/v9.2/incidents") && request.Method == HttpMethod.Post)
+                        {
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                            mockedResponse.Content = ValidCreateCase();
+                        }
+                        else if (request.RequestUri.AbsolutePath.Contains("/api/data/v9.2/rpa_onlinesubmissions") && request.Method == HttpMethod.Post)
+                        {
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                            mockedResponse.Content = ValidCreateOnlineSubmission();
+                        }
+                        else if (request.RequestUri.AbsolutePath.Contains("/api/data/v9.2/rpa_activitymetadatas") && request.Method == HttpMethod.Post)
+                        {
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                            mockedResponse.Content = ValidCreateMetadata();
+                        }
+                        else if (request.RequestUri.AbsolutePath.Contains("/_api/web/folders") && request.Method == HttpMethod.Post)
+                        {
+                            // Sharepoint - create folder
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                            mockedResponse.Content = new StringContent(string.Empty);
+                        }
+                        else if (request.RequestUri.AbsolutePath.Contains("/_api/web/GetFolderByServerRelativeUrl") && request.RequestUri.AbsolutePath.Contains("/Files/add") && request.Method == HttpMethod.Post)
+                        {
+                            // Sharepoint - upload file
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                            mockedResponse.Content = GetSharepointUploadResponse();
+                        }
+                    }
+                    return mockedResponse;
+                };
+
+                // Run the workflow
+                // Since there is a condition on the trigger that the filename must end in '.ctrl', we must supply a Name property in the content
+                var workflowResponse = testRunner.TriggerWorkflow(GetBlobControlFileNoFilesArray(), HttpMethod.Post);
+
+                // Check workflow run status
+                Assert.AreEqual(WorkflowRunStatus.Succeeded, testRunner.WorkflowRunStatus);
+
+                // Check workflow response
+                testRunner.ExceptionWrapper(() => Assert.AreEqual(HttpStatusCode.Accepted, workflowResponse.StatusCode));
+                Assert.AreEqual(HttpStatusCode.Accepted, workflowResponse.StatusCode);
+
+                // Check action result
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_trigger_CTL_contents"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Decode_blob_CTL_contents"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Parse_CTL_File"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_CRM_Token"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Parse_CRM_Token"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_CRM_Org"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Parse_Org_Response"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Extract_OrganisationId"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Set_SBI_from_CTL"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Set_SBI_from_Org"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_CRM_Contact"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Parse_Contact_Details"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Extract_ContactId"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Create_CRM_Case"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Extract_NewCaseId"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Convert_Date_Format"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_Doc_Type_Lookups"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Determine_doc_type"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Create_Online_Submission_Activity"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Extract_ActivityId"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_Sharepoint_Token"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Parse_Sharepoint_Token"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Create_Folder"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Append_to_array_variable"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Update_FilesInSubmission"));
+
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_filename"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Read_blob_content"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Copy_To_Sharepoint"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Create_Meta_Data"));
+
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Log_error"));
+
+                // Check 'create folder' only ran once
+                Assert.AreEqual(1, testRunner.GetWorkflowActionRepetitionCount("Create_Folder"));
+
+                // Check that loop ran 3 times
+                Assert.AreEqual(1, testRunner.GetWorkflowActionRepetitionCount("Get_filename"));
+                Assert.AreEqual(1, testRunner.GetWorkflowActionRepetitionCount("Read_blob_content"));
+                Assert.AreEqual(1, testRunner.GetWorkflowActionRepetitionCount("Copy_To_Sharepoint"));
+                Assert.AreEqual(1, testRunner.GetWorkflowActionRepetitionCount("Create_Meta_Data"));
+
+
+                // Check which SBI value was used - should be from CTL file
+                var sbiStr = testRunner.GetWorkflowActionOutput("Set_SBI_from_CTL").ToString();
+                Assert.IsFalse(sbiStr.Contains("\"value\": \"120068\""));
+                Assert.IsTrue(sbiStr.Contains("\"value\": \"123456789\""));
+
+                // Check request to CRM for 'create metadata'
+                // The 'For-Each' loop runs in parallel so we can't guarantee the order or results here
+                var crmMetadataRequests = testRunner.MockRequests.Where(r => r.RequestUri.AbsolutePath.Contains("/api/data/v9.2/rpa_activitymetadatas")).ToList();
+                Assert.AreEqual(1, crmMetadataRequests.Count);
+                Assert.IsTrue(crmMetadataRequests.All(x => x.Method == HttpMethod.Post));
+                Assert.AreEqual(1, crmMetadataRequests.Count(x => x.Content.Contains("\"rpa_filename\":\"UOSR123456_Summary.pdf\"")));
+
+                // Check tracked properties
+                var trackedProps = testRunner.GetWorkflowActionTrackedProperties("Init_FileList");
+                Assert.AreEqual("RleCrmInsert", trackedProps["WorkflowName"]);
+            }
+        }
+
+        /// <summary>
         /// Tests that the correct response is returned when successful, taking SBI from Organisation since missing in CTL.
         /// </summary>
         [TestMethod]
@@ -698,7 +850,18 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
             // this JSON is created using strings
 
             var jsonStr = "{ \"name\": \"myfilename_ctrl.json\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"frn\": \"1102077240\", \"crn\": \"11020219620000000\", \"uosr\": \"UOSR123456\", \"type\": \"LANDCOVER_CHANGE\", ";
-            jsonStr += "\"submissionDate\": \"25/01/2023 07:55:40\", \"filesInSubmission\": 3, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
+            jsonStr += "\"submissionDateTime\": \"25/01/2023 07:55:40\", \"filesInSubmission\": 3, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
+
+            return UnitTestHelper.EncodeAsStringContent(jsonStr, true, "content", "$content");
+        }
+
+        private static StringContent GetBlobControlFileNoFilesArray()
+        {
+            // Since a property beginning with '$' cannot be defined in an anonymous type,
+            // this JSON is created using strings
+
+            var jsonStr = "{ \"name\": \"myfilename_ctrl.json\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"frn\": \"1102077240\", \"crn\": \"11020219620000000\", \"uosr\": \"UOSR123456\", \"type\": \"LANDCOVER_CHANGE\", ";
+            jsonStr += "\"submissionDateTime\": \"25/01/2023 07:55:40\", \"filesInSubmission\": 0 } } }";
 
             return UnitTestHelper.EncodeAsStringContent(jsonStr, true, "content", "$content");
         }
@@ -709,7 +872,7 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
             // this JSON is created using strings
 
             var jsonStr = "{ \"name\": \"myfilename_ctrl.json\", \"content\": { \"$content\": { \"frn\": \"1102077240\", \"crn\": \"11020219620000000\", \"uosr\": \"UOSR123456\", \"type\": \"LANDCOVER_CHANGE\", ";
-            jsonStr += "\"submissionDate\": \"25/01/2023 07:55:40\", \"filesInSubmission\": 3, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
+            jsonStr += "\"submissionDateTime\": \"25/01/2023 07:55:40\", \"filesInSubmission\": 3, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
 
             return UnitTestHelper.EncodeAsStringContent(jsonStr, true, "content", "$content");
         }
@@ -720,7 +883,7 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
             // this JSON is created using strings
 
             var jsonStr = "{ \"name\": \"myfilename_ctrl.json\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"crn\": \"11020219620000000\", \"uosr\": \"UOSR123456\", \"type\": \"LANDCOVER_CHANGE\", ";
-            jsonStr += "\"submissionDate\": \"25/01/2023 07:55:40\", \"filesInSubmission\": 3, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
+            jsonStr += "\"submissionDateTime\": \"25/01/2023 07:55:40\", \"filesInSubmission\": 3, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
 
             return UnitTestHelper.EncodeAsStringContent(jsonStr, true, "content", "$content");
         }
@@ -731,7 +894,7 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
             // this JSON is created using strings
 
             var jsonStr = "{ \"name\": \"myfilename_ctrl.json\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"frn\": \"1102077240\", \"uosr\": \"UOSR123456\", \"type\": \"LANDCOVER_CHANGE\", ";
-            jsonStr += "\"submissionDate\": \"25/01/2023 07:55:40\", \"filesInSubmission\": 3, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
+            jsonStr += "\"submissionDateTime\": \"25/01/2023 07:55:40\", \"filesInSubmission\": 3, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
 
             return UnitTestHelper.EncodeAsStringContent(jsonStr, true, "content", "$content");
         }
@@ -742,7 +905,7 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
             // this JSON is created using strings
 
             var jsonStr = "{ \"name\": \"myfilename_ctrl.json\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"frn\": \"1102077240\", \"crn\": \"11020219620000000\", \"type\": \"LANDCOVER_CHANGE\", ";
-            jsonStr += "\"submissionDate\": \"25/01/2023 07:55:40\", \"filesInSubmission\": 3, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
+            jsonStr += "\"submissionDateTime\": \"25/01/2023 07:55:40\", \"filesInSubmission\": 3, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
 
             return UnitTestHelper.EncodeAsStringContent(jsonStr, true, "content", "$content");
         }
@@ -764,7 +927,7 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
             // this JSON is created using strings
 
             var jsonStr = "{ \"name\": \"myfilename_ctrl.json\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"frn\": \"1102077240\", \"crn\": \"11020219620000000\", \"uosr\": \"UOSR123456\", \"type\": \"LANDCOVER_CHANGE\", ";
-            jsonStr += "\"submissionDate\": \"25/01/2023 07:55:40\", \"filesInSubmission\": 2, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
+            jsonStr += "\"submissionDateTime\": \"25/01/2023 07:55:40\", \"filesInSubmission\": 2, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
 
             return UnitTestHelper.EncodeAsStringContent(jsonStr, true, "content", "$content");
         }

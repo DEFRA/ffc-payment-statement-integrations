@@ -175,7 +175,7 @@
                     },
                     "Convert_Date_Format": {
                         "type": "Compose",
-                        "inputs": "@formatDateTime(convertToUtc(parseDateTime(body('Parse_CTL_File')?['submissionDate'], 'en-GB', 'dd/MM/yyyy HH:mm:ss'),'GMT Standard Time'),'yyyy-MM-dd HH:mm:ss')",
+                        "inputs": "@formatDateTime(convertToUtc(parseDateTime(body('Parse_CTL_File')?['submissionDateTime'], 'en-GB', 'dd/MM/yyyy HH:mm:ss'),'GMT Standard Time'),'yyyy-MM-dd HH:mm:ss')",
                         "runAfter": {
                             "Append_progress_case_id": [
                                 "SUCCEEDED"
@@ -710,7 +710,7 @@
                                     "sbi": {
                                         "type": "string"
                                     },
-                                    "submissionDate": {
+                                    "submissionDateTime": {
                                         "type": "string"
                                     },
                                     "type": {
@@ -724,9 +724,8 @@
                                     "crn",
                                     "frn",
                                     "uosr",
-                                    "submissionDate",
-                                    "filesInSubmission",
-                                    "files"
+                                    "submissionDateTime",
+                                    "filesInSubmission"
                                 ],
                                 "type": "object"
                             }
