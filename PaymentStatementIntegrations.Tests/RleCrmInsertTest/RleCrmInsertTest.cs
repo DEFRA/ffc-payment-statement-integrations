@@ -697,7 +697,7 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
             // Since a property beginning with '$' cannot be defined in an anonymous type,
             // this JSON is created using strings
 
-            var jsonStr = "{ \"name\": \"myfilename.ctrl\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"frn\": \"1102077240\", \"crn\": \"11020219620000000\", \"uosr\": \"UOSR123456\", \"type\": \"LANDCOVER_CHANGE\", ";
+            var jsonStr = "{ \"name\": \"myfilename_ctrl.json\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"frn\": \"1102077240\", \"crn\": \"11020219620000000\", \"uosr\": \"UOSR123456\", \"type\": \"LANDCOVER_CHANGE\", ";
             jsonStr += "\"submissionDate\": \"25/01/2023 07:55:40\", \"filesInSubmission\": 3, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
 
             return UnitTestHelper.EncodeAsStringContent(jsonStr, true, "content", "$content");
@@ -708,7 +708,7 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
             // Since a property beginning with '$' cannot be defined in an anonymous type,
             // this JSON is created using strings
 
-            var jsonStr = "{ \"name\": \"myfilename.ctrl\", \"content\": { \"$content\": { \"frn\": \"1102077240\", \"crn\": \"11020219620000000\", \"uosr\": \"UOSR123456\", \"type\": \"LANDCOVER_CHANGE\", ";
+            var jsonStr = "{ \"name\": \"myfilename_ctrl.json\", \"content\": { \"$content\": { \"frn\": \"1102077240\", \"crn\": \"11020219620000000\", \"uosr\": \"UOSR123456\", \"type\": \"LANDCOVER_CHANGE\", ";
             jsonStr += "\"submissionDate\": \"25/01/2023 07:55:40\", \"filesInSubmission\": 3, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
 
             return UnitTestHelper.EncodeAsStringContent(jsonStr, true, "content", "$content");
@@ -719,7 +719,7 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
             // Since a property beginning with '$' cannot be defined in an anonymous type,
             // this JSON is created using strings
 
-            var jsonStr = "{ \"name\": \"myfilename.ctrl\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"crn\": \"11020219620000000\", \"uosr\": \"UOSR123456\", \"type\": \"LANDCOVER_CHANGE\", ";
+            var jsonStr = "{ \"name\": \"myfilename_ctrl.json\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"crn\": \"11020219620000000\", \"uosr\": \"UOSR123456\", \"type\": \"LANDCOVER_CHANGE\", ";
             jsonStr += "\"submissionDate\": \"25/01/2023 07:55:40\", \"filesInSubmission\": 3, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
 
             return UnitTestHelper.EncodeAsStringContent(jsonStr, true, "content", "$content");
@@ -730,7 +730,7 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
             // Since a property beginning with '$' cannot be defined in an anonymous type,
             // this JSON is created using strings
 
-            var jsonStr = "{ \"name\": \"myfilename.ctrl\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"frn\": \"1102077240\", \"uosr\": \"UOSR123456\", \"type\": \"LANDCOVER_CHANGE\", ";
+            var jsonStr = "{ \"name\": \"myfilename_ctrl.json\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"frn\": \"1102077240\", \"uosr\": \"UOSR123456\", \"type\": \"LANDCOVER_CHANGE\", ";
             jsonStr += "\"submissionDate\": \"25/01/2023 07:55:40\", \"filesInSubmission\": 3, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
 
             return UnitTestHelper.EncodeAsStringContent(jsonStr, true, "content", "$content");
@@ -741,7 +741,7 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
             // Since a property beginning with '$' cannot be defined in an anonymous type,
             // this JSON is created using strings
 
-            var jsonStr = "{ \"name\": \"myfilename.ctrl\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"frn\": \"1102077240\", \"crn\": \"11020219620000000\", \"type\": \"LANDCOVER_CHANGE\", ";
+            var jsonStr = "{ \"name\": \"myfilename_ctrl.json\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"frn\": \"1102077240\", \"crn\": \"11020219620000000\", \"type\": \"LANDCOVER_CHANGE\", ";
             jsonStr += "\"submissionDate\": \"25/01/2023 07:55:40\", \"filesInSubmission\": 3, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
 
             return UnitTestHelper.EncodeAsStringContent(jsonStr, true, "content", "$content");
@@ -752,7 +752,7 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
             // Since a property beginning with '$' cannot be defined in an anonymous type,
             // this JSON is created using strings
 
-            var jsonStr = "{ \"name\": \"myfilename.ctrl\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"frn\": \"1102077240\", \"crn\": \"11020219620000000\", \"uosr\": \"UOSR123456\", \"type\": \"LANDCOVER_CHANGE\", ";
+            var jsonStr = "{ \"name\": \"myfilename_ctrl.json\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"frn\": \"1102077240\", \"crn\": \"11020219620000000\", \"uosr\": \"UOSR123456\", \"type\": \"LANDCOVER_CHANGE\", ";
             jsonStr += " \"filesInSubmission\": 3, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
 
             return UnitTestHelper.EncodeAsStringContent(jsonStr, true, "content", "$content");
@@ -763,7 +763,7 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
             // Since a property beginning with '$' cannot be defined in an anonymous type,
             // this JSON is created using strings
 
-            var jsonStr = "{ \"name\": \"myfilename.ctrl\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"frn\": \"1102077240\", \"crn\": \"11020219620000000\", \"uosr\": \"UOSR123456\", \"type\": \"LANDCOVER_CHANGE\", ";
+            var jsonStr = "{ \"name\": \"myfilename_ctrl.json\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"frn\": \"1102077240\", \"crn\": \"11020219620000000\", \"uosr\": \"UOSR123456\", \"type\": \"LANDCOVER_CHANGE\", ";
             jsonStr += "\"submissionDate\": \"25/01/2023 07:55:40\", \"filesInSubmission\": 2, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
 
             return UnitTestHelper.EncodeAsStringContent(jsonStr, true, "content", "$content");

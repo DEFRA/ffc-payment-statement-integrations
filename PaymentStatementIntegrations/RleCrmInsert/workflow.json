@@ -1099,7 +1099,7 @@
                 },
                 "conditions": [
                     {
-                        "expression": "@endsWith(triggerBody()?['Name'],'.ctrl')"
+                        "expression": "@endsWith(triggerBody()?['Name'],'_ctrl.json')"
                     }
                 ]
             }
