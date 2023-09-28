@@ -11,12 +11,12 @@
   },
   {
     "name": "CrmBaseUrl",
-    "value": "https://rpadevv9.crm4.dynamics.com",
+    "value": "https://rpa-csc-uat.crm4.dynamics.com",
     "slotSetting": false
   },
   {
     "name": "CrmDocTypeLookup",
-    "value": "{ \"LANDCOVER_CHANGE\": { \"id\": \"db363964-c906-ee11-8f6e-0022489ede2f\", \"desc\": \"Land Cover\" }, \"MERGE\": { \"id\": \"05ea5085-c906-ee11-8f6e-0022489ede2f\", \"desc\": \"Merge\" }, \"REGISTERING_NEW_LAND\": { \"id\": \"ff7b3b00-cb06-ee11-8f6e-0022489ede2f\", \"desc\": \"Registering New Land\" }, \"ALL_OTHERS\": { \"id\": \"1fdded19-cb06-ee11-8f6e-0022489ede2f\", \"desc\": \"All Other Land Changes\" } }",
+    "value": "{ \"LANDCOVER_CHANGE\": { \"id\": \"db363964-c906-ee11-8f6e-0022489ede2f\", \"desc\": \"Full land cover change\" }, \"PARCEL_MERGE\": { \"id\": \"05ea5085-c906-ee11-8f6e-0022489ede2f\", \"desc\": \"Merge land parcels\" }, \"REGISTER_NEWLAND\": { \"id\": \"ff7b3b00-cb06-ee11-8f6e-0022489ede2f\", \"desc\": \"Register new land\" }, \"BOUNDARY_CHANGE\": { \"id\": \"1fdded19-cb06-ee11-8f6e-0022489ede2f\", \"desc\": \"All other land changes\" } }",
     "slotSetting": false
   },
   {
@@ -31,12 +31,12 @@
   },
   {
     "name": "FfcServiceBusTopic",
-    "value": "ffc-pay-statement-crm-dev",
+    "value": "ffc-pay-statement-crm-test",
     "slotSetting": false
   },
   {
     "name": "PdfServiceUrl",
-    "value": "https://ffc-pay-statement-receiver.ffc.dev.azure.defra.cloud/v1",
+    "value": "https://ffc-pay-statement-receiver-test.azure.defra.cloud/v1",
     "slotSetting": false
   },
   {
@@ -61,27 +61,37 @@
   },
   {
     "name": "SharepointBaseUrl",
-    "value": "https://defradev.sharepoint.com",
+    "value": "https://defra.sharepoint.com",
     "slotSetting": false
   },
   {
     "name": "SharepointClientId",
-    "value": "@Microsoft.KeyVault(SecretUri=https://tstrleinfkv1401.vault.azure.net/secrets/SharepointClientId/654f7aada3644595a0e0f230413ca750)",
+    "value": "@Microsoft.KeyVault(SecretUri=https://tstrleinfkv1401.vault.azure.net/secrets/SharepointClientId/fde10d1e87b6460ca737b3bdfee397b8)",
     "slotSetting": false
   },
   {
     "name": "SharepointClientSecret",
-    "value": "@Microsoft.KeyVault(SecretUri=https://tstrleinfkv1401.vault.azure.net/secrets/SharepointClientSecret/1456e175ef2c4066846be176c62773c3)",
+    "value": "@Microsoft.KeyVault(SecretUri=https://tstrleinfkv1401.vault.azure.net/secrets/SharepointClientSecret/c4d8d09676a54770b617b06e6fb5b671)",
+    "slotSetting": false
+  },
+  {
+    "name": "SharepointDomain",
+    "value": "defra.sharepoint.com",
+    "slotSetting": false
+  },
+  {
+    "name": "SharepointLoginBaseUrl",
+    "value": "https://accounts.accesscontrol.windows.net",
     "slotSetting": false
   },
   {
     "name": "SharepointSiteSubPath",
-    "value": "/sites/tempdocstoretst",
+    "value": "sites/rpa-custdocstore-uat2",
     "slotSetting": false
   },
   {
     "name": "SharepointTenantId",
-    "value": "@Microsoft.KeyVault(SecretUri=https://tstrleinfkv1401.vault.azure.net/secrets/SharepointTenantId/a1f45990611b4c988ac97c5e1af0da2c)",
+    "value": "@Microsoft.KeyVault(SecretUri=https://tstrleinfkv1401.vault.azure.net/secrets/SharepointTenantId/2c2c624e813845f193e40ec9561c4653)",
     "slotSetting": false
   },
   {

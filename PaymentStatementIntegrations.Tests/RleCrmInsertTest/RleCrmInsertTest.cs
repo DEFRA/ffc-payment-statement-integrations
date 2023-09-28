@@ -145,8 +145,6 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_Sharepoint_Token"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Parse_Sharepoint_Token"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Create_Folder"));
-                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Append_to_array_variable"));
-                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Update_FilesInSubmission"));
 
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_filename"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Read_blob_content"));
@@ -159,10 +157,10 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                 Assert.AreEqual(1, testRunner.GetWorkflowActionRepetitionCount("Create_Folder"));
 
                 // Check that loop ran 3 times
-                Assert.AreEqual(4, testRunner.GetWorkflowActionRepetitionCount("Get_filename"));
-                Assert.AreEqual(4, testRunner.GetWorkflowActionRepetitionCount("Read_blob_content"));
-                Assert.AreEqual(4, testRunner.GetWorkflowActionRepetitionCount("Copy_To_Sharepoint"));
-                Assert.AreEqual(4, testRunner.GetWorkflowActionRepetitionCount("Create_Meta_Data"));
+                Assert.AreEqual(3, testRunner.GetWorkflowActionRepetitionCount("Get_filename"));
+                Assert.AreEqual(3, testRunner.GetWorkflowActionRepetitionCount("Read_blob_content"));
+                Assert.AreEqual(3, testRunner.GetWorkflowActionRepetitionCount("Copy_To_Sharepoint"));
+                Assert.AreEqual(3, testRunner.GetWorkflowActionRepetitionCount("Create_Meta_Data"));
 
 
                 // Check which SBI value was used - should be from CTL file
@@ -173,11 +171,69 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                 // Check request to CRM for 'create metadata'
                 // The 'For-Each' loop runs in parallel so we can't guarantee the order or results here
                 var crmMetadataRequests = testRunner.MockRequests.Where(r => r.RequestUri.AbsolutePath.Contains("/api/data/v9.2/rpa_activitymetadatas")).ToList();
-                Assert.AreEqual(4, crmMetadataRequests.Count);
+                Assert.AreEqual(3, crmMetadataRequests.Count);
                 Assert.IsTrue(crmMetadataRequests.All(x => x.Method == HttpMethod.Post));
                 Assert.AreEqual(1, crmMetadataRequests.Count(x => x.Content.Contains("\"rpa_filename\":\"File1.txt\"")));
                 Assert.AreEqual(1, crmMetadataRequests.Count(x => x.Content.Contains("\"rpa_filename\":\"File2.txt\"")));
                 Assert.AreEqual(1, crmMetadataRequests.Count(x => x.Content.Contains("\"rpa_filename\":\"File3.txt\"")));
+
+                // Check tracked properties
+                var trackedProps = testRunner.GetWorkflowActionTrackedProperties("Init_FileList");
+                Assert.AreEqual("RleCrmInsert", trackedProps["WorkflowName"]);
+            }
+        }
+
+        /// <summary>
+        /// Tests that the correct response is returned when successful but no files array - just the summary PDF
+        /// </summary>
+        [TestMethod]
+        public void CrmInsertTest_Fails_When_No_Files_Array()
+        {
+            // Override one of the settings in the local settings file
+            var settingsToOverride = new Dictionary<string, string>();
+
+            using (ITestRunner testRunner = CreateTestRunner(settingsToOverride))
+            {
+                // Mock the HTTP calls and customize responses
+                testRunner.AddApiMocks = (request) =>
+                {
+                    HttpResponseMessage mockedResponse = new HttpResponseMessage();
+                    if (request?.RequestUri != null)
+                    {
+                        if (request.RequestUri.AbsolutePath.Contains("/oauth2/token") && request.Method == HttpMethod.Post)
+                        {
+                            // CRM token
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                            mockedResponse.Content = ValidAuthToken();
+                        }
+                    }
+                    return mockedResponse;
+                };
+
+                // Run the workflow
+                // Since there is a condition on the trigger that the filename must end in '.ctrl', we must supply a Name property in the content
+                var workflowResponse = testRunner.TriggerWorkflow(GetBlobControlFileNoFilesArray(), HttpMethod.Post);
+
+                // Check workflow run status
+                Assert.AreEqual(WorkflowRunStatus.Succeeded, testRunner.WorkflowRunStatus);
+
+                // Check workflow response
+                testRunner.ExceptionWrapper(() => Assert.AreEqual(HttpStatusCode.Accepted, workflowResponse.StatusCode));
+                Assert.AreEqual(HttpStatusCode.Accepted, workflowResponse.StatusCode);
+
+                // Check action result
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_trigger_CTL_contents"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Decode_blob_CTL_contents"));
+                Assert.AreEqual(ActionStatus.Failed, testRunner.GetWorkflowActionStatus("Parse_CTL_File"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Get_CRM_Token"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Is_File_Number_Match"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Append_file_mismatch_error"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Log_error"));
+
+                // Check error message
+                var finalError = testRunner.GetWorkflowActionInput("Log_error").ToString();
+                Assert.IsTrue(finalError.Contains("schema validation failed"));
 
                 // Check tracked properties
                 var trackedProps = testRunner.GetWorkflowActionTrackedProperties("Init_FileList");
@@ -311,16 +367,16 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                 Assert.AreEqual(1, testRunner.GetWorkflowActionRepetitionCount("Create_Folder"));
 
                 // Check that loop ran 3 times
-                Assert.AreEqual(4, testRunner.GetWorkflowActionRepetitionCount("Get_filename"));
-                Assert.AreEqual(4, testRunner.GetWorkflowActionRepetitionCount("Read_blob_content"));
-                Assert.AreEqual(4, testRunner.GetWorkflowActionRepetitionCount("Copy_To_Sharepoint"));
-                Assert.AreEqual(4, testRunner.GetWorkflowActionRepetitionCount("Create_Meta_Data"));
+                Assert.AreEqual(3, testRunner.GetWorkflowActionRepetitionCount("Get_filename"));
+                Assert.AreEqual(3, testRunner.GetWorkflowActionRepetitionCount("Read_blob_content"));
+                Assert.AreEqual(3, testRunner.GetWorkflowActionRepetitionCount("Copy_To_Sharepoint"));
+                Assert.AreEqual(3, testRunner.GetWorkflowActionRepetitionCount("Create_Meta_Data"));
 
 
                 // Check request to CRM for 'create metadata'
                 // The 'For-Each' loop runs in parallel so we can't guarantee the order or results here
                 var crmMetadataRequests = testRunner.MockRequests.Where(r => r.RequestUri.AbsolutePath.Contains("/api/data/v9.2/rpa_activitymetadatas")).ToList();
-                Assert.AreEqual(4, crmMetadataRequests.Count);
+                Assert.AreEqual(3, crmMetadataRequests.Count);
                 Assert.IsTrue(crmMetadataRequests.All(x => x.Method == HttpMethod.Post));
                 Assert.AreEqual(1, crmMetadataRequests.Count(x => x.Content.Contains("\"rpa_filename\":\"File1.txt\"")));
                 Assert.AreEqual(1, crmMetadataRequests.Count(x => x.Content.Contains("\"rpa_filename\":\"File2.txt\"")));
@@ -697,8 +753,19 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
             // Since a property beginning with '$' cannot be defined in an anonymous type,
             // this JSON is created using strings
 
-            var jsonStr = "{ \"name\": \"myfilename.ctrl\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"frn\": \"1102077240\", \"crn\": \"11020219620000000\", \"uosr\": \"UOSR123456\", \"type\": \"LANDCOVER_CHANGE\", ";
-            jsonStr += "\"submissionDate\": \"25/01/2023 07:55:40\", \"filesInSubmission\": 3, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
+            var jsonStr = "{ \"name\": \"myfilename_ctrl.json\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"frn\": \"1102077240\", \"crn\": \"11020219620000000\", \"uosr\": \"UOSR123456\", \"type\": \"LANDCOVER_CHANGE\", ";
+            jsonStr += "\"submissionDateTime\": \"25/01/2023 07:55:40\", \"filesInSubmission\": 3, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
+
+            return UnitTestHelper.EncodeAsStringContent(jsonStr, true, "content", "$content");
+        }
+
+        private static StringContent GetBlobControlFileNoFilesArray()
+        {
+            // Since a property beginning with '$' cannot be defined in an anonymous type,
+            // this JSON is created using strings
+
+            var jsonStr = "{ \"name\": \"myfilename_ctrl.json\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"frn\": \"1102077240\", \"crn\": \"11020219620000000\", \"uosr\": \"UOSR123456\", \"type\": \"LANDCOVER_CHANGE\", ";
+            jsonStr += "\"submissionDateTime\": \"25/01/2023 07:55:40\", \"filesInSubmission\": 0 } } }";
 
             return UnitTestHelper.EncodeAsStringContent(jsonStr, true, "content", "$content");
         }
@@ -708,8 +775,8 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
             // Since a property beginning with '$' cannot be defined in an anonymous type,
             // this JSON is created using strings
 
-            var jsonStr = "{ \"name\": \"myfilename.ctrl\", \"content\": { \"$content\": { \"frn\": \"1102077240\", \"crn\": \"11020219620000000\", \"uosr\": \"UOSR123456\", \"type\": \"LANDCOVER_CHANGE\", ";
-            jsonStr += "\"submissionDate\": \"25/01/2023 07:55:40\", \"filesInSubmission\": 3, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
+            var jsonStr = "{ \"name\": \"myfilename_ctrl.json\", \"content\": { \"$content\": { \"frn\": \"1102077240\", \"crn\": \"11020219620000000\", \"uosr\": \"UOSR123456\", \"type\": \"LANDCOVER_CHANGE\", ";
+            jsonStr += "\"submissionDateTime\": \"25/01/2023 07:55:40\", \"filesInSubmission\": 3, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
 
             return UnitTestHelper.EncodeAsStringContent(jsonStr, true, "content", "$content");
         }
@@ -719,8 +786,8 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
             // Since a property beginning with '$' cannot be defined in an anonymous type,
             // this JSON is created using strings
 
-            var jsonStr = "{ \"name\": \"myfilename.ctrl\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"crn\": \"11020219620000000\", \"uosr\": \"UOSR123456\", \"type\": \"LANDCOVER_CHANGE\", ";
-            jsonStr += "\"submissionDate\": \"25/01/2023 07:55:40\", \"filesInSubmission\": 3, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
+            var jsonStr = "{ \"name\": \"myfilename_ctrl.json\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"crn\": \"11020219620000000\", \"uosr\": \"UOSR123456\", \"type\": \"LANDCOVER_CHANGE\", ";
+            jsonStr += "\"submissionDateTime\": \"25/01/2023 07:55:40\", \"filesInSubmission\": 3, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
 
             return UnitTestHelper.EncodeAsStringContent(jsonStr, true, "content", "$content");
         }
@@ -730,8 +797,8 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
             // Since a property beginning with '$' cannot be defined in an anonymous type,
             // this JSON is created using strings
 
-            var jsonStr = "{ \"name\": \"myfilename.ctrl\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"frn\": \"1102077240\", \"uosr\": \"UOSR123456\", \"type\": \"LANDCOVER_CHANGE\", ";
-            jsonStr += "\"submissionDate\": \"25/01/2023 07:55:40\", \"filesInSubmission\": 3, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
+            var jsonStr = "{ \"name\": \"myfilename_ctrl.json\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"frn\": \"1102077240\", \"uosr\": \"UOSR123456\", \"type\": \"LANDCOVER_CHANGE\", ";
+            jsonStr += "\"submissionDateTime\": \"25/01/2023 07:55:40\", \"filesInSubmission\": 3, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
 
             return UnitTestHelper.EncodeAsStringContent(jsonStr, true, "content", "$content");
         }
@@ -741,8 +808,8 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
             // Since a property beginning with '$' cannot be defined in an anonymous type,
             // this JSON is created using strings
 
-            var jsonStr = "{ \"name\": \"myfilename.ctrl\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"frn\": \"1102077240\", \"crn\": \"11020219620000000\", \"type\": \"LANDCOVER_CHANGE\", ";
-            jsonStr += "\"submissionDate\": \"25/01/2023 07:55:40\", \"filesInSubmission\": 3, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
+            var jsonStr = "{ \"name\": \"myfilename_ctrl.json\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"frn\": \"1102077240\", \"crn\": \"11020219620000000\", \"type\": \"LANDCOVER_CHANGE\", ";
+            jsonStr += "\"submissionDateTime\": \"25/01/2023 07:55:40\", \"filesInSubmission\": 3, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
 
             return UnitTestHelper.EncodeAsStringContent(jsonStr, true, "content", "$content");
         }
@@ -752,7 +819,7 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
             // Since a property beginning with '$' cannot be defined in an anonymous type,
             // this JSON is created using strings
 
-            var jsonStr = "{ \"name\": \"myfilename.ctrl\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"frn\": \"1102077240\", \"crn\": \"11020219620000000\", \"uosr\": \"UOSR123456\", \"type\": \"LANDCOVER_CHANGE\", ";
+            var jsonStr = "{ \"name\": \"myfilename_ctrl.json\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"frn\": \"1102077240\", \"crn\": \"11020219620000000\", \"uosr\": \"UOSR123456\", \"type\": \"LANDCOVER_CHANGE\", ";
             jsonStr += " \"filesInSubmission\": 3, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
 
             return UnitTestHelper.EncodeAsStringContent(jsonStr, true, "content", "$content");
@@ -763,8 +830,8 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
             // Since a property beginning with '$' cannot be defined in an anonymous type,
             // this JSON is created using strings
 
-            var jsonStr = "{ \"name\": \"myfilename.ctrl\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"frn\": \"1102077240\", \"crn\": \"11020219620000000\", \"uosr\": \"UOSR123456\", \"type\": \"LANDCOVER_CHANGE\", ";
-            jsonStr += "\"submissionDate\": \"25/01/2023 07:55:40\", \"filesInSubmission\": 2, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
+            var jsonStr = "{ \"name\": \"myfilename_ctrl.json\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"frn\": \"1102077240\", \"crn\": \"11020219620000000\", \"uosr\": \"UOSR123456\", \"type\": \"LANDCOVER_CHANGE\", ";
+            jsonStr += "\"submissionDateTime\": \"25/01/2023 07:55:40\", \"filesInSubmission\": 2, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
 
             return UnitTestHelper.EncodeAsStringContent(jsonStr, true, "content", "$content");
         }
