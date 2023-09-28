@@ -175,7 +175,7 @@
                     },
                     "Convert_Date_Format": {
                         "type": "Compose",
-                        "inputs": "@formatDateTime(convertToUtc(parseDateTime(body('Parse_CTL_File')?['submissionDate'], 'en-GB', 'dd/MM/yyyy HH:mm:ss'),'GMT Standard Time'),'yyyy-MM-dd HH:mm:ss')",
+                        "inputs": "@formatDateTime(convertToUtc(parseDateTime(body('Parse_CTL_File')?['submissionDateTime'], 'en-GB', 'dd/MM/yyyy HH:mm:ss'),'GMT Standard Time'),'yyyy-MM-dd HH:mm:ss')",
                         "runAfter": {
                             "Append_progress_case_id": [
                                 "SUCCEEDED"
@@ -264,7 +264,7 @@
                     "Determine_doc_type": {
                         "type": "JavaScriptCode",
                         "inputs": {
-                            "code": "const lookups = JSON.parse(workflowContext.actions.Get_Doc_Type_Lookups.outputs);\nconst typeCode = workflowContext.actions.Parse_CTL_File.outputs.body['type'];\nvar result = lookups[typeCode];\nreturn result ? result : lookups['ALL_OTHERS'];"
+                            "code": "const lookups = JSON.parse(workflowContext.actions.Get_Doc_Type_Lookups.outputs);\nconst typeCode = workflowContext.actions.Parse_CTL_File.outputs.body['type'];\nvar result = lookups[typeCode];\nreturn result ? result : lookups['BOUNDARY_CHANGE'];"
                         },
                         "runAfter": {
                             "Get_Doc_Type_Lookups": [
@@ -371,7 +371,7 @@
                             "body": "grant_type=client_credentials\n&client_id=@{parameters('PortalClientId')}\n&client_secret=@{encodeUriComponent(parameters('PortalClientSecret'))}\n&resource=@{encodeUriComponent(parameters('CrmBaseUrl'))}"
                         },
                         "runAfter": {
-                            "Does_Summary_File_Exist": [
+                            "Is_File_Number_Match": [
                                 "SUCCEEDED"
                             ]
                         },
@@ -710,7 +710,7 @@
                                     "sbi": {
                                         "type": "string"
                                     },
-                                    "submissionDate": {
+                                    "submissionDateTime": {
                                         "type": "string"
                                     },
                                     "type": {
@@ -724,7 +724,7 @@
                                     "crn",
                                     "frn",
                                     "uosr",
-                                    "submissionDate",
+                                    "submissionDateTime",
                                     "filesInSubmission",
                                     "files"
                                 ],
@@ -875,48 +875,6 @@
                                 "SUCCEEDED"
                             ]
                         }
-                    },
-                    "Does_Summary_File_Exist": {
-                        "type": "If",
-                        "expression": {
-                            "and": [
-                                {
-                                    "contains": [
-                                        "@variables('FileList')",
-                                        "@{body('Parse_CTL_File')['uosr']}_Summary.pdf"
-                                    ]
-                                }
-                            ]
-                        },
-                        "actions": {},
-                        "else": {
-                            "actions": {
-                                "Append_to_array_variable": {
-                                    "type": "AppendToArrayVariable",
-                                    "inputs": {
-                                        "name": "FileList",
-                                        "value": "@{body('Parse_CTL_File')['uosr']}_Summary.pdf"
-                                    }
-                                },
-                                "Update_FilesInSubmission": {
-                                    "type": "SetVariable",
-                                    "inputs": {
-                                        "name": "FilesInSubmission",
-                                        "value": "@length(variables('FileList'))"
-                                    },
-                                    "runAfter": {
-                                        "Append_to_array_variable": [
-                                            "SUCCEEDED"
-                                        ]
-                                    }
-                                }
-                            }
-                        },
-                        "runAfter": {
-                            "Is_File_Number_Match": [
-                                "SUCCEEDED"
-                            ]
-                        }
                     }
                 },
                 "runAfter": {
@@ -990,7 +948,7 @@
                 }
             }
         },
-        "contentVersion": "1.0.0.0",
+        "contentVersion": "1.1.0.0",
         "outputs": {},
         "parameters": {
             "AdLoginBaseUrl": {
@@ -1099,7 +1057,7 @@
                 },
                 "conditions": [
                     {
-                        "expression": "@endsWith(triggerBody()?['Name'],'.ctrl')"
+                        "expression": "@endsWith(triggerBody()?['Name'],'_ctrl.json')"
                     }
                 ]
             }

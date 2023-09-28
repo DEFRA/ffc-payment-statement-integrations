@@ -41,4 +41,4 @@ variables:
   # Details for Azure Alerting when workflow catastrophic fails
   actionGroupName: '$(resourcePrefix)AG1402'
   scheduledQueryRuleName: '$(resourcePrefix)AIAR1402'
-  alertingEmailAddress: 'jeremy.barnsley@defra.gov.uk'
+  alertingEmailAddress: 'crmuserforum@rpa.gov.uk'
