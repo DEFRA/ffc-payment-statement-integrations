@@ -371,7 +371,7 @@
                             "body": "grant_type=client_credentials\n&client_id=@{parameters('PortalClientId')}\n&client_secret=@{encodeUriComponent(parameters('PortalClientSecret'))}\n&resource=@{encodeUriComponent(parameters('CrmBaseUrl'))}"
                         },
                         "runAfter": {
-                            "Does_Summary_File_Exist": [
+                            "Is_File_Number_Match": [
                                 "SUCCEEDED"
                             ]
                         },
@@ -725,7 +725,8 @@
                                     "frn",
                                     "uosr",
                                     "submissionDateTime",
-                                    "filesInSubmission"
+                                    "filesInSubmission",
+                                    "files"
                                 ],
                                 "type": "object"
                             }
@@ -871,48 +872,6 @@
                         },
                         "runAfter": {
                             "Set_FileList": [
-                                "SUCCEEDED"
-                            ]
-                        }
-                    },
-                    "Does_Summary_File_Exist": {
-                        "type": "If",
-                        "expression": {
-                            "and": [
-                                {
-                                    "contains": [
-                                        "@variables('FileList')",
-                                        "@{body('Parse_CTL_File')['uosr']}_Summary.pdf"
-                                    ]
-                                }
-                            ]
-                        },
-                        "actions": {},
-                        "else": {
-                            "actions": {
-                                "Append_to_array_variable": {
-                                    "type": "AppendToArrayVariable",
-                                    "inputs": {
-                                        "name": "FileList",
-                                        "value": "@{body('Parse_CTL_File')['uosr']}_Summary.pdf"
-                                    }
-                                },
-                                "Update_FilesInSubmission": {
-                                    "type": "SetVariable",
-                                    "inputs": {
-                                        "name": "FilesInSubmission",
-                                        "value": "@length(variables('FileList'))"
-                                    },
-                                    "runAfter": {
-                                        "Append_to_array_variable": [
-                                            "SUCCEEDED"
-                                        ]
-                                    }
-                                }
-                            }
-                        },
-                        "runAfter": {
-                            "Is_File_Number_Match": [
                                 "SUCCEEDED"
                             ]
                         }
