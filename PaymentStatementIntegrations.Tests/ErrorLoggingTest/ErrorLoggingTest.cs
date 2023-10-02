@@ -52,7 +52,7 @@ namespace PaymentStatementIntegrations.Tests.ErrorLoggingTest
                             mockedResponse.StatusCode = HttpStatusCode.OK;
                             mockedResponse.Content = ValidAuthToken();
                         }
-                        else if (request.RequestUri.AbsolutePath.Contains("/api/data/v9.2/accounts") && request.Method == HttpMethod.Get)
+                        else if (request.RequestUri.AbsolutePath.Contains("/api/data/v9.2/rpa_integrationinboundqueues") && request.Method == HttpMethod.Get)
                         {
                             mockedResponse.RequestMessage = request;
                             mockedResponse.StatusCode = HttpStatusCode.OK;
@@ -90,6 +90,66 @@ namespace PaymentStatementIntegrations.Tests.ErrorLoggingTest
             }
         }
 
+        /// <summary>
+        /// Tests that the correct response is processed.
+        /// </summary>
+        [TestMethod]
+        public void LogError_Adds_StackTrace_And_Correct_Type()
+        {
+            // Override one of the settings in the local settings file
+            var settingsToOverride = new Dictionary<string, string>();
+
+            using (ITestRunner testRunner = CreateTestRunner(settingsToOverride))
+            {
+                // Mock the HTTP calls and customize responses
+                testRunner.AddApiMocks = (request) =>
+                {
+                    HttpResponseMessage mockedResponse = new HttpResponseMessage();
+                    if (request?.RequestUri != null)
+                    {
+                        if (request.RequestUri.AbsolutePath.Contains("/oauth2/token") && request.Method == HttpMethod.Post)
+                        {
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                            mockedResponse.Content = ValidAuthToken();
+                        }
+                        else if (request.RequestUri.AbsolutePath.Contains("/api/data/v9.2/rpa_integrationinboundqueues") && request.Method == HttpMethod.Get)
+                        {
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                            mockedResponse.Content = ValidCreateCrmLogRecord();
+                        }
+                    }
+                    return mockedResponse;
+                };
+
+                // Run the workflow
+                var workflowResponse = testRunner.TriggerWorkflow(
+                    GetWorkflowPayload(),
+                    HttpMethod.Post);
+
+                // Check workflow run status
+                Assert.AreEqual(WorkflowRunStatus.Succeeded, testRunner.WorkflowRunStatus);
+
+                // Check workflow response
+                testRunner.ExceptionWrapper(() => Assert.AreEqual(HttpStatusCode.OK, workflowResponse.StatusCode));
+                Assert.AreEqual(HttpStatusCode.OK, workflowResponse.StatusCode);
+
+                // Check action result
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_error_stack"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Strip_sensitive_data"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_CRM_Token"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Parse_CRM_Token"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Create_CRM_Error_Log"));
+
+                // Check error message
+                var crmRequest = testRunner.MockRequests.First(r => r.RequestUri.AbsolutePath.Contains("/api/data/v9.2/rpa_integrationinboundqueues"));
+                Assert.AreEqual(HttpMethod.Post, crmRequest.Method);
+                Assert.IsTrue(crmRequest.Content.Contains("Error text: we got this far \\\"Failure with client_secret"));
+                Assert.IsTrue(crmRequest.Content.Contains("\"rpa_processingentity\":\"927350005"));
+            }
+        }
+
         private static StringContent GetWorkflowPayload()
         {
             var json = new
@@ -99,8 +159,18 @@ namespace PaymentStatementIntegrations.Tests.ErrorLoggingTest
                 progressText = "we got this far",
                 stack = new []
                 {
-                    new { status = "Failed", otherText = "otherTextFailure with client_secret=secret-SENSITIVE-data&Authorization:SENSITIVE-TOKEN}&client_id=12345SENSITIVE" },
-                    new { status = "Succeeded", otherText = "Succeeded" }
+                    new { status = "Failed", 
+                          error = new {
+                            code = "ActionConditionFailed",
+                            message = "Failure with client_secret=secret-SENSITIVE-data&Authorization:SENSITIVE-TOKEN}&client_id=12345SENSITIVE"
+                          }
+                    },
+                    new { status = "Succeeded",
+                          error  = new {
+                            code = "",
+                            message = ""
+                        }
+                    }
                 }
             };
 
