@@ -33,7 +33,7 @@
             "Strip_sensitive_data": {
                 "type": "JavaScriptCode",
                 "inputs": {
-                    "code": "// This code snippet removes any sensitive token values if defined\n\n// List of tokens with their terminating char - defined in pairs\nvar sensitiveTokens = [ 'client_secret=', '&', 'client_id=', '&', 'Authorization', '}' ];\nvar errorStack = JSON.stringify(workflowContext.actions.Get_error_stack.outputs);\ntry {\n    for (var i=0; i < sensitiveTokens.length; i = i + 2) {\n        var tok = sensitiveTokens[i];\n        var tokLen = tok.length;\n        var tokPos = errorStack.indexOf(tok);\n        var endPos = errorStack.indexOf(sensitiveTokens[i+1],tokPos + 1);\n        if (tokPos > -1) {\n            if (endPos > -1) {\n                errorStack = errorStack.substring(0, tokPos + tokLen) +\n                    '******' +\n                    errorStack.substring(endPos);\n            } else {\n                errorStack = errorStack.substring(0, tokPos + tokLen) +\n                    '******';\n            }\n        }\n    }\n}\ncatch (err) {\n  // Do nothing\n}\nreturn errorStack;"
+                    "code": "// This code snippet removes any sensitive token values if defined\n\n// List of tokens with their terminating char - defined in pairs\nvar sensitiveTokens = [ 'client_secret=', '&', 'client_id=', '&', 'Authorization', '}' ];\nvar errorStack = \"unknown\";\ntry {\n    errorStack = JSON.stringify(workflowContext.actions.Get_error_stack.outputs.body[0].error.message);\n    for (var i=0; i < sensitiveTokens.length; i = i + 2) {\n        var tok = sensitiveTokens[i];\n        var tokLen = tok.length;\n        var tokPos = errorStack.indexOf(tok);\n        var endPos = errorStack.indexOf(sensitiveTokens[i+1],tokPos + 1);\n        if (tokPos > -1) {\n            if (endPos > -1) {\n                errorStack = errorStack.substring(0, tokPos + tokLen) +\n                    '******' +\n                    errorStack.substring(endPos);\n            } else {\n                errorStack = errorStack.substring(0, tokPos + tokLen) +\n                    '******';\n            }\n        }\n    }\n}\ncatch (err) {\n  // Do nothing\n}\nreturn errorStack;"
                 },
                 "runAfter": {
                     "Get_error_stack": [
@@ -83,11 +83,11 @@
                     "headers": {
                         "Authorization": "Bearer @{body('Parse_CRM_Token')?['access_token']}"
                     },
-                    "body": {
-                        "rpa_name": "@{triggerBody().workflowRunId}",
-                        "rpa_processingentity": "@{if(startsWith(toLower(triggerBody().workflowRunId),'rle'), 927350005, 927350006)}",
-                        "rpa_xmlmessage": "Failed workflow: @{triggerBody().callingWorkflowName} \nFailed run: @{concat('https://portal.azure.com/#blade/Microsoft_Azure_EMA/DesignerEditor.ReactView/id/', encodeUriComponent(concat('/subscriptions/',appsetting('WORKFLOWS_SUBSCRIPTION_ID'), '/resourceGroups/', appsetting('WORKFLOWS_RESOURCE_GROUP_NAME'),'/providers/Microsoft.Web/sites/',appsetting('WORKFLOWS_LOGIC_APP_NAME'),'/workflows/',triggerBody().callingWorkflowName)),'/location/',appsetting('WORKFLOWS_LOCATION_NAME'),'/isReadOnly/true/isMonitoringView/true/runId/',triggerBody().workflowRunId)} \nError text: @{triggerBody().progressText}"
-                    }
+                  "body": {
+                    "rpa_name": "@{triggerBody().workflowRunId}",
+                    "rpa_processingentity": "@{if(startsWith(toLower(triggerBody().callingWorkflowName),'rle'), 927350005, 927350006)}",
+                    "rpa_xmlmessage": "Failed workflow: @{triggerBody().callingWorkflowName} \nFailed run: @{concat('https://portal.azure.com/#blade/Microsoft_Azure_EMA/DesignerEditor.ReactView/id/', encodeUriComponent(concat('/subscriptions/',appsetting('WORKFLOWS_SUBSCRIPTION_ID'), '/resourceGroups/', appsetting('WORKFLOWS_RESOURCE_GROUP_NAME'),'/providers/Microsoft.Web/sites/',appsetting('WORKFLOWS_LOGIC_APP_NAME'),'/workflows/',triggerBody().callingWorkflowName)),'/location/',appsetting('WORKFLOWS_LOCATION_NAME'),'/isReadOnly/true/isMonitoringView/true/runId/',triggerBody().workflowRunId)} \nError text: @{triggerBody().progressText} @{outputs('Strip_sensitive_data')}"
+                  }
                 },
                 "runAfter": {
                     "Parse_CRM_Token": [
