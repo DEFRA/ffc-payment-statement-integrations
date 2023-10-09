@@ -437,7 +437,7 @@
                                         "Content-Type": "application/json"
                                     },
                                     "body": {
-                                        "ServerRelativeUrl": "/@{parameters('SharepointSiteSubPath')}/Documents@{variables('NewCaseNumber')}@{variables('ActivityId')}"
+                                        "ServerRelativeUrl": "/@{parameters('SharepointSiteSubPath')}/Documents@{variables('NewCaseNumber')}/@{variables('ActivityId')}"
                                     }
                                 },
                                 "runAfter": {
@@ -494,7 +494,7 @@
                                     "Copy_To_Sharepoint": {
                                         "type": "Http",
                                         "inputs": {
-                                            "uri": "@{parameters('SharepointBaseUrl')}/@{parameters('SharepointSiteSubPath')}/_api/web/GetFolderByServerRelativeUrl('Documents@{variables('NewCaseNumber')}@{variables('ActivityId')}')/Files/add(url='@{outputs('Get_filename')}',overwrite=true)",
+                                            "uri": "@{parameters('SharepointBaseUrl')}/@{parameters('SharepointSiteSubPath')}/_api/web/GetFolderByServerRelativeUrl('Documents@{variables('NewCaseNumber')}/@{variables('ActivityId')}')/Files/add(url='@{outputs('Get_filename')}',overwrite=true)",
                                             "method": "POST",
                                             "headers": {
                                                 "Authorization": "Bearer @{body('Parse_Sharepoint_Token')?['access_token']}",
