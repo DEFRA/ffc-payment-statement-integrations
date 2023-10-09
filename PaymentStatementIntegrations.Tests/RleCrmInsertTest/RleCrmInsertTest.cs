@@ -144,7 +144,8 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Extract_ActivityId"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_Sharepoint_Token"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Parse_Sharepoint_Token"));
-                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Create_Folder"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Create_Parent_Folder"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Create_Sub_Folder"));
 
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_filename"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Read_blob_content"));
@@ -154,7 +155,8 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Log_error"));
 
                 // Check 'create folder' only ran once
-                Assert.AreEqual(1, testRunner.GetWorkflowActionRepetitionCount("Create_Folder"));
+                Assert.AreEqual(1, testRunner.GetWorkflowActionRepetitionCount("Create_Parent_Folder"));
+                Assert.AreEqual(1, testRunner.GetWorkflowActionRepetitionCount("Create_Sub_Folder"));
 
                 // Check that loop ran 3 times
                 Assert.AreEqual(3, testRunner.GetWorkflowActionRepetitionCount("Get_filename"));
@@ -354,7 +356,8 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Extract_ActivityId"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_Sharepoint_Token"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Parse_Sharepoint_Token"));
-                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Create_Folder"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Create_Parent_Folder"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Create_Sub_Folder"));
 
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_filename"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Read_blob_content"));
@@ -364,7 +367,8 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Log_error"));
 
                 // Check 'create folder' only ran once
-                Assert.AreEqual(1, testRunner.GetWorkflowActionRepetitionCount("Create_Folder"));
+                Assert.AreEqual(1, testRunner.GetWorkflowActionRepetitionCount("Create_Parent_Folder"));
+                Assert.AreEqual(1, testRunner.GetWorkflowActionRepetitionCount("Create_Sub_Folder"));
 
                 // Check that loop ran 3 times
                 Assert.AreEqual(3, testRunner.GetWorkflowActionRepetitionCount("Get_filename"));
@@ -871,7 +875,8 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
         {
             var json = new
             {
-                incidentid = "6e2fc685-1e2d-ee11-bdf4-000d3adf3558"
+                incidentid = "6e2fc685-1e2d-ee11-bdf4-000d3adf3558",
+                ticketnumber = "CRM-12345-ABC12"
             };
 
             return UnitTestHelper.EncodeAsStringContent(json);

@@ -41,7 +41,7 @@
                     ]
                 },
                 "runAfter": {
-                    "Init_NewCaseId": [
+                    "Init_NewCaseNumber": [
                         "SUCCEEDED"
                     ]
                 }
@@ -156,7 +156,7 @@
                             "value": ": created case id @{variables('NewCaseId')}"
                         },
                         "runAfter": {
-                            "Extract_NewCaseId": [
+                            "Extract_NewCaseNumber": [
                                 "SUCCEEDED"
                             ]
                         }
@@ -185,7 +185,7 @@
                     "Create_CRM_Case": {
                         "type": "Http",
                         "inputs": {
-                            "uri": "@{parameters('CrmBaseUrl')}/api/data/v9.2/incidents?$select=incidentid",
+                            "uri": "@{parameters('CrmBaseUrl')}/api/data/v9.2/incidents?$select=incidentid,ticketnumber",
                             "method": "POST",
                             "headers": {
                                 "Authorization": "Bearer @{body('Parse_CRM_Token')?['access_token']}",
@@ -422,12 +422,12 @@
                                     "value": ": created folder"
                                 },
                                 "runAfter": {
-                                    "Create_Folder": [
+                                    "Create_Sub_Folder": [
                                         "SUCCEEDED"
                                     ]
                                 }
                             },
-                            "Create_Folder": {
+                            "Create_Parent_Folder": {
                                 "type": "Http",
                                 "inputs": {
                                     "uri": "@{parameters('SharepointBaseUrl')}/@{parameters('SharepointSiteSubPath')}/_api/web/folders",
@@ -437,7 +437,7 @@
                                         "Content-Type": "application/json"
                                     },
                                     "body": {
-                                        "ServerRelativeUrl": "/@{parameters('SharepointSiteSubPath')}/Documents/@{body('Parse_CTL_File')?['uosr']}"
+                                        "ServerRelativeUrl": "/@{parameters('SharepointSiteSubPath')}/Documents/@{variables('NewCaseNumber')}"
                                     }
                                 },
                                 "runAfter": {
@@ -494,7 +494,7 @@
                                     "Copy_To_Sharepoint": {
                                         "type": "Http",
                                         "inputs": {
-                                            "uri": "@{parameters('SharepointBaseUrl')}/@{parameters('SharepointSiteSubPath')}/_api/web/GetFolderByServerRelativeUrl('Documents/@{body('Parse_CTL_File')?['uosr']}')/Files/add(url='@{outputs('Get_filename')}',overwrite=true)",
+                                            "uri": "@{parameters('SharepointBaseUrl')}/@{parameters('SharepointSiteSubPath')}/_api/web/GetFolderByServerRelativeUrl('Documents/@{variables('NewCaseNumber')}/@{variables('ActivityId')}')/Files/add(url='@{outputs('Get_filename')}',overwrite=true)",
                                             "method": "POST",
                                             "headers": {
                                                 "Authorization": "Bearer @{body('Parse_Sharepoint_Token')?['access_token']}",
@@ -620,6 +620,30 @@
                                     "Get_Sharepoint_Token": [
                                         "SUCCEEDED"
                                     ]
+                                }
+                            },
+                            "Create_Sub_Folder": {
+                                "type": "Http",
+                                "inputs": {
+                                    "uri": "@{parameters('SharepointBaseUrl')}/@{parameters('SharepointSiteSubPath')}/_api/web/folders",
+                                    "method": "POST",
+                                    "headers": {
+                                        "Authorization": "Bearer @{body('Parse_Sharepoint_Token')?['access_token']}",
+                                        "Content-Type": "application/json"
+                                    },
+                                    "body": {
+                                        "ServerRelativeUrl": "/@{parameters('SharepointSiteSubPath')}/Documents/@{variables('NewCaseNumber')}/@{variables('ActivityId')}"
+                                    }
+                                },
+                                "runAfter": {
+                                    "Create_Parent_Folder": [
+                                        "SUCCEEDED"
+                                    ]
+                                },
+                                "runtimeConfiguration": {
+                                    "contentTransfer": {
+                                        "transferMode": "Chunked"
+                                    }
                                 }
                             }
                         },
@@ -875,6 +899,18 @@
                                 "SUCCEEDED"
                             ]
                         }
+                    },
+                    "Extract_NewCaseNumber": {
+                        "type": "SetVariable",
+                        "inputs": {
+                            "name": "NewCaseNumber",
+                            "value": "@{body('Create_CRM_Case')['ticketnumber']}"
+                        },
+                        "runAfter": {
+                            "Extract_NewCaseId": [
+                                "SUCCEEDED"
+                            ]
+                        }
                     }
                 },
                 "runAfter": {
@@ -946,9 +982,25 @@
                 "trackedProperties": {
                     "WorkflowName": "RleCrmInsert"
                 }
+            },
+            "Init_NewCaseNumber": {
+                "type": "InitializeVariable",
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "NewCaseNumber",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Init_NewCaseId": [
+                        "SUCCEEDED"
+                    ]
+                }
             }
         },
-        "contentVersion": "1.1.0.0",
+        "contentVersion": "1.2.0.0",
         "outputs": {},
         "parameters": {
             "AdLoginBaseUrl": {
