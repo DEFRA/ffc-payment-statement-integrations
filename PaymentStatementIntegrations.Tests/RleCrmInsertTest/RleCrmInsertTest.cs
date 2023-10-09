@@ -871,7 +871,8 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
         {
             var json = new
             {
-                incidentid = "6e2fc685-1e2d-ee11-bdf4-000d3adf3558"
+                incidentid = "6e2fc685-1e2d-ee11-bdf4-000d3adf3558",
+                ticketnumber = "CRM-12345-ABC12"
             };
 
             return UnitTestHelper.EncodeAsStringContent(json);
