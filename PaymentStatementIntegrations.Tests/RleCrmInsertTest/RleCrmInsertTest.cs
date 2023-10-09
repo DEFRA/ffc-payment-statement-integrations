@@ -367,7 +367,8 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Log_error"));
 
                 // Check 'create folder' only ran once
-                Assert.AreEqual(1, testRunner.GetWorkflowActionRepetitionCount("Create_Folder"));
+                Assert.AreEqual(1, testRunner.GetWorkflowActionRepetitionCount("Create_Parent_Folder"));
+                Assert.AreEqual(1, testRunner.GetWorkflowActionRepetitionCount("Create_Sub_Folder"));
 
                 // Check that loop ran 3 times
                 Assert.AreEqual(3, testRunner.GetWorkflowActionRepetitionCount("Get_filename"));
