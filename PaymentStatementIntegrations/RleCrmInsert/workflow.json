@@ -422,12 +422,12 @@
                                     "value": ": created folder"
                                 },
                                 "runAfter": {
-                                    "Create_Folder": [
+                                    "Create_Sub_Folder": [
                                         "SUCCEEDED"
                                     ]
                                 }
                             },
-                            "Create_Folder": {
+                            "Create_Parent_Folder": {
                                 "type": "Http",
                                 "inputs": {
                                     "uri": "@{parameters('SharepointBaseUrl')}/@{parameters('SharepointSiteSubPath')}/_api/web/folders",
@@ -437,7 +437,7 @@
                                         "Content-Type": "application/json"
                                     },
                                     "body": {
-                                        "ServerRelativeUrl": "/@{parameters('SharepointSiteSubPath')}/Documents/@{variables('NewCaseNumber')}/@{variables('ActivityId')}"
+                                        "ServerRelativeUrl": "/@{parameters('SharepointSiteSubPath')}/Documents/@{variables('NewCaseNumber')}"
                                     }
                                 },
                                 "runAfter": {
@@ -620,6 +620,30 @@
                                     "Get_Sharepoint_Token": [
                                         "SUCCEEDED"
                                     ]
+                                }
+                            },
+                            "Create_Sub_Folder": {
+                                "type": "Http",
+                                "inputs": {
+                                    "uri": "@{parameters('SharepointBaseUrl')}/@{parameters('SharepointSiteSubPath')}/_api/web/folders",
+                                    "method": "POST",
+                                    "headers": {
+                                        "Authorization": "Bearer @{body('Parse_Sharepoint_Token')?['access_token']}",
+                                        "Content-Type": "application/json"
+                                    },
+                                    "body": {
+                                        "ServerRelativeUrl": "/@{parameters('SharepointSiteSubPath')}/Documents/@{variables('NewCaseNumber')}/@{variables('ActivityId')}"
+                                    }
+                                },
+                                "runAfter": {
+                                    "Create_Parent_Folder": [
+                                        "SUCCEEDED"
+                                    ]
+                                },
+                                "runtimeConfiguration": {
+                                    "contentTransfer": {
+                                        "transferMode": "Chunked"
+                                    }
                                 }
                             }
                         },
