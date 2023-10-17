@@ -132,6 +132,9 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Extract_OrganisationId"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Set_SBI_from_CTL"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Set_SBI_from_Org"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_Doc_Type_Lookups"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Determine_doc_type"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Throw_invalid_type_error"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_CRM_Contact"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Parse_Contact_Details"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Extract_ContactId"));
@@ -630,6 +633,136 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
         }
 
         /// <summary>
+        /// Tests that the correct response is returned when missing Type.
+        /// </summary>
+        [TestMethod]
+        public void CrmInsertTest_Fails_When_Missing_Type_In_CTL_File()
+        {
+            // Override one of the settings in the local settings file
+            var settingsToOverride = new Dictionary<string, string>();
+
+            using (ITestRunner testRunner = CreateTestRunner(settingsToOverride))
+            {
+                // Mock the HTTP calls and customize responses
+                testRunner.AddApiMocks = (request) =>
+                {
+                    HttpResponseMessage mockedResponse = new HttpResponseMessage();
+                    if (request?.RequestUri != null)
+                    {
+                        if (request.RequestUri.AbsolutePath.Contains("/oauth2/token") && request.Method == HttpMethod.Post)
+                        {
+                            // Email auth token
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                            mockedResponse.Content = ValidAuthToken();
+                        }
+                    }
+                    return mockedResponse;
+                };
+                
+                // Run the workflow
+                // Since there is a condition on the trigger that the filename must end in '.ctrl', we must supply a Name property in the content
+                var workflowResponse = testRunner.TriggerWorkflow(GetInvalidBlobControlFileMissingType(), HttpMethod.Post);
+
+                // Check workflow run status
+                Assert.AreEqual(WorkflowRunStatus.Succeeded, testRunner.WorkflowRunStatus);
+
+                // Check workflow response
+                testRunner.ExceptionWrapper(() => Assert.AreEqual(HttpStatusCode.Accepted, workflowResponse.StatusCode));
+                Assert.AreEqual(HttpStatusCode.Accepted, workflowResponse.StatusCode);
+
+                // Check action result
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_trigger_CTL_contents"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Decode_blob_CTL_contents"));
+                Assert.AreEqual(ActionStatus.Failed, testRunner.GetWorkflowActionStatus("Parse_CTL_File"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Get_CRM_Token"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Is_File_Number_Match"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Append_file_mismatch_error"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Log_error"));
+
+                // Check error message
+                var finalError = testRunner.GetWorkflowActionInput("Log_error").ToString();
+                Assert.IsTrue(finalError.Contains("schema validation failed"));
+
+                // Check tracked properties
+                var trackedProps = testRunner.GetWorkflowActionTrackedProperties("Init_FileList");
+                Assert.AreEqual("RleCrmInsert", trackedProps["WorkflowName"]);
+            }
+        }
+
+        /// <summary>
+        /// Tests that the correct response is returned when invalid Type.
+        /// </summary>
+        [TestMethod]
+        public void CrmInsertTest_Fails_When_Invalid_Type_In_CTL_File()
+        {
+            // Override one of the settings in the local settings file
+            var settingsToOverride = new Dictionary<string, string>();
+
+            using (ITestRunner testRunner = CreateTestRunner(settingsToOverride))
+            {
+                // Mock the HTTP calls and customize responses
+                testRunner.AddApiMocks = (request) =>
+                {
+                    HttpResponseMessage mockedResponse = new HttpResponseMessage();
+                    if (request?.RequestUri != null)
+                    {
+                        if (request.RequestUri.AbsolutePath.Contains("/oauth2/token") && request.Method == HttpMethod.Post)
+                        {
+                            // Email auth token
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                            mockedResponse.Content = ValidAuthToken();
+                        }
+                        else if (request.RequestUri.AbsolutePath.Contains("/api/data/v9.2/accounts") && request.Method == HttpMethod.Get)
+                        {
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                            mockedResponse.Content = ValidOrgLookup();
+                        }
+                        else if (request.RequestUri.AbsolutePath.Contains("/api/data/v9.2/contacts") && request.Method == HttpMethod.Get)
+                        {
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                            mockedResponse.Content = ValidContactLookup();
+                        }
+                    }
+                    return mockedResponse;
+                };
+                
+                // Run the workflow
+                // Since there is a condition on the trigger that the filename must end in '.ctrl', we must supply a Name property in the content
+                var workflowResponse = testRunner.TriggerWorkflow(GetInvalidBlobControlFileInvalidType(), HttpMethod.Post);
+
+                // Check workflow run status
+                Assert.AreEqual(WorkflowRunStatus.Succeeded, testRunner.WorkflowRunStatus);
+
+                // Check workflow response
+                testRunner.ExceptionWrapper(() => Assert.AreEqual(HttpStatusCode.Accepted, workflowResponse.StatusCode));
+                Assert.AreEqual(HttpStatusCode.Accepted, workflowResponse.StatusCode);
+
+                // Check action result
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_trigger_CTL_contents"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Decode_blob_CTL_contents"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Parse_CTL_File"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_CRM_Token"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_Doc_Type_Lookups"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Determine_doc_type"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Append_type_value_error"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Get_CRM_Contact"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Log_error"));
+
+                // Check error message
+                var finalError = testRunner.GetWorkflowActionInput("Log_error").ToString();
+                Assert.IsTrue(finalError.Contains("invalid 'type'"));
+
+                // Check tracked properties
+                var trackedProps = testRunner.GetWorkflowActionTrackedProperties("Init_FileList");
+                Assert.AreEqual("RleCrmInsert", trackedProps["WorkflowName"]);
+            }
+        }
+
+        /// <summary>
         /// Tests that the correct response is returned when file number mismatch.
         /// </summary>
         [TestMethod]
@@ -825,6 +958,28 @@ namespace PaymentStatementIntegrations.Tests.RleCrmInsertTest
 
             var jsonStr = "{ \"name\": \"myfilename_ctrl.json\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"frn\": \"1102077240\", \"crn\": \"11020219620000000\", \"uosr\": \"UOSR123456\", \"type\": \"LANDCOVER_CHANGE\", ";
             jsonStr += " \"filesInSubmission\": 3, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
+
+            return UnitTestHelper.EncodeAsStringContent(jsonStr, true, "content", "$content");
+        }
+
+        private static StringContent GetInvalidBlobControlFileMissingType()
+        {
+            // Since a property beginning with '$' cannot be defined in an anonymous type,
+            // this JSON is created using strings
+
+            var jsonStr = "{ \"name\": \"myfilename_ctrl.json\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"frn\": \"1102077240\", \"crn\": \"11020219620000000\", \"uosr\": \"UOSR123456\", ";
+            jsonStr += "\"submissionDateTime\": \"25/01/2023 07:55:40\", \"filesInSubmission\": 3, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
+
+            return UnitTestHelper.EncodeAsStringContent(jsonStr, true, "content", "$content");
+        }
+
+        private static StringContent GetInvalidBlobControlFileInvalidType()
+        {
+            // Since a property beginning with '$' cannot be defined in an anonymous type,
+            // this JSON is created using strings
+
+            var jsonStr = "{ \"name\": \"myfilename_ctrl.json\", \"content\": { \"$content\": { \"sbi\": \"123456789\", \"frn\": \"1102077240\", \"crn\": \"11020219620000000\", \"uosr\": \"UOSR123456\", \"type\": \"INVALID\", ";
+            jsonStr += "\"submissionDateTime\": \"25/01/2023 07:55:40\", \"filesInSubmission\": 3, \"files\": [\"File1.txt\", \"File2.txt\", \"File3.txt\" ] } } }";
 
             return UnitTestHelper.EncodeAsStringContent(jsonStr, true, "content", "$content");
         }
