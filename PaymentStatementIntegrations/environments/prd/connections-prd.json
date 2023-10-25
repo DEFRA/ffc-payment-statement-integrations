@@ -1,0 +1,47 @@
+{
+  "serviceProviderConnections": {
+    "serviceBus": {
+      "parameterValues": {
+        "connectionString": "@appsetting('ServiceBus-ConnectionString')"
+      },
+      "parameterSetName": "connectionString",
+      "serviceProvider": {
+        "id": "/serviceProviders/serviceBus"
+      },
+      "displayName": "pay-servicebus-sp-raw",
+      "connectionRuntimeUrl": "@appsetting('SERVICEBUS_CONNECTION_SP_RUNTIMEURL')"
+    },
+    "sql": {
+      "parameterValues": {
+        "connectionString": "@appsetting('Sql-ConnectionString')"
+      },
+      "serviceProvider": {
+        "id": "/serviceProviders/sql"
+      },
+      "displayName": "sqlConnection"
+    },
+    "azureBlobRle": {
+      "displayName": "storageBlobConnectionRle",
+      "parameterValues": {
+          "blobStorageEndpoint": "@appsetting('AzureBlob_rleEndpoint')",
+          "authProvider": {
+            "Type": "ManagedServiceIdentity"
+          }
+      },
+      "serviceProvider": {
+          "id": "/serviceProviders/AzureBlob"
+      }
+    },
+    "azureQueue": {
+      "parameterValues": {
+        "connectionString": "@appsetting('AzureQueue-ConnectionString')"
+      },
+      "serviceProvider": {
+        "id": "/serviceProviders/azurequeues"
+      },
+      "displayName": "storageQueueConnection"
+    }
+  },
+  "managedApiConnections": {
+  }
+}
