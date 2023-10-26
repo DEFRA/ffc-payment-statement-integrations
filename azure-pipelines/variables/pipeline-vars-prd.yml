@@ -15,6 +15,7 @@ variables:
   serviceConnection: 'AZR-RLE-PRD1'
 
   appServicePlanName: '$(resourcePrefix)ASP1401'
+  appServicePlanTier: 'WS2'
 
    # Gets converted to lowercase later in the pipeline. No spaces or hyphens allowed
   storageName: '$(resourcePrefix)ST1402'
