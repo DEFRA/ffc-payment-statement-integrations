@@ -26,7 +26,7 @@
   },
   {
     "name": "FfcRetrievalWorkflowSasToken",
-    "value": "secret",
+    "value": "@Microsoft.KeyVault(VaultName=prerleinfkv1401;SecretName=FfcRetrievalWorkflowSasToken)",
     "slotSetting": false
   },
   {
@@ -56,7 +56,7 @@
   },
   {
     "name": "ServiceBus-ConnectionString",
-    "value": "UseDevelopmentStorage=true",
+    "value": "@Microsoft.KeyVault(SecretUri=https://prerleinfkv1401.vault.azure.net/secrets/ServiceBusConnectionString/29bb9df5f769458c9b3ce43a27ecdb67)",
     "slotSetting": false
   },
   {
