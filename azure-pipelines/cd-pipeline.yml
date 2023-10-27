@@ -55,15 +55,15 @@ stages:
       settingsFile: 'environments/pre/settings-pre.json' 
       connectionsFile: 'environments/pre/connections-pre.json' 
 
-#- stage: PRD
-#  displayName: 'PRD Deployment'
-#  variables:
-#  - template: variables/pipeline-vars-prd.yml
-#  jobs:
-#  - template: templates/template-cd-logicapp.yml
-#    parameters:
-#      environment: ${{ variables.envShortName }}
-#      serviceConnection: ${{ variables.serviceConnection }}
-#      runId: $(resources.pipeline.cipipeline.runID)
-#      settingsFile: 'environments/prd/settings-prd.json' 
-#      connectionsFile: 'environments/prd/connections-prd.json' 
+- stage: PRD
+  displayName: 'PRD Deployment'
+  variables:
+  - template: variables/pipeline-vars-prd.yml
+  jobs:
+  - template: templates/template-cd-logicapp.yml
+    parameters:
+      environment: ${{ variables.envShortName }}
+      serviceConnection: ${{ variables.serviceConnection }}
+      runId: $(resources.pipeline.cipipeline.runID)
+      settingsFile: 'environments/prd/settings-prd.json' 
+      connectionsFile: 'environments/prd/connections-prd.json' 

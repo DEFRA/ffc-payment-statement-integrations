@@ -6,12 +6,12 @@
   },
   {
     "name": "AzureBlob_rleEndpoint",
-    "value": "https://tstrleinfst1401.blob.core.windows.net",
+    "value": "https://prdrleinfst1401.blob.core.windows.net",
     "slotSetting": false
   },
   {
     "name": "CrmBaseUrl",
-    "value": "https://rpa-csc-uat.crm4.dynamics.com",
+    "value": "https://rpa-csc-prod.crm4.dynamics.com",
     "slotSetting": false
   },
   {
@@ -21,12 +21,12 @@
   },
   {
     "name": "FfcRetrievalWorkflowEndpoint",
-    "value": "https://tstrleinfla1402.azurewebsites.net:443/api/FfcCrmRetrieval/triggers/HTTP_GET/invoke?api-version=2022-05-01&sp=%2Ftriggers%2FHTTP_GET%2Frun&sv=1.0&sig=",
+    "value": "https://prdrleinfla1402.azurewebsites.net:443/api/FfcCrmRetrieval/triggers/HTTP_GET/invoke?api-version=2022-05-01&sp=%2Ftriggers%2FHTTP_GET%2Frun&sv=1.0&sig=",
     "slotSetting": false
   },
   {
     "name": "FfcRetrievalWorkflowSasToken",
-    "value": "@Microsoft.KeyVault(VaultName=tstrleinfkv1401;SecretName=FfcRetrievalWorkflowSasToken)",
+    "value": "@Microsoft.KeyVault(VaultName=prdrleinfkv1401;SecretName=FfcRetrievalWorkflowSasToken)",
     "slotSetting": false
   },
   {
@@ -36,27 +36,27 @@
   },
   {
     "name": "PdfServiceUrl",
-    "value": "https://ffc-pay-statement-receiver-test.azure.defra.cloud/v1",
+    "value": "https://ffc-pay-statement-receiver-prd.azure.defra.cloud/v1",
     "slotSetting": false
   },
   {
     "name": "PortalClientId",
-    "value": "@Microsoft.KeyVault(SecretUri=https://tstrleinfkv1401.vault.azure.net/secrets/PortalClientId/47cda5b084b24795b255ab14002cf3d9)",
+    "value": "@Microsoft.KeyVault(SecretUri=https://prdrleinfkv1401.vault.azure.net/secrets/PortalClientId/a6a978293fc347fc98d176e50e4b2c74)",
     "slotSetting": false
   },
   {
     "name": "PortalClientSecret",
-    "value": "@Microsoft.KeyVault(SecretUri=https://tstrleinfkv1401.vault.azure.net/secrets/PortalClientSecret/0a8c9fbc2a5e4259b6f2a442322d9821)",
+    "value": "@Microsoft.KeyVault(SecretUri=https://prdrleinfkv1401.vault.azure.net/secrets/PortalClientSecret/e7510f7c41fe496a9fb9ed3b9f0cc0fc)",
     "slotSetting": false
   },
   {
     "name": "PortalTenantId",
-    "value": "@Microsoft.KeyVault(SecretUri=https://tstrleinfkv1401.vault.azure.net/secrets/PortalTenantId/0cac1f6531a6400684f05024ff6deb85)",
+    "value": "@Microsoft.KeyVault(SecretUri=https://prdrleinfkv1401.vault.azure.net/secrets/PortalTenantId/70e57ffea92a4a00b84278d63a6e7b04)",
     "slotSetting": false
   },
   {
     "name": "ServiceBus-ConnectionString",
-    "value": "@Microsoft.KeyVault(SecretUri=https://tstrleinfkv1401.vault.azure.net/secrets/ServiceBusConnectionString/29bb9df5f769458c9b3ce43a27ecdb67)",
+    "value": "@Microsoft.KeyVault(SecretUri=https://prdrleinfkv1401.vault.azure.net/secrets/ServiceBusConnectionString/49d28768983d4ea3a0575e58db6061af)",
     "slotSetting": false
   },
   {
@@ -66,12 +66,12 @@
   },
   {
     "name": "SharepointClientId",
-    "value": "@Microsoft.KeyVault(SecretUri=https://tstrleinfkv1401.vault.azure.net/secrets/SharepointClientId/fde10d1e87b6460ca737b3bdfee397b8)",
+    "value": "@Microsoft.KeyVault(SecretUri=https://prdrleinfkv1401.vault.azure.net/secrets/SharepointClientId/a367446d2f30422aa9f4ac5ee3b74959)",
     "slotSetting": false
   },
   {
     "name": "SharepointClientSecret",
-    "value": "@Microsoft.KeyVault(SecretUri=https://tstrleinfkv1401.vault.azure.net/secrets/SharepointClientSecret/c4d8d09676a54770b617b06e6fb5b671)",
+    "value": "@Microsoft.KeyVault(SecretUri=https://prdrleinfkv1401.vault.azure.net/secrets/SharepointClientSecret/f4fdd824a95a466bb5c4be024b573193)",
     "slotSetting": false
   },
   {
@@ -86,12 +86,12 @@
   },
   {
     "name": "SharepointSiteSubPath",
-    "value": "sites/rpa-custdocstore-uat2",
+    "value": "sites/rpa-custdocstore2",
     "slotSetting": false
   },
   {
     "name": "SharepointTenantId",
-    "value": "@Microsoft.KeyVault(SecretUri=https://tstrleinfkv1401.vault.azure.net/secrets/SharepointTenantId/2c2c624e813845f193e40ec9561c4653)",
+    "value": "@Microsoft.KeyVault(SecretUri=https://prdrleinfkv1401.vault.azure.net/secrets/SharepointTenantId/727f42163c8f43188a1939f346e0de5d)",
     "slotSetting": false
   },
   {
