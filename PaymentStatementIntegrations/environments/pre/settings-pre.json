@@ -41,12 +41,12 @@
   },
   {
     "name": "PortalClientId",
-    "value": "@Microsoft.KeyVault(SecretUri=https://prerleinfkv1401.vault.azure.net/secrets/PortalClientId/2f3e1fa8ddcc4736a798c50cb80a59ca)",
+    "value": "@Microsoft.KeyVault(SecretUri=https://prerleinfkv1401.vault.azure.net/secrets/PortalClientId/0eb3582742f0422f84d71124141fbc19)",
     "slotSetting": false
   },
   {
     "name": "PortalClientSecret",
-    "value": "@Microsoft.KeyVault(SecretUri=https://prerleinfkv1401.vault.azure.net/secrets/PortalClientSecret/0471c5fdb1e14b0aabd2567288300881)",
+    "value": "@Microsoft.KeyVault(SecretUri=https://prerleinfkv1401.vault.azure.net/secrets/PortalClientSecret/7baa081cd3134638a5d13ec46b16e007)",
     "slotSetting": false
   },
   {
