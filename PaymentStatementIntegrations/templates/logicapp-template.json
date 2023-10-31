@@ -54,6 +54,10 @@
     },
     "userManagedIdentityName": {
       "type": "string"
+    },
+    "appServicePlanTier": {
+      "type": "string",
+      "defaultValue": "WS1"
     }
   },
   "resources": [
@@ -446,7 +450,7 @@
         "Project": "[parameters('projectName')]"
       },
       "sku": {
-        "name": "WS1",
+        "name": "[parameters('appServicePlanTier')]",
         "tier": "WorkflowStandard"
       },
       "kind": "",

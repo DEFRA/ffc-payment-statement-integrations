@@ -72,7 +72,7 @@ jobs:
         scope: resourcegroup
         resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
         template: ./unpacked/templates/logicapp-template.json
-        parameters: appServicePlanName=${{env.APP_SERVICE_PLAN_NAME}} environmentName=${{ env.ENV_SHORT_NAME}} location=${{ env.RESOURCE_GROUP_LOCATION }} logicAppName=${{ env.LOGIC_APP_NAME }} projectName=${{ env.PROJECT_NAME_UPPER }} storageName=${{ env.STORAGE_NAME }} appInsightsName=${{env.APP_INSIGHTS_NAME}} subnetResourceId=${{env.SUBNET_RESOURCE_ID}} dnsServer=${{env.DNS_SERVER}} dnsAltServer=${{env.DNS_ALT_SERVER}} userManagedIdentityName=${{env.USER_MANAGED_IDENTITY_NAME}} resourceGroupName=${{env.RESOURCE_GROUP_NAME}} fileShareName=${{env.FILE_SHARE_NAME}}
+        parameters: appServicePlanName=${{env.APP_SERVICE_PLAN_NAME}} environmentName=${{ env.ENV_SHORT_NAME}} location=${{ env.RESOURCE_GROUP_LOCATION }} logicAppName=${{ env.LOGIC_APP_NAME }} projectName=${{ env.PROJECT_NAME_UPPER }} storageName=${{ env.STORAGE_NAME }} appInsightsName=${{env.APP_INSIGHTS_NAME}} subnetResourceId=${{env.SUBNET_RESOURCE_ID}} dnsServer=${{env.DNS_SERVER}} dnsAltServer=${{env.DNS_ALT_SERVER}} userManagedIdentityName=${{env.USER_MANAGED_IDENTITY_NAME}} resourceGroupName=${{env.RESOURCE_GROUP_NAME}} fileShareName=${{env.FILE_SHARE_NAME}} appServicePlanTier=${{env.APP_SERVICE_PLAN_TIER}}
         deploymentMode: Incremental
 
     - name: Configure extra app settings 

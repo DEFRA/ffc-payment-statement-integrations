@@ -36,3 +36,25 @@ stages:
       environment: ${{ variables.envShortName }}
       serviceConnection: ${{ variables.serviceConnection }}
       runId: $(resources.pipeline.cipipeline.runID)
+
+- stage: PRE
+  displayName: 'PRE Deployment'
+  variables:
+  - template: variables/pipeline-vars-pre.yml
+  jobs:
+  - template: templates/template-iac-logicapp.yml
+    parameters:
+      environment: ${{ variables.envShortName }}
+      serviceConnection: ${{ variables.serviceConnection }}
+      runId: $(resources.pipeline.cipipeline.runID)
+
+- stage: PRD
+  displayName: 'PRD Deployment'
+  variables:
+  - template: variables/pipeline-vars-prd.yml
+  jobs:
+  - template: templates/template-iac-logicapp.yml
+    parameters:
+      environment: ${{ variables.envShortName }}
+      serviceConnection: ${{ variables.serviceConnection }}
+      runId: $(resources.pipeline.cipipeline.runID)

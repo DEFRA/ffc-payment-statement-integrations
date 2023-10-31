@@ -3,16 +3,16 @@
 variables:
 
   # MUST BE UPPERCASE
-  envShortName: 'DEV'
+  envShortName: 'PRE'
 
   resourcePrefix: '$(envShortName)$(projectNameUpper)$(functionCode)'
-
+  
   logicAppName: '$(resourcePrefix)LA1402'
   
   resourceGroupLocation: 'uksouth'
   resourceGroupName: '$(resourcePrefix)RG1401'
   
-  serviceConnection: 'AZD-RLE-DEV1'
+  serviceConnection: 'AZR-RLE-PRE1'
 
   appServicePlanName: '$(resourcePrefix)ASP1401'
   appServicePlanTier: 'WS1'
@@ -30,16 +30,16 @@ variables:
   userManagedIdentityName: '$(resourcePrefix)UAMID1401'
 
   # VNET integration is required for Private Endpoint blob storage
-  subnetResourceId: '/resourceGroups/DEVRLENETRG1401/providers/Microsoft.Network/virtualNetworks/DEVRLENETVN1401/subnets/DEVRLENETSU1402'
+  subnetResourceId: '/resourceGroups/PRERLENETRG1401/providers/Microsoft.Network/virtualNetworks/PRERLENETVN1401/subnets/PRERLENETSU1402'
   # Subnet resource ID excluding '/subscriptions/<subscriptionId>', for example: /resourceGroups/<RGname>/providers/Microsoft.Network/virtualNetworks/<VnetName>/subnets/subnetName>
   dnsServer: '10.178.0.4'
   dnsAltServer: '10.178.0.5'
 
-  # Connector details for external Service Bus
+    # Connector details for external Service Bus
   servicebusConnectionNameSP: 'serviceBus'
-  servicebusNamespaceSP: 'SNDFFCINFSB1001.servicebus.windows.net'
-
+  servicebusNamespaceSP: 'DEVFFCINFSB1001.servicebus.windows.net'
+  
   # Details for Azure Alerting when workflow catastrophic fails
-  actionGroupName: '$(resourcePrefix)AG1401'
-  scheduledQueryRuleName: '$(resourcePrefix)AIAR1401'
-  alertingEmailAddress: 'jeremy.barnsley@defra.gov.uk'
+  actionGroupName: '$(resourcePrefix)AG1402'
+  scheduledQueryRuleName: '$(resourcePrefix)AIAR1402'
+  alertingEmailAddress: 'crmuserforum@rpa.gov.uk'

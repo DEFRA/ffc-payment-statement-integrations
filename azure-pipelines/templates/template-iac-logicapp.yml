@@ -46,6 +46,7 @@ jobs:
               -userManagedIdentityName $(userManagedIdentityName)
               -resourceGroupName $(resourceGroupName)
               -fileShareName $(fileShareName)
+              -appServicePlanTier $(appServicePlanTier)
             deploymentMode: $(deploymentMode)
             deploymentOutputs: 'LogicAppArmOutputs'
 
