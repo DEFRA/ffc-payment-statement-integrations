@@ -3,23 +3,22 @@
         "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
         "actions": {
             "Catch_Scope": {
-                "type": "Scope",
                 "actions": {
                     "Log_error": {
-                        "type": "Workflow",
                         "inputs": {
-                            "host": {
-                                "workflow": {
-                                    "id": "ErrorLogging"
-                                }
-                            },
                             "body": {
                                 "callingWorkflowName": "@{workflow().name}",
                                 "progressText": "@variables('ProgressText')",
                                 "stack": "@result('Try_Scope')",
                                 "workflowRunId": "@{workflow().run.name}"
+                            },
+                            "host": {
+                                "workflow": {
+                                    "id": "ErrorLogging"
+                                }
                             }
-                        }
+                        },
+                        "type": "Workflow"
                     }
                 },
                 "runAfter": {
@@ -28,10 +27,10 @@
                         "FAILED",
                         "SKIPPED"
                     ]
-                }
+                },
+                "type": "Scope"
             },
             "Init_ActivityId": {
-                "type": "InitializeVariable",
                 "inputs": {
                     "variables": [
                         {
@@ -44,10 +43,25 @@
                     "Init_NewCaseNumber": [
                         "SUCCEEDED"
                     ]
-                }
+                },
+                "type": "InitializeVariable"
+            },
+            "Init_FileList": {
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "FileList",
+                            "type": "array"
+                        }
+                    ]
+                },
+                "runAfter": {},
+                "trackedProperties": {
+                    "WorkflowName": "RleCrmInsert"
+                },
+                "type": "InitializeVariable"
             },
             "Init_NewCaseId": {
-                "type": "InitializeVariable",
                 "inputs": {
                     "variables": [
                         {
@@ -60,10 +74,58 @@
                     "Initialize_ContactId": [
                         "SUCCEEDED"
                     ]
-                }
+                },
+                "type": "InitializeVariable"
+            },
+            "Init_NewCaseNumber": {
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "NewCaseNumber",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Init_NewCaseId": [
+                        "SUCCEEDED"
+                    ]
+                },
+                "type": "InitializeVariable"
+            },
+            "Init_OrganisationId": {
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "OrganisationId",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Init_FileList": [
+                        "SUCCEEDED"
+                    ]
+                },
+                "type": "InitializeVariable"
+            },
+            "Init_SBI": {
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "SbiNumber",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Init_ActivityId": [
+                        "SUCCEEDED"
+                    ]
+                },
+                "type": "InitializeVariable"
             },
             "Initialize_ContactId": {
-                "type": "InitializeVariable",
                 "inputs": {
                     "variables": [
                         {
@@ -76,10 +138,27 @@
                     "Init_OrganisationId": [
                         "SUCCEEDED"
                     ]
-                }
+                },
+                "type": "InitializeVariable"
+            },
+            "Initialize_FilesInSubmission": {
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "FilesInSubmission",
+                            "type": "integer",
+                            "value": 0
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Init_SBI": [
+                        "SUCCEEDED"
+                    ]
+                },
+                "type": "InitializeVariable"
             },
             "Initialize_ProgressText": {
-                "type": "InitializeVariable",
                 "inputs": {
                     "variables": [
                         {
@@ -93,52 +172,28 @@
                     "Initialize_FilesInSubmission": [
                         "SUCCEEDED"
                     ]
-                }
+                },
+                "type": "InitializeVariable"
+            },
+            "Initialize_uosr": {
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "uosr",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Initialize_ProgressText": [
+                        "SUCCEEDED"
+                    ]
+                },
+                "type": "InitializeVariable"
             },
             "Try_Scope": {
-                "type": "Scope",
                 "actions": {
-                    "Is_File_Number_Match": {
-                        "type": "If",
-                        "expression": {
-                            "and": [
-                                {
-                                    "equals": [
-                                        "@body('Parse_CTL_File')?['filesInSubmission']",
-                                        "@length(variables('FileList'))"
-                                    ]
-                                }
-                            ]
-                        },
-                        "actions": {},
-                        "else": {
-                            "actions": {
-                                "Append_file_mismatch_error": {
-                                    "type": "AppendToStringVariable",
-                                    "inputs": {
-                                        "name": "ProgressText",
-                                        "value": ": mismatch of file numbers in CTL"
-                                    }
-                                },
-                                "Throw_error_file_number_mismatch": {
-                                    "type": "Compose",
-                                    "inputs": "@int('__ERROR_file_number_mismatch__')",
-                                    "runAfter": {
-                                        "Append_file_mismatch_error": [
-                                            "SUCCEEDED"
-                                        ]
-                                    }
-                                }
-                            }
-                        },
-                        "runAfter": {
-                            "Set_FilesInSubmission": [
-                                "SUCCEEDED"
-                            ]
-                        }
-                    },
                     "Append_progress_activity_id": {
-                        "type": "AppendToStringVariable",
                         "inputs": {
                             "name": "ProgressText",
                             "value": ": created activity @{variables('ActivityId')}"
@@ -147,10 +202,10 @@
                             "Extract_ActivityId": [
                                 "SUCCEEDED"
                             ]
-                        }
+                        },
+                        "type": "AppendToStringVariable"
                     },
                     "Append_progress_case_id": {
-                        "type": "AppendToStringVariable",
                         "inputs": {
                             "name": "ProgressText",
                             "value": ": created case id @{variables('NewCaseId')}"
@@ -159,10 +214,10 @@
                             "Extract_NewCaseNumber": [
                                 "SUCCEEDED"
                             ]
-                        }
+                        },
+                        "type": "AppendToStringVariable"
                     },
                     "Append_progress_org_id": {
-                        "type": "AppendToStringVariable",
                         "inputs": {
                             "name": "ProgressText",
                             "value": ": org_id @{variables('OrganisationId')} : sbi @{variables('SbiNumber')}"
@@ -171,26 +226,61 @@
                             "Is_SBI_valid": [
                                 "SUCCEEDED"
                             ]
-                        }
+                        },
+                        "type": "AppendToStringVariable"
+                    },
+                    "Check_Valid_Doc_Type": {
+                        "actions": {},
+                        "else": {
+                            "actions": {
+                                "Append_type_value_error": {
+                                    "inputs": {
+                                        "name": "ProgressText",
+                                        "value": ": invalid 'type' value"
+                                    },
+                                    "type": "AppendToStringVariable"
+                                },
+                                "Throw_invalid_type_error": {
+                                    "inputs": "@int('__ERROR_invalid_type__')",
+                                    "runAfter": {
+                                        "Append_type_value_error": [
+                                            "SUCCEEDED"
+                                        ]
+                                    },
+                                    "type": "Compose"
+                                }
+                            }
+                        },
+                        "expression": {
+                            "and": [
+                                {
+                                    "not": {
+                                        "equals": [
+                                            "@outputs('Determine_doc_type')",
+                                            "-NOTFOUND-"
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        "runAfter": {
+                            "Determine_doc_type": [
+                                "SUCCEEDED"
+                            ]
+                        },
+                        "type": "If"
                     },
                     "Convert_Date_Format": {
-                        "type": "Compose",
                         "inputs": "@formatDateTime(convertToUtc(parseDateTime(body('Parse_CTL_File')?['submissionDateTime'], 'en-GB', 'dd/MM/yyyy HH:mm:ss'),'GMT Standard Time'),'yyyy-MM-dd HH:mm:ss')",
                         "runAfter": {
                             "Append_progress_case_id": [
                                 "SUCCEEDED"
                             ]
-                        }
+                        },
+                        "type": "Compose"
                     },
                     "Create_CRM_Case": {
-                        "type": "Http",
                         "inputs": {
-                            "uri": "@{parameters('CrmBaseUrl')}/api/data/v9.2/incidents?$select=incidentid,ticketnumber",
-                            "method": "POST",
-                            "headers": {
-                                "Authorization": "Bearer @{body('Parse_CRM_Token')?['access_token']}",
-                                "Prefer": "return=representation"
-                            },
                             "body": {
                                 "caseorigincode": "100000002",
                                 "casetypecode": "927350013",
@@ -200,7 +290,13 @@
                                 "rpa_isunknowncontact": "false",
                                 "rpa_isunknownorganisation": "false",
                                 "title": "Online Submission @{body('Parse_CTL_File')['uosr']}"
-                            }
+                            },
+                            "headers": {
+                                "Authorization": "Bearer @{body('Parse_CRM_Token')?['access_token']}",
+                                "Prefer": "return=representation"
+                            },
+                            "method": "POST",
+                            "uri": "@{parameters('CrmBaseUrl')}/api/data/v9.2/incidents?$select=incidentid,ticketnumber"
                         },
                         "runAfter": {
                             "Extract_ContactId": [
@@ -211,35 +307,35 @@
                             "contentTransfer": {
                                 "transferMode": "Chunked"
                             }
-                        }
+                        },
+                        "type": "Http"
                     },
                     "Create_Online_Submission_Activity": {
-                        "type": "Http",
                         "inputs": {
-                            "uri": "@{parameters('CrmBaseUrl')}/api/data/v9.2/rpa_onlinesubmissions?$select=activityid",
-                            "method": "POST",
+                            "body": {
+                                "regardingobjectid_incident_rpa_onlinesubmission@odata.bind": "/incidents(@{variables('NewCaseId')})",
+                                "rpa_SubmissionType_rpa_onlinesubmission@odata.bind": "/rpa_documenttypeses(@{outputs('Determine_doc_type')?['id']})",
+                                "rpa_filesinsubmission": "@{variables('FilesInSubmission')}",
+                                "rpa_onlinesubmission_activity_parties": [
+                                    {
+                                        "participationtypemask": 1,
+                                        "partyid_contact@odata.bind": "/contacts(@{variables('ContactId')})"
+                                    },
+                                    {
+                                        "participationtypemask": 11,
+                                        "partyid_account@odata.bind": "/accounts(@{variables('OrganisationId')})"
+                                    }
+                                ],
+                                "rpa_onlinesubmissiondate": "@{outputs('Convert_Date_Format')}",
+                                "rpa_onlinesubmissionid": "@{body('Parse_CTL_File')?['uosr']}",
+                                "subject": "eRLE1 @{outputs('Determine_doc_type')?['desc']} (@{body('Parse_CTL_File')['uosr']})"
+                            },
                             "headers": {
                                 "Authorization": "@{body('Parse_CRM_Token')?['access_token']}",
                                 "Prefer": "return=representation"
                             },
-                            "body": {
-                                "regardingobjectid_incident_rpa_onlinesubmission@odata.bind": "/incidents(@{variables('NewCaseId')})",
-                                "rpa_filesinsubmission": "@{variables('FilesInSubmission')}",
-                                "rpa_onlinesubmissiondate": "@{outputs('Convert_Date_Format')}",
-                                "rpa_onlinesubmissionid": "@{body('Parse_CTL_File')?['uosr']}",
-                                "subject": "eRLE1 @{outputs('Determine_doc_type')?['desc']} (@{body('Parse_CTL_File')['uosr']})",
-                                "rpa_SubmissionType_rpa_onlinesubmission@odata.bind": "/rpa_documenttypeses(@{outputs('Determine_doc_type')?['id']})",
-                                "rpa_onlinesubmission_activity_parties": [
-                                    {
-                                        "partyid_contact@odata.bind": "/contacts(@{variables('ContactId')})",
-                                        "participationtypemask": 1
-                                    },
-                                    {
-                                        "partyid_account@odata.bind": "/accounts(@{variables('OrganisationId')})",
-                                        "participationtypemask": 11
-                                    }
-                                ]
-                            }
+                            "method": "POST",
+                            "uri": "@{parameters('CrmBaseUrl')}/api/data/v9.2/rpa_onlinesubmissions?$select=activityid"
                         },
                         "runAfter": {
                             "Convert_Date_Format": [
@@ -250,19 +346,30 @@
                             "contentTransfer": {
                                 "transferMode": "Chunked"
                             }
-                        }
+                        },
+                        "type": "Http"
                     },
                     "Decode_blob_CTL_contents": {
-                        "type": "Compose",
                         "inputs": "@base64ToString(outputs('Get_trigger_CTL_contents'))",
                         "runAfter": {
                             "Get_trigger_CTL_contents": [
                                 "SUCCEEDED"
                             ]
-                        }
+                        },
+                        "type": "Compose"
+                    },
+                    "Determine_doc_type": {
+                        "inputs": {
+                            "code": "const lookups = JSON.parse(workflowContext.actions.Get_Doc_Type_Lookups.outputs);\nconst typeCode = workflowContext.actions.Parse_CTL_File.outputs.body['type'];\nvar result = lookups[typeCode];\nreturn result ? result : '-NOTFOUND-';"
+                        },
+                        "runAfter": {
+                            "Get_Doc_Type_Lookups": [
+                                "SUCCEEDED"
+                            ]
+                        },
+                        "type": "JavaScriptCode"
                     },
                     "Extract_ActivityId": {
-                        "type": "SetVariable",
                         "inputs": {
                             "name": "ActivityId",
                             "value": "@{body('Create_Online_Submission_Activity')?['activityid']}"
@@ -271,10 +378,10 @@
                             "Create_Online_Submission_Activity": [
                                 "SUCCEEDED"
                             ]
-                        }
+                        },
+                        "type": "SetVariable"
                     },
                     "Extract_ContactId": {
-                        "type": "SetVariable",
                         "inputs": {
                             "name": "ContactId",
                             "value": "@{outputs('Parse_Contact_Details')?['body']?['value'][0]['contactid']}"
@@ -283,10 +390,10 @@
                             "Parse_Contact_Details": [
                                 "SUCCEEDED"
                             ]
-                        }
+                        },
+                        "type": "SetVariable"
                     },
                     "Extract_NewCaseId": {
-                        "type": "SetVariable",
                         "inputs": {
                             "name": "NewCaseId",
                             "value": "@{body('Create_CRM_Case')?['incidentid']}"
@@ -295,10 +402,22 @@
                             "Create_CRM_Case": [
                                 "SUCCEEDED"
                             ]
-                        }
+                        },
+                        "type": "SetVariable"
+                    },
+                    "Extract_NewCaseNumber": {
+                        "inputs": {
+                            "name": "NewCaseNumber",
+                            "value": "@{body('Create_CRM_Case')['ticketnumber']}"
+                        },
+                        "runAfter": {
+                            "Extract_NewCaseId": [
+                                "SUCCEEDED"
+                            ]
+                        },
+                        "type": "SetVariable"
                     },
                     "Extract_OrganisationId": {
-                        "type": "SetVariable",
                         "inputs": {
                             "name": "OrganisationId",
                             "value": "@{outputs('Parse_Org_Response')?['body']?['value'][0]['accountid']}"
@@ -307,16 +426,16 @@
                             "Parse_Org_Response": [
                                 "SUCCEEDED"
                             ]
-                        }
+                        },
+                        "type": "SetVariable"
                     },
                     "Get_CRM_Contact": {
-                        "type": "Http",
                         "inputs": {
-                            "uri": "@{parameters('CrmBaseUrl')}/api/data/v9.2/contacts?$select=contactid,fullname&$filter=rpa_capcustomerid eq '@{body('Parse_CTL_File')?['crn']}'",
-                            "method": "GET",
                             "headers": {
                                 "Authorization": "Bearer @{body('Parse_CRM_Token')?['access_token']}"
-                            }
+                            },
+                            "method": "GET",
+                            "uri": "@{parameters('CrmBaseUrl')}/api/data/v9.2/contacts?$select=contactid,fullname&$filter=rpa_capcustomerid eq '@{body('Parse_CTL_File')?['crn']}'"
                         },
                         "runAfter": {
                             "Check_Valid_Doc_Type": [
@@ -327,16 +446,16 @@
                             "contentTransfer": {
                                 "transferMode": "Chunked"
                             }
-                        }
+                        },
+                        "type": "Http"
                     },
                     "Get_CRM_Org": {
-                        "type": "Http",
                         "inputs": {
-                            "uri": "@{parameters('CrmBaseUrl')}/api/data/v9.2/accounts?$select=name,accountid,rpa_sbinumber&$filter=rpa_capfirmid eq '@{body('Parse_CTL_File')?['frn']}'",
-                            "method": "GET",
                             "headers": {
                                 "Authorization": "Bearer @{body('Parse_CRM_Token')?['access_token']}"
-                            }
+                            },
+                            "method": "GET",
+                            "uri": "@{parameters('CrmBaseUrl')}/api/data/v9.2/accounts?$select=name,accountid,rpa_sbinumber&$filter=rpa_capfirmid eq '@{body('Parse_CTL_File')?['frn']}'"
                         },
                         "runAfter": {
                             "Parse_CRM_Token": [
@@ -347,17 +466,17 @@
                             "contentTransfer": {
                                 "transferMode": "Chunked"
                             }
-                        }
+                        },
+                        "type": "Http"
                     },
                     "Get_CRM_Token": {
-                        "type": "Http",
                         "inputs": {
-                            "uri": "@{parameters('AdLoginBaseUrl')}/@{parameters('PortalTenantId')}/oauth2/token",
-                            "method": "POST",
+                            "body": "grant_type=client_credentials\n&client_id=@{parameters('PortalClientId')}\n&client_secret=@{encodeUriComponent(parameters('PortalClientSecret'))}\n&resource=@{encodeUriComponent(parameters('CrmBaseUrl'))}",
                             "headers": {
                                 "Content-Type": "application/x-www-form-urlencoded"
                             },
-                            "body": "grant_type=client_credentials\n&client_id=@{parameters('PortalClientId')}\n&client_secret=@{encodeUriComponent(parameters('PortalClientSecret'))}\n&resource=@{encodeUriComponent(parameters('CrmBaseUrl'))}"
+                            "method": "POST",
+                            "uri": "@{parameters('AdLoginBaseUrl')}/@{parameters('PortalTenantId')}/oauth2/token"
                         },
                         "runAfter": {
                             "Is_File_Number_Match": [
@@ -374,29 +493,25 @@
                                     "outputs"
                                 ]
                             }
-                        }
+                        },
+                        "type": "Http"
                     },
-                    "Get_trigger_CTL_contents": {
-                        "type": "Compose",
-                        "inputs": "@triggerBody()?['content']?['$content']"
-                    },
-                    "Has_ActivityId": {
-                        "type": "If",
-                        "expression": {
-                            "and": [
-                                {
-                                    "not": {
-                                        "equals": [
-                                            "@length(trim(string(variables('ActivityId'))))",
-                                            0
-                                        ]
-                                    }
-                                }
+                    "Get_Doc_Type_Lookups": {
+                        "inputs": "@parameters('CrmDocTypeLookup')",
+                        "runAfter": {
+                            "Append_progress_org_id": [
+                                "SUCCEEDED"
                             ]
                         },
+                        "type": "Compose"
+                    },
+                    "Get_trigger_CTL_contents": {
+                        "inputs": "@triggerBody()?['content']?['$content']",
+                        "type": "Compose"
+                    },
+                    "Has_ActivityId": {
                         "actions": {
                             "Append_progress_folder": {
-                                "type": "AppendToStringVariable",
                                 "inputs": {
                                     "name": "ProgressText",
                                     "value": ": created folder"
@@ -405,20 +520,20 @@
                                     "Create_Sub_Folder": [
                                         "SUCCEEDED"
                                     ]
-                                }
+                                },
+                                "type": "AppendToStringVariable"
                             },
                             "Create_Parent_Folder": {
-                                "type": "Http",
                                 "inputs": {
-                                    "uri": "@{parameters('SharepointBaseUrl')}/@{parameters('SharepointSiteSubPath')}/_api/web/folders",
-                                    "method": "POST",
+                                    "body": {
+                                        "ServerRelativeUrl": "/@{parameters('SharepointSiteSubPath')}/Documents/@{variables('NewCaseNumber')}"
+                                    },
                                     "headers": {
                                         "Authorization": "Bearer @{body('Parse_Sharepoint_Token')?['access_token']}",
                                         "Content-Type": "application/json"
                                     },
-                                    "body": {
-                                        "ServerRelativeUrl": "/@{parameters('SharepointSiteSubPath')}/Documents/@{variables('NewCaseNumber')}"
-                                    }
+                                    "method": "POST",
+                                    "uri": "@{parameters('SharepointBaseUrl')}/@{parameters('SharepointSiteSubPath')}/_api/web/folders"
                                 },
                                 "runAfter": {
                                     "Parse_Sharepoint_Token": [
@@ -429,14 +544,36 @@
                                     "contentTransfer": {
                                         "transferMode": "Chunked"
                                     }
-                                }
+                                },
+                                "type": "Http"
+                            },
+                            "Create_Sub_Folder": {
+                                "inputs": {
+                                    "body": {
+                                        "ServerRelativeUrl": "/@{parameters('SharepointSiteSubPath')}/Documents/@{variables('NewCaseNumber')}/@{variables('ActivityId')}"
+                                    },
+                                    "headers": {
+                                        "Authorization": "Bearer @{body('Parse_Sharepoint_Token')?['access_token']}",
+                                        "Content-Type": "application/json"
+                                    },
+                                    "method": "POST",
+                                    "uri": "@{parameters('SharepointBaseUrl')}/@{parameters('SharepointSiteSubPath')}/_api/web/folders"
+                                },
+                                "runAfter": {
+                                    "Create_Parent_Folder": [
+                                        "SUCCEEDED"
+                                    ]
+                                },
+                                "runtimeConfiguration": {
+                                    "contentTransfer": {
+                                        "transferMode": "Chunked"
+                                    }
+                                },
+                                "type": "Http"
                             },
                             "For_each": {
-                                "type": "Foreach",
-                                "foreach": "@variables('FileList')",
                                 "actions": {
                                     "Append_progress_filename": {
-                                        "type": "AppendToStringVariable",
                                         "inputs": {
                                             "name": "ProgressText",
                                             "value": ": checking blob @{outputs('Get_filename')}"
@@ -445,10 +582,10 @@
                                             "Get_filename": [
                                                 "SUCCEEDED"
                                             ]
-                                        }
+                                        },
+                                        "type": "AppendToStringVariable"
                                     },
                                     "Append_progress_metadata": {
-                                        "type": "AppendToStringVariable",
                                         "inputs": {
                                             "name": "ProgressText",
                                             "value": ": created metadata"
@@ -457,10 +594,10 @@
                                             "Create_Meta_Data": [
                                                 "SUCCEEDED"
                                             ]
-                                        }
+                                        },
+                                        "type": "AppendToStringVariable"
                                     },
                                     "Append_progress_sp": {
-                                        "type": "AppendToStringVariable",
                                         "inputs": {
                                             "name": "ProgressText",
                                             "value": ": copied file @{outputs('Get_filename')} to SP"
@@ -469,18 +606,18 @@
                                             "Copy_To_Sharepoint": [
                                                 "SUCCEEDED"
                                             ]
-                                        }
+                                        },
+                                        "type": "AppendToStringVariable"
                                     },
                                     "Copy_To_Sharepoint": {
-                                        "type": "Http",
                                         "inputs": {
-                                            "uri": "@{parameters('SharepointBaseUrl')}/@{parameters('SharepointSiteSubPath')}/_api/web/GetFolderByServerRelativeUrl('Documents/@{variables('NewCaseNumber')}/@{variables('ActivityId')}')/Files/add(url='@{outputs('Get_filename')}',overwrite=true)",
-                                            "method": "POST",
+                                            "body": "@body('Read_blob_content')?['content']",
                                             "headers": {
                                                 "Authorization": "Bearer @{body('Parse_Sharepoint_Token')?['access_token']}",
                                                 "accept": "application/json"
                                             },
-                                            "body": "@body('Read_blob_content')?['content']"
+                                            "method": "POST",
+                                            "uri": "@{parameters('SharepointBaseUrl')}/@{parameters('SharepointSiteSubPath')}/_api/web/GetFolderByServerRelativeUrl('Documents/@{variables('NewCaseNumber')}/@{variables('ActivityId')}')/Files/add(url='@{outputs('Get_filename')}',overwrite=true)"
                                         },
                                         "runAfter": {
                                             "Read_blob_content": [
@@ -491,28 +628,28 @@
                                             "contentTransfer": {
                                                 "transferMode": "Chunked"
                                             }
-                                        }
+                                        },
+                                        "type": "Http"
                                     },
                                     "Create_Meta_Data": {
-                                        "type": "Http",
                                         "inputs": {
-                                            "uri": "@{parameters('CrmBaseUrl')}/api/data/v9.2/rpa_activitymetadatas",
-                                            "method": "POST",
-                                            "headers": {
-                                                "Authorization": "Bearer @{body('Parse_CRM_Token')?['access_token']}"
-                                            },
                                             "body": {
                                                 "rpa_RelatedCase@odata.bind": "/incidents(@{variables('NewCaseId')})",
                                                 "rpa_RelatedOnlineSubmissionId@odata.bind": "/rpa_onlinesubmissions(@{variables('ActivityId')})",
                                                 "rpa_contact@odata.bind": "/contacts(@{variables('ContactId')})",
                                                 "rpa_crn": "@{body('Parse_CTL_File')?['crn']}",
                                                 "rpa_direction": "false",
-                                                "rpa_docrefproxy": "@{if(endsWith(toLower(outputs('Get_filename')),'.pdf'), 'PDFREC', 'LNDMAP')}",
+                                                "rpa_docrefproxy": "@{if(equals(outputs('Get_filename'),concat('SUMMARY_',variables('uosr'),'.pdf')), 'PDFREC', 'LNDMAP')}",
                                                 "rpa_fileabsoluteurl": "@{parameters('SharepointBaseUrl')}@{body('Copy_To_Sharepoint')['ServerRelativeUrl']}",
                                                 "rpa_filename": "@{outputs('Get_filename')}",
                                                 "rpa_organisation@odata.bind": "/accounts(@{variables('OrganisationId')})",
                                                 "rpa_sbi": "@{variables('SbiNumber')}"
-                                            }
+                                            },
+                                            "headers": {
+                                                "Authorization": "Bearer @{body('Parse_CRM_Token')?['access_token']}"
+                                            },
+                                            "method": "POST",
+                                            "uri": "@{parameters('CrmBaseUrl')}/api/data/v9.2/rpa_activitymetadatas"
                                         },
                                         "runAfter": {
                                             "Append_progress_sp": [
@@ -523,18 +660,18 @@
                                             "contentTransfer": {
                                                 "transferMode": "Chunked"
                                             }
-                                        }
+                                        },
+                                        "type": "Http"
                                     },
                                     "Get_filename": {
-                                        "type": "Compose",
-                                        "inputs": "@item()"
+                                        "inputs": "@item()",
+                                        "type": "Compose"
                                     },
                                     "Read_blob_content": {
-                                        "type": "ServiceProvider",
                                         "inputs": {
                                             "parameters": {
-                                                "containerName": "rle-container",
-                                                "blobName": "@concat('/',body('Parse_CTL_File')?['uosr'],'/',item())"
+                                                "blobName": "@concat('/',body('Parse_CTL_File')?['uosr'],'/',item())",
+                                                "containerName": "rle-container"
                                             },
                                             "serviceProviderConfiguration": {
                                                 "connectionName": "azureBlobRle",
@@ -546,24 +683,26 @@
                                             "Append_progress_filename": [
                                                 "SUCCEEDED"
                                             ]
-                                        }
+                                        },
+                                        "type": "ServiceProvider"
                                     }
                                 },
+                                "foreach": "@variables('FileList')",
                                 "runAfter": {
                                     "Append_progress_folder": [
                                         "SUCCEEDED"
                                     ]
-                                }
+                                },
+                                "type": "Foreach"
                             },
                             "Get_Sharepoint_Token": {
-                                "type": "Http",
                                 "inputs": {
-                                    "uri": "@{parameters('SharepointLoginBaseUrl')}/@{parameters('SharepointTenantId')}/tokens/OAuth/2/",
-                                    "method": "POST",
+                                    "body": "client_id=@{parameters('SharepointClientId')}%40@{parameters('SharepointTenantId')}\n&resource=00000003-0000-0ff1-ce00-000000000000/@{parameters('SharepointDomain')}%40@{parameters('SharepointTenantId')}\n&grant_type=client_credentials\n&client_secret=@{encodeUriComponent(parameters('SharepointClientSecret'))}",
                                     "headers": {
                                         "Content-Type": "application/x-www-form-urlencoded"
                                     },
-                                    "body": "client_id=@{parameters('SharepointClientId')}%40@{parameters('SharepointTenantId')}\n&resource=00000003-0000-0ff1-ce00-000000000000/@{parameters('SharepointDomain')}%40@{parameters('SharepointTenantId')}\n&grant_type=client_credentials\n&client_secret=@{encodeUriComponent(parameters('SharepointClientSecret'))}"
+                                    "method": "POST",
+                                    "uri": "@{parameters('SharepointLoginBaseUrl')}/@{parameters('SharepointTenantId')}/tokens/OAuth/2/"
                                 },
                                 "runtimeConfiguration": {
                                     "contentTransfer": {
@@ -575,10 +714,10 @@
                                             "outputs"
                                         ]
                                     }
-                                }
+                                },
+                                "type": "Http"
                             },
                             "Parse_Sharepoint_Token": {
-                                "type": "ParseJson",
                                 "inputs": {
                                     "content": "@body('Get_Sharepoint_Token')",
                                     "schema": {
@@ -600,61 +739,129 @@
                                     "Get_Sharepoint_Token": [
                                         "SUCCEEDED"
                                     ]
-                                }
-                            },
-                            "Create_Sub_Folder": {
-                                "type": "Http",
-                                "inputs": {
-                                    "uri": "@{parameters('SharepointBaseUrl')}/@{parameters('SharepointSiteSubPath')}/_api/web/folders",
-                                    "method": "POST",
-                                    "headers": {
-                                        "Authorization": "Bearer @{body('Parse_Sharepoint_Token')?['access_token']}",
-                                        "Content-Type": "application/json"
-                                    },
-                                    "body": {
-                                        "ServerRelativeUrl": "/@{parameters('SharepointSiteSubPath')}/Documents/@{variables('NewCaseNumber')}/@{variables('ActivityId')}"
-                                    }
                                 },
-                                "runAfter": {
-                                    "Create_Parent_Folder": [
-                                        "SUCCEEDED"
-                                    ]
-                                },
-                                "runtimeConfiguration": {
-                                    "contentTransfer": {
-                                        "transferMode": "Chunked"
-                                    }
-                                }
+                                "type": "ParseJson"
                             }
                         },
                         "else": {
                             "actions": {
                                 "Append_error_missing_activity": {
-                                    "type": "AppendToStringVariable",
                                     "inputs": {
                                         "name": "ProgressText",
                                         "value": ": missing activity id"
-                                    }
+                                    },
+                                    "type": "AppendToStringVariable"
                                 },
                                 "Throw_error_missing_activity": {
-                                    "type": "Compose",
                                     "inputs": "@int('__ERROR_missing_activity__')",
                                     "runAfter": {
                                         "Append_error_missing_activity": [
                                             "SUCCEEDED"
                                         ]
-                                    }
+                                    },
+                                    "type": "Compose"
                                 }
                             }
+                        },
+                        "expression": {
+                            "and": [
+                                {
+                                    "not": {
+                                        "equals": [
+                                            "@length(trim(string(variables('ActivityId'))))",
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
                         },
                         "runAfter": {
                             "Append_progress_activity_id": [
                                 "SUCCEEDED"
                             ]
-                        }
+                        },
+                        "type": "If"
+                    },
+                    "Is_File_Number_Match": {
+                        "actions": {},
+                        "else": {
+                            "actions": {
+                                "Append_file_mismatch_error": {
+                                    "inputs": {
+                                        "name": "ProgressText",
+                                        "value": ": mismatch of file numbers in CTL"
+                                    },
+                                    "type": "AppendToStringVariable"
+                                },
+                                "Throw_error_file_number_mismatch": {
+                                    "inputs": "@int('__ERROR_file_number_mismatch__')",
+                                    "runAfter": {
+                                        "Append_file_mismatch_error": [
+                                            "SUCCEEDED"
+                                        ]
+                                    },
+                                    "type": "Compose"
+                                }
+                            }
+                        },
+                        "expression": {
+                            "and": [
+                                {
+                                    "equals": [
+                                        "@body('Parse_CTL_File')?['filesInSubmission']",
+                                        "@length(variables('FileList'))"
+                                    ]
+                                }
+                            ]
+                        },
+                        "runAfter": {
+                            "Set_uosr": [
+                                "SUCCEEDED"
+                            ]
+                        },
+                        "type": "If"
+                    },
+                    "Is_SBI_valid": {
+                        "actions": {
+                            "Set_SBI_from_CTL": {
+                                "inputs": {
+                                    "name": "SbiNumber",
+                                    "value": "@body('Parse_CTL_File')?['sbi']"
+                                },
+                                "type": "SetVariable"
+                            }
+                        },
+                        "else": {
+                            "actions": {
+                                "Set_SBI_from_Org": {
+                                    "inputs": {
+                                        "name": "SbiNumber",
+                                        "value": "@{outputs('Parse_Org_Response')?['body']?['value'][0]['rpa_sbinumber']}"
+                                    },
+                                    "type": "SetVariable"
+                                }
+                            }
+                        },
+                        "expression": {
+                            "and": [
+                                {
+                                    "not": {
+                                        "equals": [
+                                            "@length(trim(string(body('Parse_CTL_File')?['sbi'])))",
+                                            0
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        "runAfter": {
+                            "Extract_OrganisationId": [
+                                "SUCCEEDED"
+                            ]
+                        },
+                        "type": "If"
                     },
                     "Parse_CRM_Token": {
-                        "type": "ParseJson",
                         "inputs": {
                             "content": "@body('Get_CRM_Token')",
                             "schema": {
@@ -688,10 +895,10 @@
                             "Get_CRM_Token": [
                                 "SUCCEEDED"
                             ]
-                        }
+                        },
+                        "type": "ParseJson"
                     },
                     "Parse_CTL_File": {
-                        "type": "ParseJson",
                         "inputs": {
                             "content": "@outputs('Decode_blob_CTL_contents')",
                             "schema": {
@@ -740,10 +947,10 @@
                             "Decode_blob_CTL_contents": [
                                 "SUCCEEDED"
                             ]
-                        }
+                        },
+                        "type": "ParseJson"
                     },
                     "Parse_Contact_Details": {
-                        "type": "ParseJson",
                         "inputs": {
                             "content": "@body('Get_CRM_Contact')",
                             "schema": {
@@ -774,10 +981,10 @@
                             "Get_CRM_Contact": [
                                 "SUCCEEDED"
                             ]
-                        }
+                        },
+                        "type": "ParseJson"
                     },
                     "Parse_Org_Response": {
-                        "type": "ParseJson",
                         "inputs": {
                             "content": "@body('Get_CRM_Org')",
                             "schema": {
@@ -815,10 +1022,10 @@
                             "Get_CRM_Org": [
                                 "SUCCEEDED"
                             ]
-                        }
+                        },
+                        "type": "ParseJson"
                     },
                     "Set_FileList": {
-                        "type": "SetVariable",
                         "inputs": {
                             "name": "FileList",
                             "value": "@body('Parse_CTL_File')?['files']"
@@ -827,50 +1034,10 @@
                             "Parse_CTL_File": [
                                 "SUCCEEDED"
                             ]
-                        }
-                    },
-                    "Is_SBI_valid": {
-                        "type": "If",
-                        "expression": {
-                            "and": [
-                                {
-                                    "not": {
-                                        "equals": [
-                                            "@length(trim(string(body('Parse_CTL_File')?['sbi'])))",
-                                            0
-                                        ]
-                                    }
-                                }
-                            ]
                         },
-                        "actions": {
-                            "Set_SBI_from_CTL": {
-                                "type": "SetVariable",
-                                "inputs": {
-                                    "name": "SbiNumber",
-                                    "value": "@body('Parse_CTL_File')?['sbi']"
-                                }
-                            }
-                        },
-                        "else": {
-                            "actions": {
-                                "Set_SBI_from_Org": {
-                                    "type": "SetVariable",
-                                    "inputs": {
-                                        "name": "SbiNumber",
-                                        "value": "@{outputs('Parse_Org_Response')?['body']?['value'][0]['rpa_sbinumber']}"
-                                    }
-                                }
-                            }
-                        },
-                        "runAfter": {
-                            "Extract_OrganisationId": [
-                                "SUCCEEDED"
-                            ]
-                        }
+                        "type": "SetVariable"
                     },
                     "Set_FilesInSubmission": {
-                        "type": "SetVariable",
                         "inputs": {
                             "name": "FilesInSubmission",
                             "value": "@body('Parse_CTL_File')['filesInSubmission']"
@@ -879,266 +1046,131 @@
                             "Set_FileList": [
                                 "SUCCEEDED"
                             ]
-                        }
+                        },
+                        "type": "SetVariable"
                     },
-                    "Extract_NewCaseNumber": {
-                        "type": "SetVariable",
+                    "Set_uosr": {
                         "inputs": {
-                            "name": "NewCaseNumber",
-                            "value": "@{body('Create_CRM_Case')['ticketnumber']}"
+                            "name": "uosr",
+                            "value": "@body('Parse_CTL_File')['uosr']"
                         },
                         "runAfter": {
-                            "Extract_NewCaseId": [
+                            "Set_FilesInSubmission": [
                                 "SUCCEEDED"
-                            ]
-                        }
-                    },
-                    "Get_Doc_Type_Lookups": {
-                        "type": "Compose",
-                        "inputs": "@parameters('CrmDocTypeLookup')",
-                        "runAfter": {
-                            "Append_progress_org_id": [
-                                "SUCCEEDED"
-                            ]
-                        }
-                    },
-                    "Determine_doc_type": {
-                        "type": "JavaScriptCode",
-                        "inputs": {
-                            "code": "const lookups = JSON.parse(workflowContext.actions.Get_Doc_Type_Lookups.outputs);\nconst typeCode = workflowContext.actions.Parse_CTL_File.outputs.body['type'];\nvar result = lookups[typeCode];\nreturn result ? result : '-NOTFOUND-';"
-                        },
-                        "runAfter": {
-                            "Get_Doc_Type_Lookups": [
-                                "SUCCEEDED"
-                            ]
-                        }
-                    },
-                    "Check_Valid_Doc_Type": {
-                        "type": "If",
-                        "expression": {
-                            "and": [
-                                {
-                                    "not": {
-                                        "equals": [
-                                            "@outputs('Determine_doc_type')",
-                                            "-NOTFOUND-"
-                                        ]
-                                    }
-                                }
                             ]
                         },
-                        "actions": {},
-                        "else": {
-                            "actions": {
-                                "Append_type_value_error": {
-                                    "type": "AppendToStringVariable",
-                                    "inputs": {
-                                        "name": "ProgressText",
-                                        "value": ": invalid 'type' value"
-                                    }
-                                },
-                                "Throw_invalid_type_error": {
-                                    "type": "Compose",
-                                    "inputs": "@int('__ERROR_invalid_type__')",
-                                    "runAfter": {
-                                        "Append_type_value_error": [
-                                            "SUCCEEDED"
-                                        ]
-                                    }
-                                }
-                            }
-                        },
-                        "runAfter": {
-                            "Determine_doc_type": [
-                                "SUCCEEDED"
-                            ]
-                        }
+                        "type": "SetVariable"
                     }
                 },
                 "runAfter": {
-                    "Initialize_ProgressText": [
+                    "Initialize_uosr": [
                         "SUCCEEDED"
                     ]
-                }
-            },
-            "Init_SBI": {
-                "type": "InitializeVariable",
-                "inputs": {
-                    "variables": [
-                        {
-                            "name": "SbiNumber",
-                            "type": "string"
-                        }
-                    ]
                 },
-                "runAfter": {
-                    "Init_ActivityId": [
-                        "SUCCEEDED"
-                    ]
-                }
-            },
-            "Initialize_FilesInSubmission": {
-                "type": "InitializeVariable",
-                "inputs": {
-                    "variables": [
-                        {
-                            "name": "FilesInSubmission",
-                            "type": "integer",
-                            "value": 0
-                        }
-                    ]
-                },
-                "runAfter": {
-                    "Init_SBI": [
-                        "SUCCEEDED"
-                    ]
-                }
-            },
-            "Init_OrganisationId": {
-                "type": "InitializeVariable",
-                "inputs": {
-                    "variables": [
-                        {
-                            "name": "OrganisationId",
-                            "type": "string"
-                        }
-                    ]
-                },
-                "runAfter": {
-                    "Init_FileList": [
-                        "SUCCEEDED"
-                    ]
-                }
-            },
-            "Init_FileList": {
-                "type": "InitializeVariable",
-                "inputs": {
-                    "variables": [
-                        {
-                            "name": "FileList",
-                            "type": "array"
-                        }
-                    ]
-                },
-                "runAfter": {},
-                "trackedProperties": {
-                    "WorkflowName": "RleCrmInsert"
-                }
-            },
-            "Init_NewCaseNumber": {
-                "type": "InitializeVariable",
-                "inputs": {
-                    "variables": [
-                        {
-                            "name": "NewCaseNumber",
-                            "type": "string"
-                        }
-                    ]
-                },
-                "runAfter": {
-                    "Init_NewCaseId": [
-                        "SUCCEEDED"
-                    ]
-                }
+                "type": "Scope"
             }
         },
         "contentVersion": "1.3.0.0",
         "outputs": {},
         "parameters": {
             "AdLoginBaseUrl": {
+                "defaultValue": "@appsetting('AdLoginBaseUrl')",
                 "type": "String",
-                "value": "@appsetting('AdLoginBaseUrl')",
-                "defaultValue": "@appsetting('AdLoginBaseUrl')"
+                "value": "@appsetting('AdLoginBaseUrl')"
             },
             "CrmBaseUrl": {
+                "defaultValue": "@appsetting('CrmBaseUrl')",
                 "type": "String",
-                "value": "@appsetting('CrmBaseUrl')",
-                "defaultValue": "@appsetting('CrmBaseUrl')"
+                "value": "@appsetting('CrmBaseUrl')"
             },
             "CrmDocTypeLookup": {
+                "defaultValue": "@appsetting('CrmDocTypeLookup')",
                 "type": "String",
-                "value": "@appsetting('CrmDocTypeLookup')",
-                "defaultValue": "@appsetting('CrmDocTypeLookup')"
-            },
-            "FfcRetrievalWorkflowSasToken": {
-                "type": "String",
-                "value": "@appsetting('FfcRetrievalWorkflowSasToken')",
-                "defaultValue": "@appsetting('FfcRetrievalWorkflowSasToken')"
+                "value": "@appsetting('CrmDocTypeLookup')"
             },
             "FfcRetrievalWorkflowEndpoint": {
+                "defaultValue": "@appsetting('FfcRetrievalWorkflowEndpoint')",
                 "type": "String",
-                "value": "@appsetting('FfcRetrievalWorkflowEndpoint')",
-                "defaultValue": "@appsetting('FfcRetrievalWorkflowEndpoint')"
+                "value": "@appsetting('FfcRetrievalWorkflowEndpoint')"
+            },
+            "FfcRetrievalWorkflowSasToken": {
+                "defaultValue": "@appsetting('FfcRetrievalWorkflowSasToken')",
+                "type": "String",
+                "value": "@appsetting('FfcRetrievalWorkflowSasToken')"
             },
             "FfcServiceBusTopic": {
+                "defaultValue": "@appsetting('FfcServiceBusTopic')",
                 "type": "String",
-                "value": "@appsetting('FfcServiceBusTopic')",
-                "defaultValue": "@appsetting('FfcServiceBusTopic')"
+                "value": "@appsetting('FfcServiceBusTopic')"
             },
             "PdfServiceUrl": {
+                "defaultValue": "@appsetting('PdfServiceUrl')",
                 "type": "String",
-                "value": "@appsetting('PdfServiceUrl')",
-                "defaultValue": "@appsetting('PdfServiceUrl')"
+                "value": "@appsetting('PdfServiceUrl')"
             },
             "PortalClientId": {
+                "defaultValue": "@appsetting('PortalClientId')",
                 "type": "String",
-                "value": "@appsetting('PortalClientId')",
-                "defaultValue": "@appsetting('PortalClientId')"
+                "value": "@appsetting('PortalClientId')"
             },
             "PortalClientSecret": {
+                "defaultValue": "@appsetting('PortalClientSecret')",
                 "type": "String",
-                "value": "@appsetting('PortalClientSecret')",
-                "defaultValue": "@appsetting('PortalClientSecret')"
+                "value": "@appsetting('PortalClientSecret')"
             },
             "PortalTenantId": {
+                "defaultValue": "@appsetting('PortalTenantId')",
                 "type": "String",
-                "value": "@appsetting('PortalTenantId')",
-                "defaultValue": "@appsetting('PortalTenantId')"
+                "value": "@appsetting('PortalTenantId')"
             },
             "SharepointBaseUrl": {
+                "defaultValue": "@appsetting('SharepointBaseUrl')",
                 "type": "String",
-                "value": "@appsetting('SharepointBaseUrl')",
-                "defaultValue": "@appsetting('SharepointBaseUrl')"
+                "value": "@appsetting('SharepointBaseUrl')"
             },
             "SharepointClientId": {
+                "defaultValue": "@appsetting('SharepointClientId')",
                 "type": "String",
-                "value": "@appsetting('SharepointClientId')",
-                "defaultValue": "@appsetting('SharepointClientId')"
+                "value": "@appsetting('SharepointClientId')"
             },
             "SharepointClientSecret": {
+                "defaultValue": "@appsetting('SharepointClientSecret')",
                 "type": "String",
-                "value": "@appsetting('SharepointClientSecret')",
-                "defaultValue": "@appsetting('SharepointClientSecret')"
+                "value": "@appsetting('SharepointClientSecret')"
             },
             "SharepointDomain": {
+                "defaultValue": "@appsetting('SharepointDomain')",
                 "type": "String",
-                "value": "@appsetting('SharepointDomain')",
-                "defaultValue": "@appsetting('SharepointDomain')"
+                "value": "@appsetting('SharepointDomain')"
             },
             "SharepointLoginBaseUrl": {
+                "defaultValue": "@appsetting('SharepointLoginBaseUrl')",
                 "type": "String",
-                "value": "@appsetting('SharepointLoginBaseUrl')",
-                "defaultValue": "@appsetting('SharepointLoginBaseUrl')"
+                "value": "@appsetting('SharepointLoginBaseUrl')"
             },
             "SharepointSiteSubPath": {
+                "defaultValue": "@appsetting('SharepointSiteSubPath')",
                 "type": "String",
-                "value": "@appsetting('SharepointSiteSubPath')",
-                "defaultValue": "@appsetting('SharepointSiteSubPath')"
+                "value": "@appsetting('SharepointSiteSubPath')"
             },
             "SharepointTenantId": {
+                "defaultValue": "@appsetting('SharepointTenantId')",
                 "type": "String",
-                "value": "@appsetting('SharepointTenantId')",
-                "defaultValue": "@appsetting('SharepointTenantId')"
+                "value": "@appsetting('SharepointTenantId')"
             },
             "UnknownContactId": {
+                "defaultValue": "@appsetting('UnknownContactId')",
                 "type": "String",
-                "value": "@appsetting('UnknownContactId')",
-                "defaultValue": "@appsetting('UnknownContactId')"
+                "value": "@appsetting('UnknownContactId')"
             }
         },
         "triggers": {
             "When_a_blob_is_added_or_updated": {
-                "type": "ServiceProvider",
+                "conditions": [
+                    {
+                        "expression": "@endsWith(triggerBody()?['Name'],'_ctrl.json')"
+                    }
+                ],
                 "inputs": {
                     "parameters": {
                         "path": "rle-container"
@@ -1149,11 +1181,7 @@
                         "serviceProviderId": "/serviceProviders/AzureBlob"
                     }
                 },
-                "conditions": [
-                    {
-                        "expression": "@endsWith(triggerBody()?['Name'],'_ctrl.json')"
-                    }
-                ]
+                "type": "ServiceProvider"
             }
         }
     },
