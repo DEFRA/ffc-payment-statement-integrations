@@ -182,6 +182,13 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("CRM_Lookup_Org"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Parse_Organisation_Details"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Extract_Org_Id"));
+
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Get_Ffc_Lookup"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Parse_Ffc_Lookup_Response"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Extract_Document_Type_Id"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Extract_Document_Type_Description"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Extract_Scheme_Type_Description"));
+
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("CRM_Create_Case"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Extract_case_id"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("CRM_Create_Notification_Activity"));
@@ -250,6 +257,13 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("CRM_Lookup_Org"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Parse_Organisation_Details"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Extract_Org_Id"));
+
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Get_Ffc_Lookup"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Parse_Ffc_Lookup_Response"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Extract_Document_Type_Id"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Extract_Document_Type_Description"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Extract_Scheme_Type_Description"));
+
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("CRM_Create_Case"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Extract_case_id"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("CRM_Create_Notification_Activity"));
@@ -326,6 +340,13 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
                 Assert.AreEqual(ActionStatus.Failed, testRunner.GetWorkflowActionStatus("CRM_Lookup_Org"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Parse_Organisation_Details"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Extract_Org_Id"));
+
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Get_Ffc_Lookup"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Parse_Ffc_Lookup_Response"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Extract_Document_Type_Id"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Extract_Document_Type_Description"));
+                Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Extract_Scheme_Type_Description"));
+
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("CRM_Create_Case"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("Extract_case_id"));
                 Assert.AreEqual(ActionStatus.Skipped, testRunner.GetWorkflowActionStatus("CRM_Create_Notification_Activity"));
