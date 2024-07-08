@@ -495,7 +495,7 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
             // Since a property beginning with '@' cannot be defined in an anonymous type,
             // this JSON is created using strings
 
-            var jsonStr = "\"value\":[{\"@odata.etag\":\"W/\\\"189384314\\\"\",\"rpa_doctype\":\"3de06e3d-2b5c-ed11-9562-0022489931ca\",\"rpa_documentdescription\":\"PaymentStatement\",\"rpa_schemetypedescription\":\"SingleFarmPayment\",\"rpa_ffclookupid\":\"d95b8115-123a-ef11-8409-000d3ab2d82a\"}]";
+            var jsonStr = "{ \"value\":[ { \"@odata.etag\": \"W189384314\", \"rpa_doctype\": \"3de06e3d-2b5c-ed11-9562-0022489931ca\", \"rpa_documentdescription\": \"PaymentStatement\", \"rpa_schemetypedescription\": \"SingleFarmPayment\", \"rpa_ffclookupid\": \"d95b8115-123a-ef11-8409-000d3ab2d82a\" } ] }";
 
             return new StringContent(jsonStr, Encoding.UTF8, "application/json");
         }
