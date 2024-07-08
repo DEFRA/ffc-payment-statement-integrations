@@ -41,22 +41,22 @@
   },
   {
     "name": "PortalClientId",
-    "value": "@Microsoft.KeyVault(SecretUri=https://prerleinfkv1401.vault.azure.net/secrets/PortalClientId/0eb3582742f0422f84d71124141fbc19)",
+    "value": "@Microsoft.KeyVault(VaultName=prerleinfkv1401;SecretName=PortalClientId)",
     "slotSetting": false
   },
   {
     "name": "PortalClientSecret",
-    "value": "@Microsoft.KeyVault(SecretUri=https://prerleinfkv1401.vault.azure.net/secrets/PortalClientSecret/7baa081cd3134638a5d13ec46b16e007)",
+    "value": "@Microsoft.KeyVault(VaultName=prerleinfkv1401;SecretName=PortalClientSecret)",
     "slotSetting": false
   },
   {
     "name": "PortalTenantId",
-    "value": "@Microsoft.KeyVault(SecretUri=https://prerleinfkv1401.vault.azure.net/secrets/PortalTenantId/d570a0cc88034e41ba2633b65f696bc8)",
+    "value": "@Microsoft.KeyVault(VaultName=prerleinfkv1401;SecretName=PortalTenantId)",
     "slotSetting": false
   },
   {
     "name": "ServiceBus-ConnectionString",
-    "value": "@Microsoft.KeyVault(SecretUri=https://prerleinfkv1401.vault.azure.net/secrets/ServiceBusConnectionString/5234464e36aa4f068c6967a4c2bd7b43)",
+    "value": "@Microsoft.KeyVault(VaultName=prerleinfkv1401;SecretName=ServiceBusConnectionString)",
     "slotSetting": false
   },
   {
@@ -66,12 +66,12 @@
   },
   {
     "name": "SharepointClientId",
-    "value": "@Microsoft.KeyVault(SecretUri=https://prerleinfkv1401.vault.azure.net/secrets/SharepointClientId/8fd2623db4f84cf6b3e84995f6bb1154)",
+    "value": "@Microsoft.KeyVault(VaultName=prerleinfkv1401;SecretName=SharepointClientId)",
     "slotSetting": false
   },
   {
     "name": "SharepointClientSecret",
-    "value": "@Microsoft.KeyVault(SecretUri=https://prerleinfkv1401.vault.azure.net/secrets/SharepointClientSecret/3078149a866d43dba3f20fd50f3a2710)",
+    "value": "@Microsoft.KeyVault(VaultName=prerleinfkv1401;SecretName=SharepointClientSecret)",
     "slotSetting": false
   },
   {
@@ -91,7 +91,7 @@
   },
   {
     "name": "SharepointTenantId",
-    "value": "@Microsoft.KeyVault(SecretUri=https://prerleinfkv1401.vault.azure.net/secrets/SharepointTenantId/cd494209ae2d4529bf4adfb98af8c1cf)",
+    "value": "@Microsoft.KeyVault(VaultName=prerleinfkv1401;SecretName=SharepointTenantId)",
     "slotSetting": false
   },
   {

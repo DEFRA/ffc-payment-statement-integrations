@@ -58,6 +58,12 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
                             mockedResponse.StatusCode = HttpStatusCode.OK;
                             mockedResponse.Content = ValidOrgLookup();
                         }
+                        else if (request.RequestUri.AbsolutePath.Contains("/api/data/v9.2/rpa_ffclookups") && request.Method == HttpMethod.Get)
+                        {
+                            mockedResponse.RequestMessage = request;
+                            mockedResponse.StatusCode = HttpStatusCode.OK;
+                            mockedResponse.Content = ValidFfcLookup();
+                        }
                         else if (request.RequestUri.AbsolutePath.Contains("/api/data/v9.2/incidents") && request.Method == HttpMethod.Post)
                         {
                             mockedResponse.RequestMessage = request;
@@ -101,6 +107,13 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("CRM_Lookup_Org"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Parse_Organisation_Details"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Extract_Org_Id"));
+
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Get_Ffc_Lookup"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Parse_Ffc_Lookup_Response"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Extract_Document_Type_Id"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Extract_Document_Type_Description"));
+                Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Extract_Scheme_Type_Description"));
+
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("CRM_Create_Case"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("Extract_case_id"));
                 Assert.AreEqual(ActionStatus.Succeeded, testRunner.GetWorkflowActionStatus("CRM_Create_Notification_Activity"));
@@ -475,6 +488,16 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmInsertTest
             };
 
             return UnitTestHelper.EncodeAsStringContent(json);
+        }
+
+        private static StringContent ValidFfcLookup()
+        {
+            // Since a property beginning with '@' cannot be defined in an anonymous type,
+            // this JSON is created using strings
+
+            var jsonStr = "\"value\":[{\"@odata.etag\":\"W/\\\"189384314\\\"\",\"rpa_doctype\":\"3de06e3d-2b5c-ed11-9562-0022489931ca\",\"rpa_documentdescription\":\"PaymentStatement\",\"rpa_schemetypedescription\":\"SingleFarmPayment\",\"rpa_ffclookupid\":\"d95b8115-123a-ef11-8409-000d3ab2d82a\"}]";
+
+            return new StringContent(jsonStr, Encoding.UTF8, "application/json");
         }
     }
 }
