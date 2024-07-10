@@ -31,7 +31,7 @@
   },
   {
     "name": "FfcServiceBusTopic",
-    "value": "ffc-pay-statement-crm-test",
+    "value": "ffc-doc-statement-crm-test",
     "slotSetting": false
   },
   {
