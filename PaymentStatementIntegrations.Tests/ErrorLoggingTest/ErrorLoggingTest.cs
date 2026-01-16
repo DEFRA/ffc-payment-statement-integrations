@@ -71,7 +71,6 @@ namespace PaymentStatementIntegrations.Tests.ErrorLoggingTest
                 Assert.AreEqual(WorkflowRunStatus.Succeeded, testRunner.WorkflowRunStatus);
 
                 // Check workflow response
-                testRunner.ExceptionWrapper(() => Assert.AreEqual(HttpStatusCode.OK, workflowResponse.StatusCode));
                 Assert.AreEqual(HttpStatusCode.OK, workflowResponse.StatusCode);
 
                 // Check action result
@@ -132,7 +131,6 @@ namespace PaymentStatementIntegrations.Tests.ErrorLoggingTest
                 Assert.AreEqual(WorkflowRunStatus.Succeeded, testRunner.WorkflowRunStatus);
 
                 // Check workflow response
-                testRunner.ExceptionWrapper(() => Assert.AreEqual(HttpStatusCode.OK, workflowResponse.StatusCode));
                 Assert.AreEqual(HttpStatusCode.OK, workflowResponse.StatusCode);
 
                 // Check action result

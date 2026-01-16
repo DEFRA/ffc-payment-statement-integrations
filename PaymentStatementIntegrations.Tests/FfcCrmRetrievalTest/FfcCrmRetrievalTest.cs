@@ -64,7 +64,7 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmRetrievalTest
                 Assert.AreEqual(WorkflowRunStatus.Succeeded, testRunner.WorkflowRunStatus);
 
                 // Check workflow response
-                testRunner.ExceptionWrapper(() => Assert.AreEqual(HttpStatusCode.NotFound, workflowResponse.StatusCode));
+                Assert.AreEqual(HttpStatusCode.NotFound, workflowResponse.StatusCode);
                 Assert.AreEqual("Unable to get PDF content: PDF not found", workflowResponse.Content.ReadAsStringAsync().Result);
                 Assert.AreEqual("text/plain; charset=utf-8", workflowResponse.Content.Headers.ContentType?.ToString());
 
@@ -109,7 +109,7 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmRetrievalTest
                 Assert.AreEqual(WorkflowRunStatus.Succeeded, testRunner.WorkflowRunStatus);
 
                 // Check workflow response
-                testRunner.ExceptionWrapper(() => Assert.AreEqual(HttpStatusCode.InternalServerError, workflowResponse.StatusCode));
+                Assert.AreEqual(HttpStatusCode.InternalServerError, workflowResponse.StatusCode);
                 Assert.AreEqual("Unable to get PDF content: Internal server error detected in PDF Service", workflowResponse.Content.ReadAsStringAsync().Result);
                 Assert.AreEqual("text/plain; charset=utf-8", workflowResponse.Content.Headers.ContentType?.ToString());
 
@@ -164,7 +164,7 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmRetrievalTest
                 Assert.AreEqual(WorkflowRunStatus.Succeeded, testRunner.WorkflowRunStatus);
 
                 // Check workflow response
-                testRunner.ExceptionWrapper(() => Assert.AreEqual(HttpStatusCode.OK, workflowResponse.StatusCode));
+                Assert.AreEqual(HttpStatusCode.OK, workflowResponse.StatusCode);
                 Assert.AreEqual("Some dummy PDF content", workflowResponse.Content.ReadAsStringAsync().Result);
                 Assert.AreEqual("application/pdf", workflowResponse.Content.Headers.ContentType?.ToString());
 
@@ -217,7 +217,7 @@ namespace PaymentStatementIntegrations.Tests.FfcCrmRetrievalTest
                 Assert.AreEqual(WorkflowRunStatus.Succeeded, testRunner.WorkflowRunStatus);
 
                 // Check workflow response
-                testRunner.ExceptionWrapper(() => Assert.AreEqual(HttpStatusCode.BadRequest, workflowResponse.StatusCode));
+                Assert.AreEqual(HttpStatusCode.BadRequest, workflowResponse.StatusCode);
 
                 // Check action result
                 Assert.AreEqual(ActionStatus.Cancelled, testRunner.GetWorkflowActionStatus("Is_call_from_CRM"));
