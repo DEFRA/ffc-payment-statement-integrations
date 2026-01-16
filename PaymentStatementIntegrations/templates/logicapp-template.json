@@ -483,8 +483,12 @@
       "properties": {
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
         "siteConfig": {
-          "netFrameworkVersion": "v4.6",
+          "use32BitWorkerProcess": false,
           "appSettings": [
+            {
+              "name": "WEBSITE_MAX_DYNAMIC_APPLICATION_SCALE_OUT",
+              "value": "20"
+            },
             {
               "name": "APP_KIND",
               "value": "workflowApp"
@@ -575,7 +579,7 @@
             },
             {
               "name": "WEBSITE_NODE_DEFAULT_VERSION",
-              "value": "~18"
+              "value": "~20"
             }, 
             {
               "name": "WORKFLOWS_SUBSCRIPTION_ID", 

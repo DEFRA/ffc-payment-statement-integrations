@@ -80,7 +80,7 @@ jobs:
         files: ./${{ env.project-folder}}
 
     - name: Publish artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: logicapp_artifacts
         path: ${{ github.run_id }}.zip
